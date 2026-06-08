@@ -49,5 +49,7 @@ public class CapexDossierDto extends BaseAuditingDto {
 
     private String treasuryName;
 
+    private Long workflowId;
+
     private Integer dossierVersion;
 }

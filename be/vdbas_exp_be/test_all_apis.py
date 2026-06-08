@@ -77,27 +77,27 @@ def run_tests():
     }
     
     # POST /api/category-groups (Create)
-    success, group = test_endpoint("POST", "/api/category-groups", payload=group_payload)
+    success, group = test_endpoint("POST", "/api/v1/category-groups", payload=group_payload)
     
     # GET /api/category-groups (Find all)
-    test_endpoint("GET", "/api/category-groups")
+    test_endpoint("GET", "/api/v1/category-groups")
     
     # GET /api/category-groups/{code} (Get detail)
-    test_endpoint("GET", f"/api/category-groups/{group_code}")
+    test_endpoint("GET", f"/api/v1/category-groups/{group_code}")
     
-    # POST /api/category-groups/search (Search)
+    # POST /api/v1/category-groups/search (Search)
     search_group_payload = {
         "groupCode": group_code,
         "page": 0,
         "size": 10
     }
-    test_endpoint("POST", "/api/category-groups/search", payload=search_group_payload)
+    test_endpoint("POST", "/api/v1/category-groups/search", payload=search_group_payload)
     
     # PUT /api/category-groups/{code} (Update)
     if success:
         update_group_payload = group_payload.copy()
         update_group_payload["groupName"] = f"Category Group {group_code} UPDATED"
-        test_endpoint("PUT", f"/api/category-groups/{group_code}", payload=update_group_payload)
+        test_endpoint("PUT", f"/api/v1/category-groups/{group_code}", payload=update_group_payload)
 
     # ----------------------------------------------------
     # 3. Category Controller
@@ -112,7 +112,7 @@ def run_tests():
         "itemName": "Parent Category Item",
         "orderIndex": 1
     }
-    p_success, parent_cat = test_endpoint("POST", "/api/categories", payload=parent_cat_payload)
+    p_success, parent_cat = test_endpoint("POST", "/api/v1/categories", payload=parent_cat_payload)
     parent_id = parent_cat.get("id") if p_success and isinstance(parent_cat, dict) else None
 
     # POST /api/categories (Create Child Item)
@@ -126,31 +126,31 @@ def run_tests():
             "parentId": parent_id,
             "orderIndex": 1
         }
-        c_success, child_cat = test_endpoint("POST", "/api/categories", payload=child_cat_payload)
+        c_success, child_cat = test_endpoint("POST", "/api/v1/categories", payload=child_cat_payload)
         child_id = child_cat.get("id") if c_success and isinstance(child_cat, dict) else None
 
     if parent_id:
         # GET /api/categories/{id}
-        test_endpoint("GET", f"/api/categories/{parent_id}")
+        test_endpoint("GET", f"/api/v1/categories/{parent_id}")
         
         # GET /api/categories/group/{groupCode}
-        test_endpoint("GET", f"/api/categories/group/{group_code}")
+        test_endpoint("GET", f"/api/v1/categories/group/{group_code}")
         
         # GET /api/categories/group/{groupCode}/tree
-        test_endpoint("GET", f"/api/categories/group/{group_code}/tree")
+        test_endpoint("GET", f"/api/v1/categories/group/{group_code}/tree")
         
-        # POST /api/categories/search
+        # POST /api/v1/categories/search
         search_cat_payload = {
             "groupCode": group_code,
             "page": 0,
             "size": 10
         }
-        test_endpoint("POST", "/api/categories/search", payload=search_cat_payload)
+        test_endpoint("POST", "/api/v1/categories/search", payload=search_cat_payload)
         
-        # PUT /api/categories/{id}
+        # PUT /api/v1/categories/{id}
         update_cat_payload = parent_cat_payload.copy()
         update_cat_payload["itemName"] = "Parent Category Item UPDATED"
-        test_endpoint("PUT", f"/api/categories/{parent_id}", payload=update_cat_payload)
+        test_endpoint("PUT", f"/api/v1/categories/{parent_id}", payload=update_cat_payload)
 
     # ----------------------------------------------------
     # 4. Capex Dossier Controller
@@ -163,8 +163,10 @@ def run_tests():
         "projectManagementCode": "3029123",
         "projectManagementName": "BQLDA bệnh viện Bạch Mai",
         "dataSourceCode": "MANUAL",
-        "treasuryCode": "0012"
+        "treasuryCode": "0012",
+        "workflowId": 1
     }
+
 
     # POST /api/v1/capex-dossier (Create Dossier 1)
     d1_success, dossier1 = test_endpoint("POST", "/api/v1/capex-dossier", payload=dossier_payload)
@@ -214,10 +216,10 @@ def run_tests():
     # ----------------------------------------------------
     print("\n5. Cleaning up Category test data...")
     if child_id:
-        test_endpoint("DELETE", f"/api/categories/{child_id}")
+        test_endpoint("DELETE", f"/api/v1/categories/{child_id}")
     if parent_id:
-        test_endpoint("DELETE", f"/api/categories/{parent_id}")
-    test_endpoint("DELETE", f"/api/category-groups/{group_code}")
+        test_endpoint("DELETE", f"/api/v1/categories/{parent_id}")
+    test_endpoint("DELETE", f"/api/v1/category-groups/{group_code}")
 
     print("\n=== COMPLETED TESTS, GENERATING REPORT ===")
     generate_markdown_report()

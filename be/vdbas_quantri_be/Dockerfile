@@ -12,11 +12,16 @@ RUN apk add --no-cache openssl && \
     -keystore $JAVA_HOME/lib/security/cacerts \
     -storepass changeit
 
-COPY pom.xml .
-COPY api/ api/
-COPY application/ application/
-COPY common/ common/
-COPY domain/ domain/
+# Copy and build local dependency vdbas_common
+COPY vdbas_common/pom.xml vdbas_common/
+COPY vdbas_common/src vdbas_common/src
+RUN mvn -f vdbas_common/pom.xml clean install -DskipTests
+
+COPY vdbas_quantri_be/pom.xml ./
+COPY vdbas_quantri_be/api/ api/
+COPY vdbas_quantri_be/application/ application/
+COPY vdbas_quantri_be/common/ common/
+COPY vdbas_quantri_be/domain/ domain/
 
 RUN mvn clean package -DskipTests
 

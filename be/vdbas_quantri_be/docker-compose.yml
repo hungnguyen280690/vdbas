@@ -1,5 +1,3 @@
-version: '3.8'
-
 x-common-env: &common-env
   SERVER_PORT: 8080
   DB_HOST: ${DB_HOST:-172.16.5.20}
@@ -24,8 +22,9 @@ x-common-env: &common-env
 services:
   api:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ..
+      dockerfile: vdbas_quantri_be/Dockerfile
+      network: host
     image: vdbas-quantri-be-api:latest
     container_name: vdbas-quantri-api
     restart: unless-stopped

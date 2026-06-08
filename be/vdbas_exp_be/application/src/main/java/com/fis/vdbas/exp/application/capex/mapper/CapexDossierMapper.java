@@ -41,6 +41,7 @@ public interface CapexDossierMapper extends BooleanIntegerMapper {
     @Mapping(target = "projectManagementName", source = "projectManagementName")
     @Mapping(target = "dataSourceCode",        source = "dataSourceCode")
     @Mapping(target = "treasuryCode",          source = "treasuryCode")
+    @Mapping(target = "workflowId",            source = "workflowId")
     void updateEntityFromDto(CapexDossierDto dto, @MappingTarget CapexDossier entity);
 
     List<CapexDossierDto> toDtoList(List<CapexDossier> entities);

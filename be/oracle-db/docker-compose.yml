@@ -1,0 +1,22 @@
+services:
+  oracle:
+    image: gvenzl/oracle-free:latest
+    container_name: vdbas-oracle-local
+    restart: unless-stopped
+    ports:
+      - "${LOCAL_DB_PORT:-1521}:1521"
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_SYS_PASSWORD:-qttt@123}
+      ORACLE_DATABASE: ${ORACLE_PDB_NAME:-qttt_db}
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+      - ./scripts:/container-entrypoint-initdb.d
+    networks:
+      - oracle-network
+
+volumes:
+  oracle-data:
+
+networks:
+  oracle-network:
+    driver: bridge
