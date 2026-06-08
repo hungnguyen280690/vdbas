@@ -1,0 +1,101 @@
+server:
+  port: 8080
+  forward-headers-strategy: framework
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework: INFO
+    # PROD: thường đặt LOG_LEVEL_APP=INFO
+    com.fis.vdbas.exp: ${LOG_LEVEL_APP:INFO}
+    # PROD: thường đặt LOG_LEVEL_SQL=ERROR
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:ERROR}
+    org.hibernate.type.descriptor.sql.BasicBinder: TRACE
+
+spring:
+  application:
+    name: vdbas-exp
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+  data:
+    redis:
+      # PROD: truyền các biến môi trường SPRING_DATA_REDIS_HOST, SPRING_DATA_REDIS_PORT, SPRING_DATA_REDIS_PASSWORD
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
+
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+    default-locale: vi
+
+  datasource:
+    # PROD: cấu hình các biến DB_HOST, DB_PORT, DB_NAME tương ứng với server Database
+    url: jdbc:oracle:thin:@//${DB_HOST:localhost}:${DB_PORT:1521}/${DB_NAME:ORCLPDB1}
+    # PROD: cấu hình user và password của Database
+    username: ${DB_USER:exp}
+    password: ${DB_PASSWORD:exp@123}
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    # Mặc định theo cấu hình PROD (false) - DEV có thể truyền DB_SHOW_SQL=true
+    show-sql: ${DB_SHOW_SQL:false}
+    hibernate:
+      # Mặc định theo cấu hình PROD (validate) - DEV có thể truyền DB_DDL_AUTO=none
+      ddl-auto: ${DB_DDL_AUTO:validate}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
+        format_sql: ${DB_FORMAT_SQL:true}
+    open-in-view: false
+
+management:
+  health:
+    redis:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+app:
+  code: exp
+  security:
+    default-role: exp_ROLE_DEFAULT
+  cache:
+    # PROD: nên truyền biến môi trường CACHE_TYPE=redis, SPRING_DATA_REDIS_HOST, SPRING_DATA_REDIS_PORT, SPRING_DATA_REDIS_PASSWORD
+    type: ${CACHE_TYPE:memory}
+    default-ttl: 15
+  cors:
+    # PROD: truyền origin thật (VD: CORS_ALLOWED_ORIGINS=https://domain.com)
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+    allowed-headers: "*"
+    allow-credentials: true
+  gateway:
+    # Shared secret header (X-Internal-Token) that IBM DataPower injects on every forwarded request.
+    # PROD: set GATEWAY_INTERNAL_TOKEN to the same secret configured on the gateway side.
+    # DEV:  leave blank to skip validation when calling the service directly (without gateway).
+    internal-token: ${GATEWAY_INTERNAL_TOKEN:}
+
+springdoc:
+  api-docs:
+    path: /docs/api-docs
+    # PROD: mặc định tắt trên PROD - DEV có thể truyền SWAGGER_ENABLED=true
+    enabled: ${SWAGGER_ENABLED:false}
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    enabled: ${SWAGGER_ENABLED:false}
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+  show-actuator: false

@@ -1,0 +1,366 @@
+openapi: 3.0.0
+info:
+  title: CAPEX Dossier Management API
+  description: API contract for managing Investment Expenditure (CAPEX) Dossiers in the VDBAS system. Supports Maker-Checker-Approver workflows, document management, and integration with project master data.
+  version: 1.0.0
+  contact:
+    name: Gemini CLI
+    email: support@example.com
+
+servers:
+  - url: /api/v1
+    description: VDBAS API Gateway
+
+tags:
+  - name: Dossier
+    description: CRUD and workflow operations for CAPEX Dossiers
+  - name: Document
+    description: Operations for documents attached to a dossier
+  - name: MasterData
+    description: Reference data for lookups (Projects, Treasury, etc.)
+
+paths:
+  /capex-dossier:
+    get:
+      tags: [Dossier]
+      summary: Search dossiers
+      description: Returns a paginated list of dossiers based on filters.
+      parameters:
+        - name: dossierCode
+          in: query
+          schema: { type: string }
+        - name: projectCode
+          in: query
+          schema: { type: string }
+        - name: stateCode
+          in: query
+          schema: { type: string }
+          description: Filter by status (DRAFT, PENDING_CHECK, etc.)
+        - name: fromDate
+          in: query
+          schema: { type: string, format: date }
+        - name: toDate
+          in: query
+          schema: { type: string, format: date }
+        - name: page
+          in: query
+          schema: { type: integer, default: 0 }
+        - name: size
+          in: query
+          schema: { type: integer, default: 20 }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  content:
+                    type: array
+                    items: { $ref: '#/components/schemas/DossierSummary' }
+                  totalElements: { type: integer }
+                  totalPages: { type: integer }
+
+    post:
+      tags: [Dossier]
+      summary: Create new dossier
+      description: Initializes a new dossier in DRAFT status.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DossierCreateRequest' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DossierHeader' }
+
+  /capex-dossier/{id}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Dossier]
+      summary: Get dossier detail
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DossierDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+    put:
+      tags: [Dossier]
+      summary: Update dossier
+      description: Update header information of a dossier (only in DRAFT status).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/DossierUpdateRequest' }
+      responses:
+        '200':
+          description: Updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DossierHeader' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+
+    delete:
+      tags: [Dossier]
+      summary: Soft delete dossier
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [deleteReason, confirmReviewed]
+              properties:
+                deleteReason: { type: string, minLength: 10, maxLength: 500 }
+                confirmReviewed: { type: boolean }
+      responses:
+        '204': { description: Deleted }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /capex-dossier/{id}/submit:
+    post:
+      tags: [Dossier]
+      summary: Submit for check
+      description: Transitions dossier from DRAFT to PENDING_CHECK.
+      responses:
+        '200': { description: Submitted }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /capex-dossier/{id}/workflow:
+    post:
+      tags: [Dossier]
+      summary: Workflow action (Check/Approve/Reject)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/WorkflowActionRequest' }
+      responses:
+        '200': { description: Action applied }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /capex-dossier/{id}/documents:
+    get:
+      tags: [Document]
+      summary: List documents in dossier
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/DocumentDetail' }
+
+  /master-data/projects:
+    get:
+      tags: [MasterData]
+      summary: Search projects (LOV.01)
+      parameters:
+        - name: code
+          in: query
+          schema: { type: string }
+        - name: name
+          in: query
+          schema: { type: string }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ProjectInfo' }
+
+components:
+  schemas:
+    DossierHeader:
+      type: object
+      properties:
+        dossierId: { type: string, format: uuid }
+        dossierCode: { type: string }
+        sendDate: { type: string, format: date }
+        stateCode: { type: string, enum: [DRAFT, PENDING_CHECK, CHECK_REJECTED, CHECK_CANCELLED, PENDING_APPROVE, APPROVE_REJECTED, APPROVE_CANCELLED, APPROVED, DELETED] }
+        projectCode: { type: string }
+        projectName: { type: string }
+        projectSpecificCode: { type: string, nullable: true }
+        projectSpecificName: { type: string, nullable: true }
+        projectManagementCode: { type: string }
+        projectManagementName: { type: string }
+        dataSourceCode: { type: string, enum: [MANUAL, DVC] }
+        createdBy: { type: string }
+        createdDate: { type: string, format: date-time }
+        updatedBy: { type: string }
+        updatedDate: { type: string, format: date-time }
+        version: { type: integer, description: "Optimistic locking version (F-VER)" }
+
+    DossierSummary:
+      type: object
+      properties:
+        dossierId: { type: string, format: uuid }
+        dossierCode: { type: string }
+        sendDate: { type: string, format: date }
+        stateCode: { type: string }
+        projectName: { type: string }
+        createdBy: { type: string }
+        createdDate: { type: string, format: date-time }
+        totalAmountVnd: { type: number }
+        documentCount: { type: integer }
+
+    DossierCreateRequest:
+      type: object
+      required: [projectCode, projectManagementCode, sendDate]
+      properties:
+        sendDate: { type: string, format: date }
+        projectCode: { type: string }
+        projectSpecificCode: { type: string }
+        projectManagementCode: { type: string }
+        dataSourceCode: { type: string, default: MANUAL }
+
+    DossierUpdateRequest:
+      type: object
+      properties:
+        sendDate: { type: string, format: date }
+        projectCode: { type: string }
+        projectSpecificCode: { type: string }
+        projectManagementCode: { type: string }
+        version: { type: integer, required: true }
+
+    DossierDetail:
+      allOf:
+        - $ref: '#/components/schemas/DossierHeader'
+        - type: object
+          properties:
+            documents:
+              type: array
+              items: { $ref: '#/components/schemas/DocumentDetail' }
+            attachments:
+              type: array
+              items: { $ref: '#/components/schemas/AttachmentInfo' }
+            approvalHistory:
+              type: array
+              items: { $ref: '#/components/schemas/ApprovalLogEntry' }
+
+    DocumentDetail:
+      type: object
+      properties:
+        documentId: { type: string, format: uuid }
+        documentNumber: { type: string }
+        documentDate: { type: string, format: date }
+        accountingDate: { type: string, format: date }
+        paymentRequestAmount: { type: number }
+        paymentRequestAmountVnd: { type: number }
+        currencyCode: { type: string }
+        lines:
+          type: array
+          items: { $ref: '#/components/schemas/DocumentLine' }
+
+    DocumentLine:
+      type: object
+      properties:
+        lineId: { type: string, format: uuid }
+        investmentSourceCode: { type: string }
+        allocationCriteriaCode: { type: string }
+        amount: { type: number }
+        amountVnd: { type: number }
+        glSegments:
+          type: object
+          properties:
+            segment1: { type: string }
+            segment2: { type: string }
+            segment3: { type: string }
+            segment4: { type: string }
+            segment5: { type: string }
+            segment6: { type: string }
+            segment7: { type: string }
+            segment8: { type: string }
+            segment9: { type: string }
+            segment10: { type: string }
+            segment11: { type: string }
+            segment12: { type: string }
+
+    AttachmentInfo:
+      type: object
+      properties:
+        archiveId: { type: string, format: uuid }
+        fileName: { type: string }
+        docType: { type: string }
+        note: { type: string }
+        fileSize: { type: integer }
+        uploadedBy: { type: string }
+        uploadedDate: { type: string, format: date-time }
+
+    ApprovalLogEntry:
+      type: object
+      properties:
+        logId: { type: string, format: uuid }
+        actionUser: { type: string }
+        actionDate: { type: string, format: date-time }
+        actionRole: { type: string }
+        stateCode: { type: string }
+        reason: { type: string }
+
+    WorkflowActionRequest:
+      type: object
+      required: [action]
+      properties:
+        action: { type: string, enum: [CHECK, APPROVE, REJECT, RETURN] }
+        reason: { type: string, minLength: 10, description: "Required for REJECT and RETURN" }
+
+    ProjectInfo:
+      type: object
+      properties:
+        projectCode: { type: string }
+        projectName: { type: string }
+        projectType: { type: string }
+        projectManagementCode: { type: string }
+        projectManagementName: { type: string }
+
+    ApiError:
+      type: object
+      properties:
+        errorCode: { type: string }
+        message: { type: string }
+        traceId: { type: string }
+        errors:
+          type: array
+          items:
+            type: object
+            properties:
+              field: { type: string }
+              message: { type: string }
+
+  responses:
+    BadRequest:
+      description: Invalid request
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+    Conflict:
+      description: Optimistic lock conflict
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }
+    InternalServerError:
+      description: System error
+      content:
+        application/json:
+          schema: { $ref: '#/components/schemas/ApiError' }

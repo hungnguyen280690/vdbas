@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXP.CAPEX_DOSSIER — Danh sách Giấy ĐN Thanh toán 04.a/TT (Panel)</title>
+<style>
+  :root {
+    --primary: #1677FF;
+    --danger: #FF4D4F;
+    --warning: #FAAD14;
+    --success: #52C41A;
+    --border: #d9d9d9;
+    --bg-page: #f5f5f5;
+    --bg-card: #FFFFFF;
+    --bg-header: #fafafa;
+    --text-primary: #262626;
+    --text-secondary: #595959;
+    --text-disabled: #bfbfbf;
+    --font: 'Segoe UI', 'Roboto', sans-serif;
+    --radius: 6px;
+    --shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); font-size: 14px; background: var(--bg-page); color: var(--text-primary); }
+
+  .page-wrap { max-width: 1280px; margin: 0 auto; padding: 16px; }
+
+  /* Parent Dossier Context Header */
+  .dossier-context {
+    background: #e6f4ff; border: 1px solid #91caff;
+    border-radius: var(--radius); padding: 12px 20px;
+    margin-bottom: 12px; display: flex; align-items: center; gap: 12px;
+  }
+  .dossier-context-icon { font-size: 20px; }
+  .dossier-context-text { flex: 1; }
+  .dossier-context-title { font-weight: 600; font-size: 14px; color: #0958d9; }
+  .dossier-context-sub { font-size: 12px; color: #1677ff; }
+
+  /* Page Header */
+  .page-header {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; box-shadow: var(--shadow);
+  }
+  .page-title { font-size: 16px; font-weight: 600; }
+  .page-subtitle { font-size: 12px; color: var(--text-secondary); }
+
+  /* Toolbar per B.2.2.1 LIST — Tìm kiếm LEFT, Thêm mới TOP RIGHT */
+  .list-toolbar {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 20px;
+    margin-bottom: 12px; box-shadow: var(--shadow);
+    display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+  }
+  .toolbar-search { flex: 1; min-width: 200px; display: flex; gap: 8px; align-items: center; }
+  .toolbar-search input, .toolbar-search select {
+    height: 32px; padding: 4px 11px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 14px; font-family: var(--font);
+    outline: none; background: #fff;
+  }
+  .toolbar-search input { min-width: 220px; }
+  .toolbar-search input:focus, .toolbar-search select:focus {
+    border-color: var(--primary); box-shadow: 0 0 0 2px rgba(22,119,255,.1);
+  }
+  .toolbar-search select { min-width: 140px; }
+  .toolbar-right { display: flex; gap: 8px; }
+  .btn {
+    height: 32px; padding: 4px 15px; border-radius: var(--radius);
+    font-size: 14px; font-family: var(--font); cursor: pointer;
+    font-weight: 400; border: 1px solid transparent;
+    display: inline-flex; align-items: center; gap: 6px;
+    transition: background .2s, border-color .2s;
+    white-space: nowrap;
+  }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover { background: #4096ff; }
+  .btn-default { background: #fff; color: var(--text-primary); border-color: var(--border); }
+  .btn-default:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-danger-ghost { background: none; color: var(--danger); border-color: var(--danger); }
+  .btn-danger-ghost:hover { background: #fff1f0; }
+  .btn-ghost { background: none; color: var(--text-secondary); border-color: var(--border); }
+  .btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+
+  /* Stats bar */
+  .stats-bar {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 10px 20px;
+    display: flex; gap: 24px; align-items: center;
+    margin-bottom: 8px; font-size: 13px; flex-wrap: wrap;
+    box-shadow: var(--shadow);
+  }
+  .stat-item { display: flex; align-items: center; gap: 6px; }
+  .stat-num { font-weight: 600; font-size: 15px; }
+
+  /* Table */
+  .table-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
+  }
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th {
+    background: var(--bg-header); padding: 10px 14px;
+    text-align: left; border-bottom: 1px solid var(--border);
+    font-weight: 600; white-space: nowrap; color: var(--text-primary);
+    cursor: pointer; user-select: none;
+  }
+  .data-table th:hover { background: #f0f0f0; }
+  .data-table td {
+    padding: 10px 14px; border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+  }
+  .data-table tr:hover td { background: #fafeff; cursor: pointer; }
+  .data-table tr.deleted-row td { opacity: .55; }
+  .data-table .col-actions { text-align: right; white-space: nowrap; }
+  .col-actions { display: flex; gap: 4px; justify-content: flex-end; }
+  .col-actions .btn { height: 26px; padding: 2px 10px; font-size: 12px; }
+
+  /* Status badges */
+  .badge {
+    display: inline-block; padding: 2px 8px; border-radius: 20px;
+    font-size: 11px; font-weight: 500; white-space: nowrap;
+  }
+  .badge-ACTIVE { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
+  .badge-DELETED { background: #f5f5f5; color: #8c8c8c; border: 1px solid #d9d9d9; }
+  .badge-pay { background: #e6f4ff; color: #1677ff; border: 1px solid #91caff; }
+  .badge-advance { background: #fffbe6; color: #d46b08; border: 1px solid #ffe58f; }
+
+  /* Pagination */
+  .pagination-row {
+    display: flex; justify-content: flex-end; align-items: center;
+    gap: 8px; padding: 12px 20px; border-top: 1px solid var(--border);
+    font-size: 13px; color: var(--text-secondary);
+  }
+  .pagination-row .btn { height: 28px; padding: 2px 12px; font-size: 12px; }
+  #pagination-info { color: var(--text-secondary); }
+
+  /* Empty state */
+  .empty-state { padding: 40px; text-align: center; color: var(--text-secondary); }
+  .empty-state-icon { font-size: 40px; margin-bottom: 8px; }
+
+  /* Responsive */
+  @media (max-width: 900px) {
+    .list-toolbar { flex-direction: column; align-items: stretch; }
+    .toolbar-right { width: 100%; justify-content: flex-end; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== INLINE SAMPLE DATA ===== -->
+<script type="application/json" id="sample-data">
+{
+  "dossierId": "DOSSIER-CAP-2026-001",
+  "dossierName": "Hồ sơ CAPEX — Dự án xây dựng trụ sở KBNN tỉnh Hà Nam",
+  "records": [
+    {
+      "id": "REC-001", "F_ID": "04A-2026-0001", "F_VER": 2, "F_STATUS": "ACTIVE",
+      "PAYMENT_DOSSIER_ID": "DOSSIER-CAP-2026-001",
+      "PROJECT_ID": "7001234", "PROJECT_NAME": "Dự án xây dựng trụ sở KBNN tỉnh Hà Nam",
+      "CONTRACT_ID": "Cont_7122155_004", "CONTRACT_DATE": "15/03/2024",
+      "PROJECT_ITEM_NAME": "Hạng mục xây dựng chính",
+      "PAY_OR_ADVANCES": "Thanh toán", "CURRENCY": "VND",
+      "FISCAL_YEAR": "2026",
+      "TRANSFER_BENEFICIARY_AMOUNT_VND_TOTAL": "1.374.000.000",
+      "CREATED_BY": "nguyen.van.a", "CREATED_DATE": "01/04/2026",
+      "LAST_UPDATED_DATE": "15/04/2026"
+    },
+    {
+      "id": "REC-002", "F_ID": "04A-2026-0002", "F_VER": 1, "F_STATUS": "ACTIVE",
+      "PAYMENT_DOSSIER_ID": "DOSSIER-CAP-2026-001",
+      "PROJECT_ID": "7002345", "PROJECT_NAME": "Nâng cấp hệ thống CNTT KBNN khu vực phía Nam",
+      "CONTRACT_ID": "Cont_7002345_002", "CONTRACT_DATE": "20/06/2024",
+      "PROJECT_ITEM_NAME": "Hạng mục mua sắm thiết bị máy chủ",
+      "PAY_OR_ADVANCES": "Thanh toán", "CURRENCY": "USD",
+      "FISCAL_YEAR": "2026",
+      "TRANSFER_BENEFICIARY_AMOUNT_VND_TOTAL": "42.035.250.000",
+      "CREATED_BY": "le.van.c", "CREATED_DATE": "20/04/2026",
+      "LAST_UPDATED_DATE": "20/04/2026"
+    },
+    {
+      "id": "REC-003", "F_ID": "04A-2026-0003", "F_VER": 3, "F_STATUS": "DELETED",
+      "PAYMENT_DOSSIER_ID": "DOSSIER-CAP-2026-001",
+      "PROJECT_ID": "7004686", "PROJECT_NAME": "Dự án xây dựng cơ sở hạ tầng quốc phòng",
+      "CONTRACT_ID": "Cont_9900001_001", "CONTRACT_DATE": "10/01/2024",
+      "PROJECT_ITEM_NAME": "Hạng mục hạ tầng kỹ thuật",
+      "PAY_OR_ADVANCES": "Thanh toán", "CURRENCY": "VND",
+      "FISCAL_YEAR": "2026",
+      "TRANSFER_BENEFICIARY_AMOUNT_VND_TOTAL": "3.286.400.000",
+      "CREATED_BY": "pham.van.d", "CREATED_DATE": "05/03/2026",
+      "LAST_UPDATED_DATE": "05/03/2026"
+    },
+    {
+      "id": "REC-004", "F_ID": "04A-2026-0004", "F_VER": 1, "F_STATUS": "ACTIVE",
+      "PAYMENT_DOSSIER_ID": "DOSSIER-CAP-2026-001",
+      "PROJECT_ID": "7005678", "PROJECT_NAME": "Cải tạo hệ thống điện chiếu sáng công cộng TP. Đà Nẵng",
+      "CONTRACT_ID": "Cont_6655443_003", "CONTRACT_DATE": "25/07/2024",
+      "PROJECT_ITEM_NAME": "Hạng mục lắp đặt đèn LED",
+      "PAY_OR_ADVANCES": "Tạm ứng", "CURRENCY": "VND",
+      "FISCAL_YEAR": "2026",
+      "TRANSFER_BENEFICIARY_AMOUNT_VND_TOTAL": "727.272.728",
+      "CREATED_BY": "hoang.van.e", "CREATED_DATE": "28/04/2026",
+      "LAST_UPDATED_DATE": "28/04/2026"
+    },
+    {
+      "id": "REC-005", "F_ID": "04A-2026-0005", "F_VER": 2, "F_STATUS": "ACTIVE",
+      "PAYMENT_DOSSIER_ID": "DOSSIER-CAP-2026-001",
+      "PROJECT_ID": "7003456", "PROJECT_NAME": "Xây dựng cầu vượt nút giao QL1A - Hà Nội",
+      "CONTRACT_ID": "Cont_5544332_007", "CONTRACT_DATE": "05/02/2024",
+      "PROJECT_ITEM_NAME": "Hạng mục kết cấu thép cầu vượt",
+      "PAY_OR_ADVANCES": "Thanh toán", "CURRENCY": "VND",
+      "FISCAL_YEAR": "2026",
+      "TRANSFER_BENEFICIARY_AMOUNT_VND_TOTAL": "13.145.454.547",
+      "CREATED_BY": "bui.thi.f", "CREATED_DATE": "02/05/2026",
+      "LAST_UPDATED_DATE": "10/05/2026"
+    }
+  ]
+}
+</script>
+
+<div class="page-wrap">
+
+  <!-- Parent Dossier Context (simulates embedding in CHI.CAPEX_DOSSIER) -->
+  <div class="dossier-context">
+    <div class="dossier-context-icon">📂</div>
+    <div class="dossier-context-text">
+      <div class="dossier-context-title" id="dossier-title">Hồ sơ CAPEX: DOSSIER-CAP-2026-001</div>
+      <div class="dossier-context-sub" id="dossier-subtitle">
+        📌 Chức năng EXP.CAPEX_DOSSIER.3.3.1 được truy cập từ hồ sơ CAPEX cha — Không có màn hình LIST riêng (per SRS)
+      </div>
+    </div>
+    <a href="#" style="font-size:12px;color:#1677ff">← Quay lại hồ sơ cha</a>
+  </div>
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">Danh sách Giấy Đề nghị thanh toán 04.a/TT</div>
+      <div class="page-subtitle">EXP.CAPEX_DOSSIER.3.3.1 — CHI: Quản lý Chi</div>
+    </div>
+  </div>
+
+  <!-- Toolbar: search LEFT, Thêm mới TOP RIGHT (per B.2.2.1 LIST) -->
+  <div class="list-toolbar">
+    <div class="toolbar-search">
+      <!-- Search bar LEFT per B.2.2.1 -->
+      <input type="text" id="search-input" data-testid="search-input"
+             placeholder="🔍 Tìm theo Mã hồ sơ, Hợp đồng, Hạng mục..."
+             oninput="renderList()">
+      <select id="filter-status" data-testid="filter-status" onchange="renderList()">
+        <option value="">Tất cả trạng thái</option>
+        <option value="ACTIVE">ACTIVE</option>
+        <option value="DELETED">DELETED</option>
+      </select>
+      <select id="filter-pay-type" onchange="renderList()">
+        <option value="">Tất cả loại</option>
+        <option value="Thanh toán">Thanh toán</option>
+        <option value="Tạm ứng">Tạm ứng</option>
+      </select>
+      <!-- Search button per B.2.2.1: cuối hàng tìm kiếm, sát phải -->
+      <button class="btn btn-primary" onclick="renderList()" data-testid="btn-search">Tìm kiếm</button>
+    </div>
+    <!-- Thêm mới: TOP RIGHT per B.2.2.1 -->
+    <div class="toolbar-right">
+      <button class="btn btn-default" onclick="exportCSV()" data-testid="btn-export">⬇ Xuất Excel</button>
+      <button class="btn btn-primary" id="btn-create-new" data-testid="btn-create-new"
+              onclick="window.location.href='form_detail.html?mode=new'">
+        + Thêm mới giấy 04.A
+      </button>
+    </div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-item">
+      <span style="color:var(--text-secondary)">Tổng:</span>
+      <span class="stat-num" id="stat-total">—</span>
+    </div>
+    <div class="stat-item">
+      <span class="badge badge-ACTIVE">ACTIVE</span>
+      <span class="stat-num" id="stat-active">—</span>
+    </div>
+    <div class="stat-item">
+      <span class="badge badge-DELETED">DELETED</span>
+      <span class="stat-num" id="stat-deleted">—</span>
+    </div>
+    <div class="stat-item" style="margin-left:auto">
+      <span style="color:var(--text-secondary)">Đang hiển thị:</span>
+      <span id="stat-showing">—</span>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="table-card">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th onclick="sortBy('F_ID')">Mã giấy 04.A ↕</th>
+          <th onclick="sortBy('CONTRACT_ID')">Hợp đồng ↕</th>
+          <th>Hạng mục</th>
+          <th onclick="sortBy('FISCAL_YEAR')">Niên độ ↕</th>
+          <th>Loại</th>
+          <th>Tiền tệ</th>
+          <th style="text-align:right">Số chuyển THN VND</th>
+          <th onclick="sortBy('CREATED_DATE')">Ngày tạo ↕</th>
+          <th onclick="sortBy('CREATED_BY')">Người tạo ↕</th>
+          <th onclick="sortBy('F_STATUS')">Trạng thái ↕</th>
+          <!-- Actions: Cột cuối bảng per B.2.2.1 — [Xem] [Sửa] [Xóa] -->
+          <th style="text-align:right;min-width:160px">Hành động</th>
+        </tr>
+      </thead>
+      <tbody id="list-tbody" data-testid="list-tbody"></tbody>
+    </table>
+
+    <!-- Empty state -->
+    <div class="empty-state" id="empty-state" style="display:none">
+      <div class="empty-state-icon">📄</div>
+      <div style="font-weight:600;margin-bottom:4px">Chưa có giấy đề nghị thanh toán</div>
+      <div style="font-size:12px">Bấm <strong>+ Thêm mới giấy 04.A</strong> để bắt đầu</div>
+    </div>
+
+    <!-- Pagination -->
+    <div class="pagination-row">
+      <span id="pagination-info" data-testid="pagination-info">—</span>
+      <button class="btn btn-default" id="pagination-prev" data-testid="pagination-prev"
+              onclick="changePage(-1)">‹ Trước</button>
+      <button class="btn btn-default" id="pagination-next" data-testid="pagination-next"
+              onclick="changePage(1)">Tiếp ›</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+const SAMPLE = JSON.parse(document.getElementById('sample-data').textContent);
+const PAGE_SIZE = 10;
+let currentPage = 1;
+let filteredRecords = [];
+let sortField = 'CREATED_DATE';
+let sortDir = -1;
+
+// Init
+document.addEventListener('DOMContentLoaded', () => {
+  // Set dossier context
+  document.getElementById('dossier-title').textContent = `Hồ sơ CAPEX: ${SAMPLE.dossierId} — ${SAMPLE.dossierName}`;
+  renderList();
+});
+
+function renderList() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  const st = document.getElementById('filter-status').value;
+  const pt = document.getElementById('filter-pay-type').value;
+
+  filteredRecords = SAMPLE.records.filter(r => {
+    const text = [r.F_ID, r.CONTRACT_ID, r.PROJECT_ITEM_NAME, r.PROJECT_NAME, r.CREATED_BY].join(' ').toLowerCase();
+    return (!q || text.includes(q))
+        && (!st || r.F_STATUS === st)
+        && (!pt || r.PAY_OR_ADVANCES === pt);
+  });
+
+  // Sort
+  filteredRecords.sort((a, b) => {
+    const av = a[sortField] || ''; const bv = b[sortField] || '';
+    return sortDir * (av < bv ? -1 : av > bv ? 1 : 0);
+  });
+
+  updateStats();
+  renderTable(paginate(filteredRecords, currentPage));
+  renderPagination(filteredRecords.length);
+}
+
+function sortBy(field) {
+  if (sortField === field) sortDir *= -1;
+  else { sortField = field; sortDir = 1; }
+  renderList();
+}
+
+function paginate(arr, page) {
+  const start = (page - 1) * PAGE_SIZE;
+  return arr.slice(start, start + PAGE_SIZE);
+}
+
+function renderTable(rows) {
+  const tbody = document.getElementById('list-tbody');
+  const emptyState = document.getElementById('empty-state');
+  if (!rows || rows.length === 0) {
+    tbody.innerHTML = '';
+    emptyState.style.display = '';
+    return;
+  }
+  emptyState.style.display = 'none';
+  tbody.innerHTML = rows.map(r => {
+    const isDeleted = r.F_STATUS === 'DELETED';
+    const payBadge = r.PAY_OR_ADVANCES === 'Tạm ứng'
+      ? '<span class="badge badge-advance">Tạm ứng</span>'
+      : '<span class="badge badge-pay">Thanh toán</span>';
+    return `
+      <tr class="${isDeleted ? 'deleted-row' : ''}" data-record-id="${r.id}" data-testid="row-${r.id}"
+          onclick="openRecord('${r.id}')" style="cursor:pointer">
+        <td><strong>${r.F_ID}</strong> <small style="color:var(--text-secondary)">v${r.F_VER}</small></td>
+        <td>${r.CONTRACT_ID}<br><small style="color:var(--text-secondary)">${r.CONTRACT_DATE}</small></td>
+        <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"
+            title="${r.PROJECT_ITEM_NAME}">${r.PROJECT_ITEM_NAME}</td>
+        <td style="text-align:center">${r.FISCAL_YEAR}</td>
+        <td>${payBadge}</td>
+        <td style="text-align:center">
+          <span style="font-weight:600;font-size:12px;color:${r.CURRENCY!='VND'?'#7c3aed':'var(--text-primary)'}">
+            ${r.CURRENCY}
+          </span>
+        </td>
+        <td style="text-align:right;font-family:monospace;font-size:12px">
+          ${r.TRANSFER_BENEFICIARY_AMOUNT_VND_TOTAL}
+        </td>
+        <td>${r.CREATED_DATE}<br><small style="color:var(--text-secondary)">${r.LAST_UPDATED_DATE}</small></td>
+        <td>${r.CREATED_BY}</td>
+        <td><span class="badge badge-${r.F_STATUS}">${r.F_STATUS}</span></td>
+        <td onclick="event.stopPropagation()">
+          <div class="col-actions">
+            <!-- Per B.2.2.1: [Xem] [Sửa] [Xóa] — Xem ngoài cùng trái, Xóa ngoài cùng phải -->
+            <button class="btn btn-ghost" data-testid="btn-view-${r.id}"
+                    onclick="viewRecord('${r.id}')">Xem</button>
+            <button class="btn btn-ghost" data-testid="btn-edit-${r.id}"
+                    ${isDeleted ? 'disabled title="Bản ghi đã xoá"' : ''}
+                    onclick="editRecord('${r.id}')">Sửa</button>
+            <button class="btn btn-danger-ghost" data-testid="btn-delete-${r.id}"
+                    ${isDeleted ? 'disabled title="Đã xoá"' : ''}
+                    onclick="confirmDelete('${r.id}', '${r.F_ID}')">Xóa</button>
+          </div>
+        </td>
+      </tr>`;
+  }).join('');
+}
+
+function openRecord(id) { window.location.href = `form_detail.html?id=${id}&mode=view`; }
+function viewRecord(id) { window.location.href = `form_detail.html?id=${id}&mode=view`; }
+function editRecord(id) { window.location.href = `form_detail.html?id=${id}&mode=edit`; }
+function confirmDelete(id, fid) {
+  if (confirm(`Xác nhận xoá giấy "${fid}"?\nBạn sẽ được yêu cầu nhập lý do trên trang chi tiết.`)) {
+    window.location.href = `form_detail.html?id=${id}&mode=view&action=delete`;
+  }
+}
+
+function renderPagination(total) {
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  if (currentPage > totalPages) currentPage = totalPages;
+  const start = (currentPage - 1) * PAGE_SIZE + 1;
+  const end = Math.min(currentPage * PAGE_SIZE, total);
+  document.getElementById('pagination-info').textContent =
+    `Trang ${currentPage}/${totalPages} (${start}–${end} / ${total} bản ghi)`;
+  document.getElementById('pagination-prev').disabled = currentPage <= 1;
+  document.getElementById('pagination-next').disabled = currentPage >= totalPages;
+  document.getElementById('stat-showing').textContent = `${end - start + 1} bản ghi`;
+}
+
+function changePage(dir) {
+  const totalPages = Math.ceil(filteredRecords.length / PAGE_SIZE);
+  currentPage = Math.max(1, Math.min(currentPage + dir, totalPages));
+  renderList();
+}
+
+function updateStats() {
+  const all = SAMPLE.records;
+  document.getElementById('stat-total').textContent = filteredRecords.length;
+  document.getElementById('stat-active').textContent = filteredRecords.filter(r => r.F_STATUS === 'ACTIVE').length;
+  document.getElementById('stat-deleted').textContent = filteredRecords.filter(r => r.F_STATUS === 'DELETED').length;
+}
+
+function exportCSV() {
+  const headers = ['Mã giấy 04.A','Ver','Trạng thái','Hợp đồng','Ngày HĐ','Hạng mục','Niên độ','Loại','Tiền tệ','Số chuyển THN VND','Ngày tạo','Người tạo'];
+  const rows = filteredRecords.map(r => [
+    r.F_ID, r.F_VER, r.F_STATUS, r.CONTRACT_ID, r.CONTRACT_DATE,
+    r.PROJECT_ITEM_NAME, r.FISCAL_YEAR, r.PAY_OR_ADVANCES, r.CURRENCY,
+    r.TRANSFER_BENEFICIARY_AMOUNT_VND_TOTAL, r.CREATED_DATE, r.CREATED_BY
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${v}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `EXP.CAPEX_DOSSIER.3.3.1_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>

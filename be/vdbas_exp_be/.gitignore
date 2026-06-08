@@ -1,0 +1,12 @@
+*.sql
+*.class
+
+CLAUDE.md
+
+target/
+.idea/
+*.iml
+*.log
+*.tmp
+.env
+.vscode/settings.json

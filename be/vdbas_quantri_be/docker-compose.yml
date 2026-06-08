@@ -1,0 +1,47 @@
+version: '3.8'
+
+x-common-env: &common-env
+  SERVER_PORT: 8080
+  DB_HOST: ${DB_HOST:-172.16.5.20}
+  DB_PORT: ${DB_PORT:-1521}
+  DB_NAME: ${DB_NAME:-vdbaspdb}
+  DB_USER: ${DB_USER:-vdbas_qtdc}
+  DB_PASSWORD: ${DB_PASSWORD:-qttt@123}
+  DB_DDL_AUTO: ${DB_DDL_AUTO:-validate}
+  DB_SHOW_SQL: ${DB_SHOW_SQL:-true}
+  CACHE_TYPE: ${CACHE_TYPE:-memory}
+  KEYCLOAK_URL: ${KEYCLOAK_URL:-https://vst-sso.apps.ocp.vst.gov.vn}
+  KEYCLOAK_INTERNAL_URL: ${KEYCLOAK_INTERNAL_URL:-https://vst-sso.apps.ocp.vst.gov.vn}
+  KEYCLOAK_REALM: ${KEYCLOAK_REALM:-vdbas_dev}
+  KEYCLOAK_SECRET: ${KEYCLOAK_SECRET:-JIWKPyo2KS68qgQXJKxh7bI4LnVvIRAT}
+  KEYCLOAK_DEFAULT_PASSWORD: ${KEYCLOAK_DEFAULT_PASSWORD:-ChangeMe123!}
+  CORS_ALLOWED_ORIGINS: http://localhost:3000
+  SWAGGER_ENABLED: "true"
+  LOG_LEVEL_APP: DEBUG
+  LOG_LEVEL_SQL: INFO
+  JAVA_OPTS: -Xms512m -Xmx1g -XX:+UseG1GC
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: vdbas-quantri-be-api:latest
+    container_name: vdbas-quantri-api
+    restart: unless-stopped
+    ports:
+      - "8082:8080"
+    environment:
+      <<: *common-env
+    volumes:
+      - api-logs:/app/logs
+    networks:
+      - qtdc-network
+
+volumes:
+  api-logs:
+    driver: local
+
+networks:
+  qtdc-network:
+    driver: bridge

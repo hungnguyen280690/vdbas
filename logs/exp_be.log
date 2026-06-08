@@ -1,0 +1,773 @@
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m-----------------------< [0;36mcom.fis.vdbas.exp:api[0;1m >------------------------[m
+[[1;34mINFO[m] [1mBuilding api 0.0.1-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m>>> [0;32mspring-boot-maven-plugin:4.0.5:run[m [1m(default-cli)[0;1m > [0;1mtest-compile[m @ [36mapi[0;1m >>>[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:resources[m [1m(default-resources)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] Copying 1 resource from src/main/resources to target/classes
+[[1;34mINFO[m] Copying 3 resources from src/main/resources to target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.14.1:compile[m [1m(default-compile)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] Nothing to compile - all classes are up to date.
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:testResources[m [1m(default-testResources)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] Copying 1 resource from src/test/resources to target/test-classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.14.1:testCompile[m [1m(default-testCompile)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] Nothing to compile - all classes are up to date.
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m<<< [0;32mspring-boot-maven-plugin:4.0.5:run[m [1m(default-cli)[0;1m < [0;1mtest-compile[m @ [36mapi[0;1m <<<[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mspring-boot-maven-plugin:4.0.5:run[m [1m(default-cli)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.5)
+
+2026-06-07T18:24:43.375+07:00  INFO 122407 --- [vdbas-exp] [           main] com.fis.vdbas.exp.ExpApplication         : Starting ExpApplication using Java 21.0.11 with PID 122407 (/home/hung/Documents/GitHub/vdbas/be/vdbas_exp_be/api/target/classes started by hung in /home/hung/Documents/GitHub/vdbas/be/vdbas_exp_be/api)
+2026-06-07T18:24:43.384+07:00 DEBUG 122407 --- [vdbas-exp] [           main] com.fis.vdbas.exp.ExpApplication         : Running with Spring Boot v4.0.5, Spring v7.0.7
+2026-06-07T18:24:43.386+07:00  INFO 122407 --- [vdbas-exp] [           main] com.fis.vdbas.exp.ExpApplication         : No active profile set, falling back to 1 default profile: "default"
+2026-06-07T18:24:44.498+07:00  INFO 122407 --- [vdbas-exp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-07T18:24:44.499+07:00  INFO 122407 --- [vdbas-exp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-07T18:24:44.682+07:00  INFO 122407 --- [vdbas-exp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 171 ms. Found 9 JPA repository interfaces.
+2026-06-07T18:24:45.275+07:00  INFO 122407 --- [vdbas-exp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-07T18:24:45.277+07:00  INFO 122407 --- [vdbas-exp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-06-07T18:24:45.315+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.approval.ExpApprovalLogRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.316+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.approval.ExpArchiveRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.319+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.capex.CapexDossierRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.320+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.category.CategoryGroupRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.320+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.category.CategoryRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.320+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.document.ExpDocumentLineRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.321+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.document.ExpDocumentRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.322+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.project.ExpProjectManagementRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.322+07:00  INFO 122407 --- [vdbas-exp] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.exp.domain.project.ExpProjectRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:45.322+07:00  INFO 122407 --- [vdbas-exp] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 29 ms. Found 0 Redis repository interfaces.
+2026-06-07T18:24:46.521+07:00  INFO 122407 --- [vdbas-exp] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8085 (http)
+2026-06-07T18:24:46.534+07:00  INFO 122407 --- [vdbas-exp] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-07T18:24:46.535+07:00  INFO 122407 --- [vdbas-exp] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-07T18:24:46.586+07:00  INFO 122407 --- [vdbas-exp] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3084 ms
+2026-06-07T18:24:47.089+07:00  INFO 122407 --- [vdbas-exp] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-06-07T18:24:47.160+07:00  INFO 122407 --- [vdbas-exp] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-06-07T18:24:47.636+07:00  INFO 122407 --- [vdbas-exp] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-07T18:24:47.665+07:00  INFO 122407 --- [vdbas-exp] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-07T18:24:48.945+07:00  INFO 122407 --- [vdbas-exp] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@17a5ae7b
+2026-06-07T18:24:48.947+07:00  INFO 122407 --- [vdbas-exp] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-07T18:24:49.173+07:00  WARN 122407 --- [vdbas-exp] [           main] org.hibernate.orm.deprecation            : HHH90000025: OracleDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-07T18:24:49.644+07:00  WARN 122407 --- [vdbas-exp] [           main] org.hibernate.orm.jdbc                   : HHH100123: Low default JDBC fetch size: 10 (consider setting 'hibernate.jdbc.fetch_size')
+2026-06-07T18:24:49.651+07:00  INFO 122407 --- [vdbas-exp] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:oracle:thin:@//172.16.5.20:1521/vdbaspdb]
+	Database driver: Oracle JDBC driver
+	Database dialect: OracleDialect
+	Database version: 23.26.1
+	Default catalog/schema: undefined/VDBAS_EXP
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 10
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-07T18:24:50.655+07:00  INFO 122407 --- [vdbas-exp] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-07T18:25:40.923+07:00  INFO 122407 --- [vdbas-exp] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-07T18:25:41.002+07:00  INFO 122407 --- [vdbas-exp] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-06-07T18:25:43.468+07:00  INFO 122407 --- [vdbas-exp] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-06-07T18:25:43.534+07:00  INFO 122407 --- [vdbas-exp] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8085 (http) with context path '/'
+2026-06-07T18:25:43.545+07:00  INFO 122407 --- [vdbas-exp] [           main] com.fis.vdbas.exp.ExpApplication         : Started ExpApplication in 60.835 seconds (process running for 61.33)
+2026-06-07T18:31:44.420+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@2c8bbcd2 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:31:49.427+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@4bf30642 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:31:54.433+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@29ed690d (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:31:59.439+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@6049276c (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:04.445+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@23f4030c (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:09.830+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@336070ac (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:41.432+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@17a5ae7b (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:33:05.542+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@12f0047d (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:33:18.250+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@7899137 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:33:23.256+07:00  WARN 122407 --- [vdbas-exp] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@421231b4 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:34:14.716+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (f2f02363-c294-423d-a25d-9188512bc389)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=eZ7ElAIuQ1ONh6T9s3g9Ng==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=eZ7ElAIuQ1ONh6T9s3g9Ng==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:35:15.238+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (a58491af-a03d-43b9-8650-27499a11acfe)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=b8N1orMmSfqJMQkuyFq9nA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=b8N1orMmSfqJMQkuyFq9nA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:36:17.206+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (49870308-cb14-461f-800b-bdf372789148)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=0DXAXtQ8Rty50xe0jaWmxw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=0DXAXtQ8Rty50xe0jaWmxw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:37:24.824+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (292c5989-7475-4e70-ba15-048857d217b3)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=qg3x69QVTS+AHCxmGf1Czg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=qg3x69QVTS+AHCxmGf1Czg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:38:34.948+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (1665c6b1-154f-4c57-abd8-724a3491b438)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=g6WDfy8mQoydwXX11xtX8w==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=g6WDfy8mQoydwXX11xtX8w==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:39:45.043+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (3572721c-ff08-4e0d-930f-3164f10a3f6b)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=xcXNUjjqRn2CauZLs8Ew2A==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=xcXNUjjqRn2CauZLs8Ew2A==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:40:55.110+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (7b4aa2e5-01bd-4006-b7a2-4f3f6e117501)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=COB/PoCaQia2PHca7DQP3g==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=COB/PoCaQia2PHca7DQP3g==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:42:05.177+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (5a62a42a-e420-4c35-a59c-ab608e13a111)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=UwuWUeYER4WLxWu/E7Dxzw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=UwuWUeYER4WLxWu/E7Dxzw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:43:15.226+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (18e075f7-4820-4b54-a02c-6fcda1c653fc)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=UNNqBhyRTleBbLdn580jwQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=UNNqBhyRTleBbLdn580jwQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:44:25.283+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (570fba39-4d8e-44f4-87c8-8e492edc3d8c)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=JI7QN13wTq+qHa73YpXUSA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=JI7QN13wTq+qHa73YpXUSA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:45:35.341+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (8281d433-285d-4b68-97cb-fdfc62e111c4)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=NM58uvMYTOS7zwdRzIvdBw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=NM58uvMYTOS7zwdRzIvdBw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:46:45.382+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (c6174063-79fc-45a8-be4a-c3d826b60fa9)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=TXUzrizeTO+b3eylhhakjQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=TXUzrizeTO+b3eylhhakjQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:47:55.421+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (3e88a9c7-7686-4216-90a0-d81199860504)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=4A6W4qSBRHeEvuqd8G9EPA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=4A6W4qSBRHeEvuqd8G9EPA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:49:05.478+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (b6e7a212-9c5e-4b31-915b-34aee97b5645)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=8+wIROUeQ9OUVGOgwCXxVw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=8+wIROUeQ9OUVGOgwCXxVw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:50:15.545+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (663c337e-48e0-4c41-a626-cdf240defb19)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=JrofBC9DRnqsDwm7CUEX7A==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=JrofBC9DRnqsDwm7CUEX7A==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:51:25.589+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (1013556c-0d6b-4ba4-b4c7-789034294506)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=TEQSxocASfit9ZM4da/pDw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=TEQSxocASfit9ZM4da/pDw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:52:35.655+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (a6989d65-95dc-4057-ad9a-c6d7761bcd7a)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=0bnrLMEYTSeE1Iwhs8ApEA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=0bnrLMEYTSeE1Iwhs8ApEA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:53:45.724+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (acb587ef-ca3e-4c3b-b3d4-e9ade29d0253)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=iJWBqMlgQQa2/BQ2u/WoLQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=iJWBqMlgQQa2/BQ2u/WoLQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:54:52.983+07:00  INFO 122407 --- [vdbas-exp] [ionShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-06-07T18:54:53.014+07:00  INFO 122407 --- [vdbas-exp] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-06-07T18:54:53.080+07:00  INFO 122407 --- [vdbas-exp] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-07T18:54:53.084+07:00  INFO 122407 --- [vdbas-exp] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2026-06-07T18:54:55.788+07:00  WARN 122407 --- [vdbas-exp] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (11630781-ce79-4f1d-acf5-9afae936f2e9)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=7UxcMJViTMuEEt0BRSfFNg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=7UxcMJViTMuEEt0BRSfFNg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+

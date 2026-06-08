@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXP.CAPEX_DOSSIER.3.3.2 — Danh sách Giấy rút vốn 05.a/TT</title>
+<style>
+  :root {
+    --primary: #0b5394; --primary-dark: #083d6e; --primary-light: #d6e4f7;
+    --danger: #dc3545; --success: #28a745; --warning: #ffc107;
+    --info: #17a2b8; --muted: #6c757d; --border: #dee2e6;
+    --bg: #f8f9fa; --white: #fff; --text: #212529;
+    --font: 'Segoe UI', Arial, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); font-size: 14px; color: var(--text); background: var(--bg); }
+
+  /* Layout */
+  .page-container { max-width: 1400px; margin: 0 auto; padding: 16px 24px; }
+  .page-header { background: var(--white); border-bottom: 2px solid var(--primary); padding: 12px 24px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100; box-shadow: 0 2px 4px rgba(0,0,0,.08); }
+  .page-header h1 { font-size: 17px; color: var(--primary); font-weight: 600; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 5px; padding: 0 12px; height: 32px; border-radius: 4px; border: 1px solid transparent; cursor: pointer; font-size: 13px; font-weight: 500; transition: .15s; text-decoration: none; white-space: nowrap; }
+  .btn:disabled { opacity: .5; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: var(--white); border-color: var(--primary); }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-dark); }
+  .btn-default { background: var(--white); color: var(--text); border-color: var(--border); }
+  .btn-default:hover:not(:disabled) { background: var(--bg); }
+  .btn-ghost { background: transparent; color: var(--primary); border-color: var(--primary); font-size: 12px; height: 26px; padding: 0 8px; }
+  .btn-danger-ghost { background: transparent; color: var(--danger); border-color: var(--danger); font-size: 12px; height: 26px; padding: 0 8px; }
+  .btn-sm { height: 26px; font-size: 12px; padding: 0 10px; }
+
+  /* Search toolbar */
+  .search-bar { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 12px 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .search-bar input, .search-bar select { height: 30px; padding: 0 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; min-width: 160px; }
+  .search-bar input:focus, .search-bar select:focus { outline: none; border-color: var(--primary); }
+  .search-spacer { flex: 1; }
+
+  /* Stats bar */
+  .stats-bar { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
+  .stat-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; padding: 8px 14px; display: flex; flex-direction: column; gap: 2px; }
+  .stat-card .val { font-size: 20px; font-weight: 700; color: var(--primary); }
+  .stat-card .lbl { font-size: 11px; color: var(--muted); }
+
+  /* Table */
+  .table-card { background: var(--white); border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+  .table-card table { width: 100%; border-collapse: collapse; }
+  .table-card thead th { background: #f0f4fa; padding: 9px 12px; text-align: left; border-bottom: 2px solid var(--border); font-size: 12px; font-weight: 600; color: var(--primary); white-space: nowrap; }
+  .table-card tbody tr { cursor: pointer; border-bottom: 1px solid #f0f0f0; }
+  .table-card tbody tr:hover { background: #f0f6ff; }
+  .table-card tbody td { padding: 8px 12px; font-size: 13px; vertical-align: middle; }
+  .empty-row td { text-align: center; color: var(--muted); padding: 32px; font-size: 14px; }
+
+  /* Status badges */
+  .badge { padding: 2px 9px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-DANG_HOAN_THIEN { background: #d1ecf1; color: #0c5460; }
+  .badge-DA_HOAN_THIEN { background: #d4edda; color: #155724; }
+  .badge-CHO_KIEM_SOAT { background: #cce5ff; color: #004085; }
+  .badge-TU_CHOI_KIEM_SOAT, .badge-TU_CHOI_PHE_DUYET { background: #f8d7da; color: #721c24; }
+  .badge-CHO_PHE_DUYET { background: #e2d9f3; color: #4a235a; }
+  .badge-HOAN_THANH { background: #d4edda; color: #0d4a20; }
+  .badge-DELETED { background: #e2e3e5; color: #383d41; }
+  .badge-HUY_KIEM_SOAT, .badge-HUY_PHE_DUYET { background: #f5f5f5; color: #6c757d; }
+
+  /* Action buttons in row */
+  .row-actions { display: flex; gap: 4px; }
+
+  /* Pagination */
+  .pagination { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--white); flex-wrap: wrap; gap: 8px; }
+  .pagination-info { font-size: 12px; color: var(--muted); }
+  .pagination-controls { display: flex; align-items: center; gap: 6px; }
+  .page-btn { width: 30px; height: 28px; border: 1px solid var(--border); background: var(--white); border-radius: 4px; cursor: pointer; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+  .page-btn.active { background: var(--primary); color: var(--white); border-color: var(--primary); }
+  .page-btn:hover:not(.active):not(:disabled) { background: var(--primary-light); }
+  .page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+  /* Note banner */
+  .note-banner { background: #fff3cd; border: 1px solid #ffc107; border-radius: 6px; padding: 10px 14px; font-size: 12px; color: #856404; margin-bottom: 12px; }
+</style>
+</head>
+<body>
+
+<!-- PAGE HEADER -->
+<div class="page-header">
+  <div style="display:flex;align-items:center;gap:10px">
+    <h1>📋 EXP.CAPEX_DOSSIER.3.3.2 — Danh sách Giấy rút vốn 05.a/TT</h1>
+    <span style="font-size:11px;background:#e3f2fd;color:var(--primary);padding:2px 8px;border-radius:10px;font-weight:600">Prototype Mockup</span>
+  </div>
+  <!-- TOP-RIGHT: Create New button -->
+  <button class="btn btn-primary" id="btn-create-new" data-testid="btn-create-new"
+          onclick="window.location.href='form_detail.html?mode=new'"
+          title="Tạo mới (Ctrl+N)">
+    + Tạo mới
+  </button>
+</div>
+
+<div class="page-container">
+
+  <!-- NOTE: Child screen -->
+  <div class="note-banner">
+    ℹ <strong>Lưu ý:</strong> Đây là màn hình prototype. Trong hệ thống thực, danh sách chứng từ Giấy rút vốn 05.a/TT được truy cập từ giao diện Hồ sơ cha <strong>CHI.CAPEX_DOSSIER</strong> (không có LIST screen riêng biệt — theo A1 của đặc tả).
+  </div>
+
+  <!-- STATS BAR -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-card"><span class="val" id="stat-total">0</span><span class="lbl">Tổng số</span></div>
+    <div class="stat-card"><span class="val" id="stat-dang-ht" style="color:#0c5460">0</span><span class="lbl">Đang hoàn thiện</span></div>
+    <div class="stat-card"><span class="val" id="stat-da-ht" style="color:#155724">0</span><span class="lbl">Đã hoàn thiện</span></div>
+    <div class="stat-card"><span class="val" id="stat-ks" style="color:#004085">0</span><span class="lbl">Chờ kiểm soát</span></div>
+    <div class="stat-card"><span class="val" id="stat-hoan-thanh" style="color:#0d4a20">0</span><span class="lbl">Hoàn thành</span></div>
+  </div>
+
+  <!-- SEARCH / FILTER BAR -->
+  <div class="search-bar">
+    <input type="text" id="search-input" placeholder="🔍 Tìm nhanh (Số CT, nội dung, dự án...)"
+           data-testid="search-input" oninput="render()" style="min-width:280px"/>
+    <select id="filter-status" data-testid="filter-status" onchange="render()">
+      <option value="">Tất cả trạng thái</option>
+      <option value="DANG_HOAN_THIEN">Đang hoàn thiện</option>
+      <option value="DA_HOAN_THIEN">Đã hoàn thiện</option>
+      <option value="CHO_KIEM_SOAT">Chờ kiểm soát</option>
+      <option value="TU_CHOI_KIEM_SOAT">Từ chối kiểm soát</option>
+      <option value="CHO_PHE_DUYET">Chờ phê duyệt</option>
+      <option value="HOAN_THANH">Hoàn thành xử lý</option>
+    </select>
+    <select id="filter-currency" data-testid="filter-currency" onchange="render()">
+      <option value="">Tất cả loại tiền</option>
+      <option value="VND">VND</option>
+      <option value="USD">USD</option>
+    </select>
+    <div class="search-spacer"></div>
+    <button class="btn btn-default" onclick="resetFilters()" title="Xoá bộ lọc">↺ Xoá lọc</button>
+    <button class="btn btn-default" onclick="exportCSV()" title="Xuất CSV">📥 Xuất CSV</button>
+  </div>
+
+  <!-- DATA TABLE -->
+  <div class="table-card">
+    <table>
+      <thead>
+        <tr>
+          <th style="width:32px"><input type="checkbox" id="chk-all" onchange="toggleAll(this)"/></th>
+          <th>Số chứng từ</th>
+          <th>Ngày CT</th>
+          <th>Loại GRV</th>
+          <th>Hình thức TT</th>
+          <th>Loại tiền</th>
+          <th>Dự án</th>
+          <th>Hạng mục</th>
+          <th>Đơn vị nhận</th>
+          <th>Trạng thái</th>
+          <th>Người tạo</th>
+          <th>Ngày tạo</th>
+          <th style="width:130px">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody id="list-tbody" data-testid="list-tbody"></tbody>
+    </table>
+    <div class="pagination">
+      <div class="pagination-info" id="pagination-info" data-testid="pagination-info"></div>
+      <div class="pagination-controls">
+        <button class="page-btn" id="pagination-prev" data-testid="pagination-prev"
+                onclick="changePage(currentPage-1)" disabled>‹</button>
+        <div id="page-numbers"></div>
+        <button class="page-btn" id="pagination-next" data-testid="pagination-next"
+                onclick="changePage(currentPage+1)" disabled>›</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<!-- SAMPLE DATA INLINE -->
+<script type="application/json" id="sample-data">
+{
+  "records": [
+    {
+      "id": "REC-001",
+      "DOC_ID": "05.a-260515-KB010001",
+      "DOC_SEND_DATE": "15/05/2026",
+      "DOC_TYPE": "Thanh toán cho đơn vị hưởng",
+      "PAYMENT_METHOD": "CHUYEN_KHOAN",
+      "CURRENCY_CODE": "VND",
+      "PROJECT_NAME": "Dự án đầu tư xây dựng trụ sở Kho bạc tỉnh Hà Nội",
+      "PROJECT_ITEM_NAME": "Xây dựng công trình chính",
+      "BENEFICIARY_NAME": "Công ty TNHH Xây dựng Phú Thịnh",
+      "DOC_STATUS": "DANG_HOAN_THIEN",
+      "CREATED_BY": "nguyen.van.a",
+      "CREATED_DATE": "15/05/2026"
+    },
+    {
+      "id": "REC-002",
+      "DOC_ID": "05.a-260518-KB010002",
+      "DOC_SEND_DATE": "18/05/2026",
+      "DOC_TYPE": "Tạm giữ chờ quyết toán",
+      "PAYMENT_METHOD": "CHUYEN_KHOAN",
+      "CURRENCY_CODE": "USD",
+      "PROJECT_NAME": "Nâng cấp hệ thống CNTT Kho bạc",
+      "PROJECT_ITEM_NAME": "Mua sắm thiết bị CNTT",
+      "BENEFICIARY_NAME": "Tech Solutions Co., Ltd",
+      "DOC_STATUS": "DA_HOAN_THIEN",
+      "CREATED_BY": "tran.thi.b",
+      "CREATED_DATE": "18/05/2026"
+    },
+    {
+      "id": "REC-003",
+      "DOC_ID": "05.a-260520-KB010003",
+      "DOC_SEND_DATE": "20/05/2026",
+      "DOC_TYPE": "Thanh toán cho đơn vị hưởng",
+      "PAYMENT_METHOD": "CHUYEN_KHOAN",
+      "CURRENCY_CODE": "VND",
+      "PROJECT_NAME": "Đầu tư cơ sở vật chất hạ tầng vùng nông thôn",
+      "PROJECT_ITEM_NAME": "Xây dựng đường giao thông nông thôn",
+      "BENEFICIARY_NAME": "HTX Xây dựng Thanh Chương",
+      "DOC_STATUS": "CHO_KIEM_SOAT",
+      "CREATED_BY": "le.van.c",
+      "CREATED_DATE": "20/05/2026"
+    },
+    {
+      "id": "REC-004",
+      "DOC_ID": "05.a-260522-KB010004",
+      "DOC_SEND_DATE": "22/05/2026",
+      "DOC_TYPE": "Thanh toán cho đơn vị hưởng",
+      "PAYMENT_METHOD": "CHUYEN_KHOAN",
+      "CURRENCY_CODE": "VND",
+      "PROJECT_NAME": "Cải tạo trụ sở làm việc KBNN huyện",
+      "PROJECT_ITEM_NAME": "Sửa chữa cải tạo văn phòng",
+      "BENEFICIARY_NAME": "Công ty CP Sửa chữa Thủ đô",
+      "DOC_STATUS": "HOAN_THANH",
+      "CREATED_BY": "pham.thi.d",
+      "CREATED_DATE": "22/05/2026"
+    },
+    {
+      "id": "REC-005",
+      "DOC_ID": "05.a-260523-KB010005",
+      "DOC_SEND_DATE": "23/05/2026",
+      "DOC_TYPE": "Chuyển tiền bảo hành công trình",
+      "PAYMENT_METHOD": "TIEN_MAT_KB",
+      "CURRENCY_CODE": "VND",
+      "PROJECT_NAME": "Xây dựng hệ thống thoát nước đô thị",
+      "PROJECT_ITEM_NAME": "Hệ thống thoát nước chính",
+      "BENEFICIARY_NAME": "Nguyễn Minh Quang (tiền mặt)",
+      "DOC_STATUS": "DANG_HOAN_THIEN",
+      "CREATED_BY": "hoang.van.e",
+      "CREATED_DATE": "23/05/2026"
+    },
+    {
+      "id": "REC-006",
+      "DOC_ID": "05.a-260525-KB010006",
+      "DOC_SEND_DATE": "25/05/2026",
+      "DOC_TYPE": "Thanh toán cho đơn vị hưởng",
+      "PAYMENT_METHOD": "CHUYEN_KHOAN",
+      "CURRENCY_CODE": "VND",
+      "PROJECT_NAME": "Đầu tư trang thiết bị y tế tuyến huyện",
+      "PROJECT_ITEM_NAME": "Mua sắm trang thiết bị y tế",
+      "BENEFICIARY_NAME": "Công ty CP Thiết bị Y tế Hà Nội",
+      "DOC_STATUS": "TU_CHOI_KIEM_SOAT",
+      "CREATED_BY": "nguyen.van.a",
+      "CREATED_DATE": "25/05/2026"
+    }
+  ]
+}
+</script>
+
+<script>
+  const SAMPLE = JSON.parse(document.getElementById('sample-data').textContent);
+  const PAGE_SIZE = 10;
+  let currentPage = 1;
+  let filtered = [];
+
+  const STATUS_LABELS = {
+    DANG_HOAN_THIEN: 'Đang hoàn thiện', DA_HOAN_THIEN: 'Đã hoàn thiện',
+    CHO_KIEM_SOAT: 'Chờ kiểm soát', TU_CHOI_KIEM_SOAT: 'Từ chối kiểm soát',
+    HUY_KIEM_SOAT: 'Huỷ kiểm soát', CHO_PHE_DUYET: 'Chờ phê duyệt',
+    TU_CHOI_PHE_DUYET: 'Từ chối phê duyệt', HUY_PHE_DUYET: 'Huỷ phê duyệt',
+    HOAN_THANH: 'Hoàn thành xử lý', DELETED: 'Đã xoá'
+  };
+
+  const PM_LABELS = {
+    CHUYEN_KHOAN: 'Chuyển khoản',
+    TIEN_MAT_KB: 'Tiền mặt tại KB',
+    TIEN_MAT_NH: 'Tiền mặt tại NH'
+  };
+
+  function render() {
+    currentPage = 1;
+    const q = document.getElementById('search-input').value.toLowerCase();
+    const st = document.getElementById('filter-status').value;
+    const cur = document.getElementById('filter-currency').value;
+    filtered = SAMPLE.records.filter(r => {
+      const matchQ = !q || Object.values(r).join(' ').toLowerCase().includes(q);
+      const matchSt = !st || r.DOC_STATUS === st;
+      const matchCur = !cur || r.CURRENCY_CODE === cur;
+      return matchQ && matchSt && matchCur;
+    });
+    updateStats();
+    renderTable();
+  }
+
+  function paginate(arr, page) {
+    const start = (page - 1) * PAGE_SIZE;
+    return arr.slice(start, start + PAGE_SIZE);
+  }
+
+  function renderTable() {
+    const rows = paginate(filtered, currentPage);
+    const tbody = document.getElementById('list-tbody');
+    if (rows.length === 0) {
+      tbody.innerHTML = `<tr class="empty-row"><td colspan="13">📭 Không có dữ liệu phù hợp</td></tr>`;
+    } else {
+      tbody.innerHTML = rows.map(r => {
+        const st = r.DOC_STATUS || '';
+        const canEdit = ['DANG_HOAN_THIEN','DA_HOAN_THIEN'].includes(st);
+        return `
+        <tr data-record-id="${r.id}" data-testid="row-${r.id}"
+            onclick="openRecord('${r.id}')" style="cursor:pointer">
+          <td onclick="event.stopPropagation()"><input type="checkbox" class="row-chk" value="${r.id}"/></td>
+          <td><a href="form_detail.html?id=${r.id}&mode=view"
+               onclick="event.stopPropagation()"
+               style="color:var(--primary);font-weight:600;text-decoration:none">${r.DOC_ID}</a></td>
+          <td>${r.DOC_SEND_DATE}</td>
+          <td style="font-size:12px">${r.DOC_TYPE||'—'}</td>
+          <td><span style="font-size:11px">${PM_LABELS[r.PAYMENT_METHOD]||r.PAYMENT_METHOD||'—'}</span></td>
+          <td style="font-weight:600">${r.CURRENCY_CODE}</td>
+          <td style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.PROJECT_NAME||''}">${r.PROJECT_NAME||'—'}</td>
+          <td style="max-width:140px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.PROJECT_ITEM_NAME||''}">${r.PROJECT_ITEM_NAME||'—'}</td>
+          <td style="max-width:160px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="${r.BENEFICIARY_NAME||''}">${r.BENEFICIARY_NAME||'—'}</td>
+          <td><span class="badge badge-${st}">${STATUS_LABELS[st]||st}</span></td>
+          <td style="font-size:12px;color:var(--muted)">${r.CREATED_BY}</td>
+          <td style="font-size:12px;white-space:nowrap">${r.CREATED_DATE}</td>
+          <td onclick="event.stopPropagation()">
+            <div class="row-actions">
+              <button class="btn btn-ghost" onclick="window.location.href='form_detail.html?id=${r.id}&mode=view'" title="Xem (F3)">Xem</button>
+              ${canEdit ? `<button class="btn btn-ghost" onclick="window.location.href='form_detail.html?id=${r.id}&mode=edit'" title="Sửa (F2)">Sửa</button>` : ''}
+              ${canEdit ? `<button class="btn btn-danger-ghost" onclick="confirmDeleteRow('${r.id}','${r.DOC_ID}')" title="Xoá">Xoá</button>` : ''}
+            </div>
+          </td>
+        </tr>`;
+      }).join('');
+    }
+    renderPagination();
+  }
+
+  function renderPagination() {
+    const total = filtered.length;
+    const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+    const start = total === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1;
+    const end = Math.min(currentPage * PAGE_SIZE, total);
+    document.getElementById('pagination-info').textContent =
+      `Hiển thị ${start}–${end} / ${total} bản ghi`;
+    document.getElementById('pagination-prev').disabled = currentPage <= 1;
+    document.getElementById('pagination-next').disabled = currentPage >= totalPages;
+    const pn = document.getElementById('page-numbers');
+    pn.innerHTML = '';
+    for (let i = 1; i <= totalPages; i++) {
+      if (totalPages <= 7 || i === 1 || i === totalPages || Math.abs(i - currentPage) <= 1) {
+        const btn = document.createElement('button');
+        btn.className = 'page-btn' + (i === currentPage ? ' active' : '');
+        btn.textContent = i;
+        btn.onclick = () => changePage(i);
+        pn.appendChild(btn);
+      }
+    }
+  }
+
+  function changePage(p) {
+    const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+    currentPage = Math.max(1, Math.min(p, totalPages));
+    renderTable();
+  }
+
+  function openRecord(id) {
+    window.location.href = 'form_detail.html?id=' + id + '&mode=view';
+  }
+
+  function updateStats() {
+    const all = SAMPLE.records;
+    document.getElementById('stat-total').textContent = filtered.length;
+    document.getElementById('stat-dang-ht').textContent = all.filter(r=>r.DOC_STATUS==='DANG_HOAN_THIEN').length;
+    document.getElementById('stat-da-ht').textContent = all.filter(r=>r.DOC_STATUS==='DA_HOAN_THIEN').length;
+    document.getElementById('stat-ks').textContent = all.filter(r=>r.DOC_STATUS==='CHO_KIEM_SOAT').length;
+    document.getElementById('stat-hoan-thanh').textContent = all.filter(r=>r.DOC_STATUS==='HOAN_THANH').length;
+  }
+
+  function resetFilters() {
+    document.getElementById('search-input').value = '';
+    document.getElementById('filter-status').value = '';
+    document.getElementById('filter-currency').value = '';
+    render();
+  }
+
+  function toggleAll(chk) {
+    document.querySelectorAll('.row-chk').forEach(c => c.checked = chk.checked);
+  }
+
+  function confirmDeleteRow(id, docId) {
+    if (confirm('Xác nhận xoá chứng từ ' + docId + '?\nHành động này mở popup nhập lý do.')) {
+      window.location.href = 'form_detail.html?id=' + id + '&mode=view&action=delete';
+    }
+  }
+
+  function exportCSV() {
+    const headers = ['Số CT','Ngày CT','Loại GRV','Hình thức TT','Loại tiền','Dự án','Hạng mục','Đơn vị nhận','Trạng thái','Người tạo','Ngày tạo'];
+    const rows = filtered.map(r => [
+      r.DOC_ID, r.DOC_SEND_DATE, r.DOC_TYPE||'',
+      PM_LABELS[r.PAYMENT_METHOD]||r.PAYMENT_METHOD||'',
+      r.CURRENCY_CODE, r.PROJECT_NAME||'', r.PROJECT_ITEM_NAME||'',
+      r.BENEFICIARY_NAME||'', STATUS_LABELS[r.DOC_STATUS]||r.DOC_STATUS,
+      r.CREATED_BY, r.CREATED_DATE
+    ].map(v => '"' + String(v).replace(/"/g,'""') + '"').join(','));
+    const csv = [headers.join(','), ...rows].join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url;
+    a.download = 'EXP.CAPEX_DOSSIER.3.3.2_' + new Date().toISOString().slice(0,10) + '.csv';
+    a.click(); URL.revokeObjectURL(url);
+  }
+
+  // Keyboard shortcut: Ctrl+N
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey||e.metaKey) && e.key === 'n') {
+      e.preventDefault();
+      window.location.href = 'form_detail.html?mode=new';
+    }
+  });
+
+  // Init
+  render();
+</script>
+</body>
+</html>

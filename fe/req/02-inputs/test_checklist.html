@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Test Checklist — EXP.CAPEX_DOSSIER.3.3.1</title>
+<style>
+  :root {
+    --primary: #1677FF;
+    --danger: #FF4D4F;
+    --warning: #FAAD14;
+    --success: #52C41A;
+    --border: #d9d9d9;
+    --bg-page: #f5f5f5;
+    --bg-card: #FFFFFF;
+    --bg-header: #fafafa;
+    --text-primary: #262626;
+    --text-secondary: #595959;
+    --font: 'Segoe UI', 'Roboto', sans-serif;
+    --radius: 6px;
+    --shadow: 0 2px 8px rgba(0,0,0,.08);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); font-size: 13px; background: var(--bg-page); color: var(--text-primary); }
+
+  .page-wrap { max-width: 1400px; margin: 0 auto; padding: 16px; }
+
+  /* Header */
+  .page-header {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 16px 24px;
+    margin-bottom: 16px; box-shadow: var(--shadow);
+    display: flex; justify-content: space-between; align-items: flex-start;
+  }
+  .page-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .page-subtitle { font-size: 12px; color: var(--text-secondary); }
+
+  /* Stats */
+  .stats-grid {
+    display: grid; grid-template-columns: repeat(7, 1fr); gap: 8px;
+    margin-bottom: 16px;
+  }
+  .stat-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 12px 16px;
+    text-align: center; box-shadow: var(--shadow);
+  }
+  .stat-label { font-size: 11px; color: var(--text-secondary); margin-bottom: 4px; }
+  .stat-num { font-size: 22px; font-weight: 700; }
+  .stat-total .stat-num { color: var(--primary); }
+  .stat-pos .stat-num { color: #52c41a; }
+  .stat-neg .stat-num { color: var(--danger); }
+  .stat-pass .stat-num { color: #52c41a; }
+  .stat-fail .stat-num { color: var(--danger); }
+  .stat-skip .stat-num { color: #8c8c8c; }
+  .stat-pct .stat-num { color: var(--warning); }
+
+  /* Progress bar */
+  .progress-wrap { background: #f0f0f0; border-radius: 4px; height: 8px; margin-bottom: 16px; overflow: hidden; }
+  .progress-bar { height: 100%; border-radius: 4px; background: var(--success); transition: width .5s; }
+
+  /* Toolbar */
+  .toolbar {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 10px 16px;
+    margin-bottom: 12px; display: flex; gap: 8px; flex-wrap: wrap;
+    box-shadow: var(--shadow); align-items: center;
+  }
+  .toolbar input, .toolbar select {
+    height: 30px; padding: 4px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 13px; outline: none;
+  }
+  .toolbar input:focus, .toolbar select:focus { border-color: var(--primary); }
+  .toolbar input[type=text] { min-width: 200px; }
+  .btn {
+    height: 30px; padding: 4px 14px; border-radius: var(--radius);
+    font-size: 13px; cursor: pointer; font-weight: 400; border: 1px solid transparent;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-default { background: #fff; color: var(--text-primary); border-color: var(--border); }
+  .btn-default:hover { border-color: var(--primary); color: var(--primary); }
+  .toolbar-sep { height: 20px; width: 1px; background: var(--border); }
+
+  /* Group card */
+  .group-card {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: var(--radius); margin-bottom: 12px; box-shadow: var(--shadow);
+    overflow: hidden;
+  }
+  .group-header {
+    background: var(--bg-header); padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer; user-select: none;
+  }
+  .group-title { font-weight: 600; font-size: 14px; }
+  .group-stats { margin-left: auto; display: flex; gap: 8px; font-size: 12px; }
+
+  /* TC Row */
+  .tc-row {
+    display: grid;
+    grid-template-columns: 32px 180px 80px 1fr 1fr 1fr 140px 50px 180px;
+    gap: 8px; padding: 10px 16px; align-items: start;
+    border-bottom: 1px solid #f5f5f5; transition: background .15s;
+  }
+  .tc-row:hover { background: #fafeff; }
+  .tc-row.status-pass { border-left: 3px solid var(--success); }
+  .tc-row.status-fail { border-left: 3px solid var(--danger); }
+  .tc-row.status-skip { border-left: 3px solid #bfbfbf; }
+  .tc-row.status-pending { border-left: 3px solid #d9d9d9; }
+  .tc-row.hidden { display: none; }
+
+  .tc-id { font-size: 11px; font-weight: 600; color: var(--primary); line-height: 1.4; }
+  .tc-name { font-weight: 600; font-size: 12px; line-height: 1.5; }
+  .tc-type-badge {
+    display: inline-block; padding: 1px 8px; border-radius: 20px; font-size: 11px; font-weight: 500;
+  }
+  .tc-positive { background: #f6ffed; color: #52c41a; border: 1px solid #b7eb8f; }
+  .tc-negative { background: #fff1f0; color: var(--danger); border: 1px solid #ffa39e; }
+  .tc-step { font-size: 12px; line-height: 1.5; color: var(--text-secondary); }
+  .tc-step strong { color: var(--text-primary); }
+  .tc-ref { font-size: 11px; color: #7c3aed; }
+
+  /* Status radio */
+  .status-radios { display: flex; flex-direction: column; gap: 4px; }
+  .status-radios label { display: flex; align-items: center; gap: 4px; cursor: pointer; font-size: 12px; }
+  .status-radios input[type=radio] { cursor: pointer; }
+
+  /* Bug ID input */
+  .bug-id-input {
+    width: 100%; height: 28px; padding: 2px 8px;
+    border: 1px solid var(--border); border-radius: 4px; font-size: 12px;
+  }
+  .bug-id-input:focus { outline: none; border-color: var(--primary); }
+
+  /* Responsive */
+  @media (max-width: 1100px) {
+    .tc-row { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(4, 1fr); }
+  }
+  @media (max-width: 700px) {
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== INLINE TESTCASE DATA ===== -->
+<script type="application/json" id="testcases-data">
+{
+  "meta": {
+    "functionCode": "EXP.CAPEX_DOSSIER.3.3.1",
+    "functionName": "Màn hình hoàn thiện giấy Đề nghị thanh toán mẫu 04.a/TT",
+    "specVersion": "1.0",
+    "generatedAt": "2026-05-30"
+  },
+  "stats": { "total": 24, "byGroup": { "1": 11, "2": 3, "3": 5, "4": 5 }, "note": "SRS evaluation says 19 but D1-D4 tables have 24 TCs (11+3+5+5)" },
+  "testcases": [
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.01", "group": 1, "groupName": "Tạo mới", "name": "Tạo thành công — VND", "type": "Positive", "given": "Kế toán đã đăng nhập; DOSSIER_ID hợp lệ; LOV đã cấu hình", "when": "Chọn CURRENCY=VND; điền đủ trường bắt buộc; thêm ≥1 dòng bảng kê; bấm Lưu", "then": "Lưu ACTIVE; MSG-OK-SAVE; EXCHANGE_RATE=1,00; TRANSFER_BENEFICIARY auto-calc đúng; ghi audit", "ref": ["BIZ-007","BIZ-013","BIZ-015","BIZ-016"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.02", "group": 1, "groupName": "Tạo mới", "name": "Tạo thành công — Ngoại tệ + Tỷ giá công ty", "type": "Positive", "given": "Kế toán đăng nhập; có danh mục tỷ giá USD", "when": "CURRENCY=USD; EXCHANGE_RATE_TYPE='Tỷ giá công ty'; nhập EXCHANGE_RATE_DATE; bấm Lưu", "then": "EXCHANGE_RATE auto-fill; VDBAS-CHI-0016 toast; lưu ACTIVE", "ref": ["BIZ-014","VDBAS-CHI-0016"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.03", "group": 1, "groupName": "Tạo mới", "name": "Tạo thành công — Dự án QP/AN có PROJECT_SPEC_ID", "type": "Positive", "given": "PROJECT_ID = 7004686", "when": "Chọn PROJECT_SPEC_ID từ LOV; điền đủ trường; bấm Lưu", "then": "PROJECT_SPEC_NAME auto-fill; PMU/PIPO_ID cập nhật; lưu ACTIVE", "ref": ["BIZ-011","VDBAS-CHI-0009"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.04", "group": 1, "groupName": "Tạo mới", "name": "Tạo thất bại — Thiếu TK vốn (cả hai)", "type": "Negative", "given": "Kế toán đăng nhập", "when": "Không điền DOMESTIC lẫn FOREIGN account; bấm Lưu", "then": "VDBAS-CHI-0008; chặn lưu", "ref": ["BIZ-012","VDBAS-CHI-0008"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.05", "group": 1, "groupName": "Tạo mới", "name": "Tạo thất bại — Thiếu PROJECT_SPEC_ID cho dự án QP/AN", "type": "Negative", "given": "PROJECT_ID = 7004692", "when": "Không chọn PROJECT_SPEC_ID; bấm Lưu", "then": "VDBAS-CHI-0009; highlight PROJECT_SPEC_ID; chặn lưu", "ref": ["BIZ-011","VDBAS-CHI-0009"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.06", "group": 1, "groupName": "Tạo mới", "name": "Tạo thất bại — Bảng kê trống", "type": "Negative", "given": "Điền đủ header Area 1+2+3", "when": "Không thêm dòng bảng kê; bấm Lưu", "then": "VDBAS-CHI-0015; chặn lưu", "ref": ["BIZ-018","VDBAS-CHI-0015"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.07", "group": 1, "groupName": "Tạo mới", "name": "Tạo thất bại — INVESTMENT_FUNDING_SOURCE không hợp lệ", "type": "Negative", "given": "NGUỒN=42", "when": "Chọn INVESTMENT_FUNDING_SOURCE=5301; bấm Lưu", "then": "VDBAS-CHI-0012; clear INVESTMENT_FUNDING_SOURCE; chặn lưu", "ref": ["BIZ-017","VDBAS-CHI-0012"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.08", "group": 1, "groupName": "Tạo mới", "name": "Tạo thất bại — Trường bắt buộc trống", "type": "Negative", "given": "Kế toán đăng nhập", "when": "Để trống PROJECT_ITEM_ID; bấm Lưu", "then": "VDBAS-VAL-0002; highlight đỏ; chặn lưu", "ref": ["VDBAS-VAL-0002"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.09", "group": 1, "groupName": "Tạo mới", "name": "Đổi NGUỒN → reset INVESTMENT_FUNDING_SOURCE", "type": "Positive", "given": "Đã chọn NGUỒN=42, IFS=4201", "when": "Đổi NGUỒN=43", "then": "IFS reset; dropdown → {4301,4302,4303}", "ref": ["BIZ-017"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.10", "group": 1, "groupName": "Tạo mới", "name": "Huỷ form khi đã nhập", "type": "Positive", "given": "Form đang dirty", "when": "Bấm Huỷ / Esc", "then": "Popup MSG-CFM-CANCEL; xác nhận → đóng; không lưu", "ref": ["A1"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.1.11", "group": 1, "groupName": "Tạo mới", "name": "Thêm và xóa dòng bảng kê", "type": "Positive", "given": "Bảng kê có 1 dòng", "when": "Thêm 3 dòng; xóa 2 dòng", "then": "Còn 2 dòng; NO_COLUMN auto; TRANSFER auto-calc; btn Xóa disable khi còn 1 dòng", "ref": ["BIZ-018","A2","A3"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.2.01", "group": 2, "groupName": "Xem", "name": "Xem bản ghi thành công", "type": "Positive", "given": "Bản ghi ACTIVE; NSD có quyền Viewer+", "when": "Mở VIEW từ hồ sơ cha", "then": "Form read-only; đủ Area1+2+3+Bảng kê+Tab; btn Sửa hiển thị nếu MAKER+ACTIVE", "ref": ["§A4 bước 8"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.2.02", "group": 2, "groupName": "Xem", "name": "Xem thất bại — Không có quyền", "type": "Negative", "given": "NSD không có quyền Viewer lẫn Maker", "when": "Truy cập URL VIEW", "then": "VDBAS-AUT-0003; ghi audit bảo mật", "ref": ["BIZ-001","VDBAS-AUT-0003"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.2.03", "group": 2, "groupName": "Xem", "name": "Tab Lịch sử thay đổi", "type": "Positive", "given": "Bản ghi đã sửa nhiều lần", "when": "Mở VIEW; click tab Lịch sử (Alt+H)", "then": "CREATED_BY, CREATED_DATE, oldValue→newValue, IP, action đúng chuẩn REPORT.MANUAL.HISTORY", "ref": ["BIZ-007","BIZ-008"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.3.01", "group": 3, "groupName": "Cập nhật", "name": "Sửa thành công", "type": "Positive", "given": "Bản ghi ACTIVE; quyền EXP_CAPEX_MAKER", "when": "Bấm Sửa; đổi CONTRACT_ID; thêm dòng; bấm Lưu", "then": "F-VER+1; audit oldValue→newValue; MSG-OK-SAVE", "ref": ["VDBAS-VAL-0010","BIZ-007"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.3.02", "group": 3, "groupName": "Cập nhật", "name": "Sửa thất bại — Bản ghi DELETED", "type": "Negative", "given": "Bản ghi DELETED", "when": "Bấm Sửa", "then": "Nút disabled; VDBAS-VAL-0001", "ref": ["VDBAS-VAL-0001"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.3.03", "group": 3, "groupName": "Cập nhật", "name": "Sửa thất bại — Không có quyền MAKER", "type": "Negative", "given": "User EXP_CAPEX_VIEWER", "when": "Bấm Sửa", "then": "VDBAS-AUT-0003; ghi audit", "ref": ["VDBAS-AUT-0003","BIZ-001"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.3.04", "group": 3, "groupName": "Cập nhật", "name": "Sửa thất bại — Optimistic lock", "type": "Negative", "given": "2 kế toán cùng mở EDIT", "when": "Kế toán A lưu trước; Kế toán B cố lưu", "then": "VDBAS-VAL-0010; yêu cầu reload", "ref": ["VDBAS-VAL-0010"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.3.05", "group": 3, "groupName": "Cập nhật", "name": "DOSSIER_ID immutable khi Sửa", "type": "Negative", "given": "Bản ghi ACTIVE; EDIT mode", "when": "Kiểm tra PAYMENT_DOSSIER_ID", "then": "Field disabled trên UI; backend 400 nếu thay đổi", "ref": ["BIZ-005","VDBAS-VAL-0009"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.4.01", "group": 4, "groupName": "Xoá", "name": "Xoá thành công", "type": "Positive", "given": "Bản ghi ACTIVE; quyền EXP_CAPEX_MAKER", "when": "Bấm Xoá; nhập lý do ≥10 ký tự; tick checkbox; Xác nhận", "then": "F-STATUS=DELETED; MSG-OK-DELETE; ghi audit", "ref": ["VDBAS-VAL-0011","BIZ-002"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.4.02", "group": 4, "groupName": "Xoá", "name": "Xoá thất bại — Bản ghi DELETED", "type": "Negative", "given": "Bản ghi đã DELETED", "when": "Bấm Xoá", "then": "Nút disabled; VDBAS-VAL-0001", "ref": ["VDBAS-VAL-0001"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.4.03", "group": 4, "groupName": "Xoá", "name": "Xoá thất bại — Lý do quá ngắn", "type": "Negative", "given": "Popup Xoá mở", "when": "Nhập lý do < 10 ký tự; tick checkbox", "then": "Nút Xác nhận xoá disabled", "ref": ["VDBAS-VAL-0011"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.4.04", "group": 4, "groupName": "Xoá", "name": "Xoá thất bại — Chưa tick checkbox", "type": "Negative", "given": "Popup Xoá mở", "when": "Nhập lý do ≥10 ký tự; CHƯA tick", "then": "Nút Xác nhận xoá vẫn disabled", "ref": ["VDBAS-VAL-0011"] },
+    { "id": "EXP.CAPEX_DOSSIER.3.3.1.TC.4.05", "group": 4, "groupName": "Xoá", "name": "Xoá thất bại — Không có quyền MAKER", "type": "Negative", "given": "NSD = EXP_CAPEX_VIEWER", "when": "Bấm Xoá", "then": "Nút ẩn; VDBAS-AUT-0003; ghi audit", "ref": ["VDBAS-AUT-0003","BIZ-001"] }
+  ]
+}
+</script>
+
+<div class="page-wrap">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="page-title">📋 Test Checklist — EXP.CAPEX_DOSSIER.3.3.1</div>
+      <div class="page-subtitle">
+        Giấy Đề nghị thanh toán mẫu 04.a/TT &nbsp;|&nbsp;
+        Phân hệ: CHI — Quản lý Chi &nbsp;|&nbsp;
+        Tổng: <strong id="hdr-total">—</strong> testcase
+      </div>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn btn-default" onclick="exportCsv()">⬇ Export CSV</button>
+      <button class="btn btn-default" onclick="resetAll()">↺ Reset tất cả</button>
+    </div>
+  </div>
+
+  <!-- Progress bar -->
+  <div class="progress-wrap">
+    <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-grid">
+    <div class="stat-card stat-total"><div class="stat-label">Tổng TC</div><div class="stat-num" id="st-total">19</div></div>
+    <div class="stat-card stat-pos"><div class="stat-label">Positive</div><div class="stat-num" id="st-pos">—</div></div>
+    <div class="stat-card stat-neg"><div class="stat-label">Negative</div><div class="stat-num" id="st-neg">—</div></div>
+    <div class="stat-card stat-pass"><div class="stat-label">✅ Pass</div><div class="stat-num" id="st-pass">0</div></div>
+    <div class="stat-card stat-fail"><div class="stat-label">❌ Fail</div><div class="stat-num" id="st-fail">0</div></div>
+    <div class="stat-card stat-skip"><div class="stat-label">⏭ N/A</div><div class="stat-num" id="st-skip">0</div></div>
+    <div class="stat-card stat-pct"><div class="stat-label">% Pass</div><div class="stat-num" id="st-pct">—</div></div>
+  </div>
+
+  <!-- Toolbar -->
+  <div class="toolbar">
+    <input type="text" id="filter-text" placeholder="🔍 Tìm ID, tên TC, Given/When/Then..."
+           oninput="applyFilters()">
+    <select id="filter-status" onchange="applyFilters()">
+      <option value="">Tất cả trạng thái</option>
+      <option value="pending">Chưa test</option>
+      <option value="pass">Pass</option>
+      <option value="fail">Fail</option>
+      <option value="skip">N/A</option>
+    </select>
+    <select id="filter-type" onchange="applyFilters()">
+      <option value="">Tất cả loại</option>
+      <option value="Positive">Positive</option>
+      <option value="Negative">Negative</option>
+    </select>
+    <select id="filter-group" onchange="applyFilters()">
+      <option value="">Tất cả nhóm</option>
+      <option value="1">Nhóm 1 — Tạo mới</option>
+      <option value="2">Nhóm 2 — Xem</option>
+      <option value="3">Nhóm 3 — Cập nhật</option>
+      <option value="4">Nhóm 4 — Xoá</option>
+    </select>
+    <div class="toolbar-sep"></div>
+    <button class="btn btn-primary" onclick="bulkStatus('pass')">✅ Chọn tất cả Pass</button>
+    <button class="btn btn-default" onclick="bulkStatus('fail')">❌ Chọn tất cả Fail</button>
+    <button class="btn btn-default" onclick="applyFilters()">↺ Làm mới</button>
+  </div>
+
+  <!-- TC Groups -->
+  <div id="tc-container"></div>
+
+</div>
+
+<script>
+const DATA = JSON.parse(document.getElementById('testcases-data').textContent);
+const TESTCASES = DATA.testcases;
+
+// State: { tcId: { status:'pending'|'pass'|'fail'|'skip', bugId:'' } }
+const state = {};
+TESTCASES.forEach(tc => { state[tc.id] = { status: 'pending', bugId: '' }; });
+
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('hdr-total').textContent = TESTCASES.length;
+  document.getElementById('st-total').textContent = TESTCASES.length;
+  DATA.stats.total = TESTCASES.length; // ensure stats match actual count
+  document.getElementById('st-pos').textContent = TESTCASES.filter(t => t.type === 'Positive').length;
+  document.getElementById('st-neg').textContent = TESTCASES.filter(t => t.type === 'Negative').length;
+  renderGroups();
+  updateStats();
+});
+
+function renderGroups() {
+  const container = document.getElementById('tc-container');
+  const groups = {};
+  TESTCASES.forEach(tc => {
+    if (!groups[tc.group]) groups[tc.group] = { name: tc.groupName, items: [] };
+    groups[tc.group].items.push(tc);
+  });
+
+  container.innerHTML = Object.entries(groups).map(([gid, g]) => {
+    const tcRows = g.items.map(tc => buildRow(tc)).join('');
+    return `
+      <div class="group-card" id="group-${gid}">
+        <div class="group-header" onclick="toggleGroup(${gid})">
+          <span>📂 Nhóm ${gid} — ${g.name}</span>
+          <span style="font-size:12px;color:var(--text-secondary)">${g.items.length} TC</span>
+          <div class="group-stats" id="group-stats-${gid}"></div>
+        </div>
+        <div id="group-body-${gid}">${tcRows}</div>
+      </div>`;
+  }).join('');
+  updateGroupStats();
+}
+
+function buildRow(tc) {
+  const s = state[tc.id];
+  const refs = (tc.ref || []).map(r => `<span class="tc-ref">[${r}]</span>`).join(' ');
+  return `
+    <div class="tc-row status-${s.status}" id="row-${tc.id}"
+         data-group="${tc.group}" data-type="${tc.type}" data-status="${s.status}">
+      <div class="tc-id">${tc.id.split('.TC.')[1] || tc.id}</div>
+      <div>
+        <div class="tc-name">${tc.name}</div>
+        <span class="tc-type-badge ${tc.type === 'Positive' ? 'tc-positive' : 'tc-negative'}">${tc.type}</span>
+      </div>
+      <div class="tc-type-badge" style="display:none">${tc.type}</div>
+      <div class="tc-step"><strong>Given:</strong><br>${tc.given}</div>
+      <div class="tc-step"><strong>When:</strong><br>${tc.when}</div>
+      <div class="tc-step"><strong>Then:</strong><br>${tc.then}<br><br>${refs}</div>
+      <div class="status-radios" id="radios-${tc.id.replace(/\./g,'_')}">
+        ${['pass','fail','skip'].map(v => `
+          <label>
+            <input type="radio" name="status_${tc.id.replace(/\./g,'_')}" value="${v}"
+                   ${s.status===v?'checked':''} onchange="setStatus('${tc.id}','${v}')">
+            ${v==='pass'?'✅ Pass':v==='fail'?'❌ Fail':'⏭ N/A'}
+          </label>`).join('')}
+      </div>
+      <div>
+        <input class="bug-id-input" type="text" placeholder="Bug ID..."
+               value="${s.bugId}" data-testid="bug-id-${tc.id}"
+               onchange="state['${tc.id}'].bugId=this.value">
+      </div>
+    </div>`;
+}
+
+function setStatus(id, val) {
+  state[id].status = val;
+  const row = document.getElementById(`row-${id}`);
+  if (row) {
+    row.className = row.className.replace(/status-\w+/, `status-${val}`);
+    row.dataset.status = val;
+  }
+  updateStats();
+  updateGroupStats();
+}
+
+function updateStats() {
+  const all = TESTCASES.length;
+  const pass = TESTCASES.filter(t => state[t.id].status === 'pass').length;
+  const fail = TESTCASES.filter(t => state[t.id].status === 'fail').length;
+  const skip = TESTCASES.filter(t => state[t.id].status === 'skip').length;
+  const done = pass + fail + skip;
+  document.getElementById('st-pass').textContent = pass;
+  document.getElementById('st-fail').textContent = fail;
+  document.getElementById('st-skip').textContent = skip;
+  const pct = done > 0 ? Math.round(pass / done * 100) : 0;
+  document.getElementById('st-pct').textContent = done > 0 ? `${pct}%` : '—';
+  document.getElementById('progress-bar').style.width = (done / all * 100) + '%';
+}
+
+function updateGroupStats() {
+  [1,2,3,4].forEach(gid => {
+    const el = document.getElementById(`group-stats-${gid}`);
+    if (!el) return;
+    const gTCs = TESTCASES.filter(t => t.group == gid);
+    const pass = gTCs.filter(t => state[t.id].status === 'pass').length;
+    const fail = gTCs.filter(t => state[t.id].status === 'fail').length;
+    el.innerHTML = `
+      <span style="color:var(--success)">✅ ${pass}</span>
+      <span style="color:var(--danger)">❌ ${fail}</span>
+      <span style="color:#8c8c8c">⏭ ${gTCs.filter(t=>state[t.id].status==='skip').length}</span>`;
+  });
+}
+
+function applyFilters() {
+  const q = document.getElementById('filter-text').value.toLowerCase();
+  const st = document.getElementById('filter-status').value;
+  const tp = document.getElementById('filter-type').value;
+  const gp = document.getElementById('filter-group').value;
+  document.querySelectorAll('.tc-row').forEach(row => {
+    const tc = TESTCASES.find(t => `row-${t.id}` === row.id);
+    if (!tc) return;
+    const text = (tc.id + tc.name + tc.given + tc.when + tc.then + (tc.ref||[]).join(' ')).toLowerCase();
+    const show = (!q || text.includes(q))
+      && (!st || state[tc.id].status === st)
+      && (!tp || tc.type === tp)
+      && (!gp || tc.group == gp);
+    row.classList.toggle('hidden', !show);
+  });
+}
+
+function toggleGroup(gid) {
+  const body = document.getElementById(`group-body-${gid}`);
+  body.style.display = body.style.display === 'none' ? '' : 'none';
+}
+
+function bulkStatus(status) {
+  TESTCASES.forEach(tc => { setStatus(tc.id, status); });
+  document.querySelectorAll(`input[type=radio][value="${status}"]`).forEach(r => r.checked = true);
+}
+
+function resetAll() {
+  if (!confirm('Reset tất cả trạng thái và Bug ID?')) return;
+  TESTCASES.forEach(tc => { state[tc.id] = { status: 'pending', bugId: '' }; });
+  renderGroups();
+  updateStats();
+  document.getElementById('progress-bar').style.width = '0%';
+}
+
+function exportCsv() {
+  const headers = ['TC ID','Nhóm','Tên TC','Loại','Given','When','Then','Tham chiếu','Trạng thái','Bug ID'];
+  const rows = TESTCASES.map(tc => [
+    tc.id, tc.groupName, tc.name, tc.type,
+    tc.given, tc.when, tc.then, (tc.ref||[]).join(';'),
+    state[tc.id].status, state[tc.id].bugId
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+  const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `TestChecklist_EXP.CAPEX_DOSSIER.3.3.1_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>

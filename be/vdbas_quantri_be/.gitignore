@@ -1,0 +1,10 @@
+*.sql
+*.class
+
+CLAUDE.md
+
+target/
+.idea/
+*.iml
+*.log
+*.tmp

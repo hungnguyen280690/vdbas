@@ -1,0 +1,319 @@
+-- Kích hoạt extension UUID cho các định danh cần tính ngẫu nhiên
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+-------------------------------------------------------------------------------
+-- 1. NHÓM HỒ SƠ CHỦ THỂ (PROFILES)
+-------------------------------------------------------------------------------
+
+CREATE TABLE person_profiles (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    full_name VARCHAR(255) NOT NULL,
+    email VARCHAR(250),
+    phone VARCHAR(20),
+    identity_number VARCHAR(20),
+    gender VARCHAR(10),
+    is_internal BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by VARCHAR(50),
+    is_deleted BOOLEAN DEFAULT FALSE
+);
+COMMENT ON TABLE person_profiles IS 'Hồ sơ chi tiết con người (Nhân viên nội bộ hoặc Khách vãng lai)';
+COMMENT ON COLUMN person_profiles.id IS 'Khóa chính UUID tự động sinh';
+COMMENT ON COLUMN person_profiles.full_name IS 'Họ và tên đầy đủ';
+COMMENT ON COLUMN person_profiles.email IS 'Địa chỉ thư điện tử';
+COMMENT ON COLUMN person_profiles.phone IS 'Số điện thoại liên lạc';
+COMMENT ON COLUMN person_profiles.identity_number IS 'Số định danh cá nhân (CCCD/Hộ chiếu)';
+COMMENT ON COLUMN person_profiles.gender IS 'Giới tính (MALE, FEMALE, OTHER)';
+COMMENT ON COLUMN person_profiles.is_internal IS 'Đánh dấu nhân sự nội bộ (True) hay khách ngoài (False)';
+COMMENT ON COLUMN person_profiles.created_at IS 'Thời điểm tạo bản ghi';
+COMMENT ON COLUMN person_profiles.created_by IS 'Mã người tạo bản ghi';
+COMMENT ON COLUMN person_profiles.updated_at IS 'Thời điểm cập nhật bản ghi';
+COMMENT ON COLUMN person_profiles.updated_by IS 'Mã người cập nhật bản ghi cuối cùng';
+COMMENT ON COLUMN person_profiles.is_deleted IS 'Cờ xóa mềm (True là đã xóa)';
+
+CREATE TABLE organization_profiles (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    org_code VARCHAR(50) UNIQUE NOT NULL,
+    org_name VARCHAR(255) NOT NULL,
+    tax_code VARCHAR(20),
+    email VARCHAR(250),
+    address TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by VARCHAR(50),
+    is_deleted BOOLEAN DEFAULT FALSE
+);
+COMMENT ON TABLE organization_profiles IS 'Hồ sơ chi tiết các tổ chức, doanh nghiệp đối tác';
+COMMENT ON COLUMN organization_profiles.id IS 'Khóa chính UUID';
+COMMENT ON COLUMN organization_profiles.org_code IS 'Mã định danh tổ chức (Khóa tự nhiên)';
+COMMENT ON COLUMN organization_profiles.org_name IS 'Tên đầy đủ của tổ chức';
+COMMENT ON COLUMN organization_profiles.tax_code IS 'Mã số thuế';
+COMMENT ON COLUMN organization_profiles.email IS 'Địa chỉ thư điện tử của tổ chức';
+COMMENT ON COLUMN organization_profiles.address IS 'Địa chỉ trụ sở';
+COMMENT ON COLUMN organization_profiles.created_at IS 'Thời điểm tạo';
+COMMENT ON COLUMN organization_profiles.created_by IS 'Người tạo';
+COMMENT ON COLUMN organization_profiles.updated_at IS 'Thời điểm cập nhật';
+COMMENT ON COLUMN organization_profiles.updated_by IS 'Người cập nhật';
+COMMENT ON COLUMN organization_profiles.is_deleted IS 'Cờ xóa mềm';
+
+-------------------------------------------------------------------------------
+-- 2. NHÓM TÀI KHOẢN (USERS)
+-------------------------------------------------------------------------------
+
+CREATE TABLE users (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    username VARCHAR(50) UNIQUE NOT NULL,
+    external_id VARCHAR(255),
+    auth_source VARCHAR(20),
+    owner_id UUID NOT NULL,
+    owner_type VARCHAR(10),
+    display_name VARCHAR(255),
+    user_type VARCHAR(20),
+    status INT DEFAULT 1,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by VARCHAR(50),
+    is_deleted BOOLEAN DEFAULT FALSE
+);
+COMMENT ON TABLE users IS 'Bảng tài khoản đăng nhập (Credential)';
+COMMENT ON COLUMN users.id IS 'Khóa chính UUID';
+COMMENT ON COLUMN users.username IS 'Tên đăng nhập duy nhất';
+COMMENT ON COLUMN users.external_id IS 'ID định danh từ Social Provider';
+COMMENT ON COLUMN users.auth_source IS 'Nguồn xác thực: GOOGLE, FACEBOOK, ZALO, OTP';
+COMMENT ON COLUMN users.owner_id IS 'ID của chủ thể sở hữu (Tham chiếu tới Profile)';
+COMMENT ON COLUMN users.owner_type IS 'Loại chủ thể sở hữu: PERSON hoặc ORG';
+COMMENT ON COLUMN users.display_name IS 'Tên hiển thị nhanh (Denormalized) để tối ưu hiển thị';
+COMMENT ON COLUMN users.user_type IS 'Phân loại tài khoản: INTERNAL, ORG, GUEST';
+COMMENT ON COLUMN users.status IS 'Trạng thái nghiệp vụ: 1-Active, 0-Inactive, 2-Locked';
+COMMENT ON COLUMN users.created_at IS 'Thời điểm tạo';
+COMMENT ON COLUMN users.created_by IS 'Người tạo';
+COMMENT ON COLUMN users.updated_at IS 'Thời điểm cập nhật';
+COMMENT ON COLUMN users.updated_by IS 'Người cập nhật';
+COMMENT ON COLUMN users.is_deleted IS 'Cờ xóa mềm';
+
+-------------------------------------------------------------------------------
+-- 3. HỆ THỐNG PHÂN QUYỀN (SỬ DỤNG APP_CODE LÀM KHÓA CHÍNH)
+-------------------------------------------------------------------------------
+
+CREATE TABLE applications (
+    app_code VARCHAR(50) PRIMARY KEY,
+    app_name VARCHAR(255) NOT NULL,
+    sync_api_key VARCHAR(255),
+    sync_endpoint TEXT,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by VARCHAR(50),
+    is_deleted BOOLEAN DEFAULT FALSE
+);
+COMMENT ON TABLE applications IS 'Danh sách các ứng dụng trong hệ thống';
+COMMENT ON COLUMN applications.app_code IS 'Mã ứng dụng (Khóa chính tự nhiên, ví dụ: HRM, CRM)';
+COMMENT ON COLUMN applications.app_name IS 'Tên hiển thị ứng dụng';
+COMMENT ON COLUMN applications.sync_api_key IS 'Mã bảo mật dùng để xác thực đồng bộ sang App con';
+COMMENT ON COLUMN applications.sync_endpoint IS 'URL nhận dữ liệu của App con';
+COMMENT ON COLUMN applications.created_at IS 'Thời điểm tạo';
+COMMENT ON COLUMN applications.created_by IS 'Người tạo';
+COMMENT ON COLUMN applications.updated_at IS 'Thời điểm cập nhật';
+COMMENT ON COLUMN applications.updated_by IS 'Người cập nhật';
+COMMENT ON COLUMN applications.is_deleted IS 'Cờ xóa mềm';
+
+CREATE TABLE roles (
+    app_code VARCHAR(50) NOT NULL,
+    role_code VARCHAR(50) NOT NULL,
+    role_name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by VARCHAR(50),
+    is_deleted BOOLEAN DEFAULT FALSE,
+    PRIMARY KEY (app_code, role_code)
+);
+COMMENT ON TABLE roles IS 'Danh sách vai trò quyền hạn theo mã ứng dụng';
+COMMENT ON COLUMN roles.app_code IS 'Mã ứng dụng (Khóa ngoại tự nhiên)';
+COMMENT ON COLUMN roles.role_code IS 'Mã vai trò (Duy nhất trong một ứng dụng)';
+COMMENT ON COLUMN roles.role_name IS 'Tên hiển thị vai trò';
+COMMENT ON COLUMN roles.created_at IS 'Thời điểm tạo';
+COMMENT ON COLUMN roles.created_by IS 'Người tạo';
+COMMENT ON COLUMN roles.updated_at IS 'Thời điểm cập nhật';
+COMMENT ON COLUMN roles.updated_by IS 'Người cập nhật';
+COMMENT ON COLUMN roles.is_deleted IS 'Cờ xóa mềm';
+
+CREATE TABLE permissions (
+    app_code VARCHAR(50) NOT NULL,
+    permission_code VARCHAR(100) NOT NULL,
+    permission_name VARCHAR(255) NOT NULL,
+    parent_code VARCHAR(100),
+    type VARCHAR(20) NOT NULL,
+    path VARCHAR(255),
+    method VARCHAR(10),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    PRIMARY KEY (app_code, permission_code)
+);
+COMMENT ON TABLE permissions IS 'Danh mục chức năng (Menu, Button, API)';
+COMMENT ON COLUMN permissions.app_code IS 'Mã ứng dụng sở hữu chức năng';
+COMMENT ON COLUMN permissions.permission_code IS 'Mã chức năng duy nhất trong ứng dụng';
+COMMENT ON COLUMN permissions.type IS 'Loại chức năng: MENU, BUTTON, API';
+COMMENT ON COLUMN permissions.path IS 'Đường dẫn Front-end hoặc URL API';
+COMMENT ON COLUMN permissions.method IS 'Phương thức HTTP (GET, POST...)';
+COMMENT ON COLUMN permissions.created_at IS 'Thời điểm tạo';
+COMMENT ON COLUMN permissions.created_by IS 'Người tạo';
+
+CREATE TABLE role_permission (
+    app_code VARCHAR(50) NOT NULL,
+    role_code VARCHAR(50) NOT NULL,
+    permission_code VARCHAR(100) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    PRIMARY KEY (app_code, role_code, permission_code)
+);
+COMMENT ON TABLE role_permission IS 'Bảng mapping chức năng cho vai trò';
+COMMENT ON COLUMN role_permission.app_code IS 'Mã ứng dụng';
+COMMENT ON COLUMN role_permission.role_code IS 'Mã vai trò';
+COMMENT ON COLUMN role_permission.permission_code IS 'Mã chức năng';
+COMMENT ON COLUMN role_permission.created_at IS 'Thời điểm gán quyền';
+COMMENT ON COLUMN role_permission.created_by IS 'Người thực hiện gán';
+
+CREATE TABLE user_role (
+    user_id UUID NOT NULL,
+    app_code VARCHAR(50) NOT NULL,
+    role_code VARCHAR(50) NOT NULL,
+    start_date TIMESTAMPTZ DEFAULT NOW(),
+    end_date TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    PRIMARY KEY (user_id, app_code, role_code)
+);
+COMMENT ON TABLE user_role IS 'Gán vai trò cho người dùng kèm thời gian hiệu lực';
+COMMENT ON COLUMN user_role.user_id IS 'ID tài khoản người dùng';
+COMMENT ON COLUMN user_role.app_code IS 'Mã ứng dụng gán quyền';
+COMMENT ON COLUMN user_role.role_code IS 'Mã vai trò được gán';
+COMMENT ON COLUMN user_role.start_date IS 'Ngày bắt đầu hiệu lực quyền';
+COMMENT ON COLUMN user_role.end_date IS 'Ngày hết hạn hiệu lực quyền';
+COMMENT ON COLUMN user_role.created_at IS 'Thời điểm gán';
+COMMENT ON COLUMN user_role.created_by IS 'Người gán';
+
+-------------------------------------------------------------------------------
+-- 4. DANH MỤC & ĐỒNG BỘ (SỬ DỤNG NATURAL KEY)
+-------------------------------------------------------------------------------
+
+CREATE TABLE category_groups (
+    group_code VARCHAR(50) PRIMARY KEY,
+    group_name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by VARCHAR(50),
+    is_deleted BOOLEAN DEFAULT FALSE
+);
+COMMENT ON TABLE category_groups IS 'Nhóm quản lý danh mục';
+COMMENT ON COLUMN category_groups.group_code IS 'Mã nhóm danh mục (Khóa chính tự nhiên)';
+COMMENT ON COLUMN category_groups.group_name IS 'Tên hiển thị nhóm danh mục';
+COMMENT ON COLUMN category_groups.created_at IS 'Thời điểm tạo';
+COMMENT ON COLUMN category_groups.created_by IS 'Người tạo';
+COMMENT ON COLUMN category_groups.updated_at IS 'Thời điểm cập nhật';
+COMMENT ON COLUMN category_groups.updated_by IS 'Người cập nhật';
+COMMENT ON COLUMN category_groups.is_deleted IS 'Cờ xóa mềm';
+
+CREATE TABLE categories (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    group_code VARCHAR(50) NOT NULL,
+    item_code VARCHAR(50) NOT NULL,
+    item_name VARCHAR(255) NOT NULL,
+    ext_attributes JSONB,
+    start_date TIMESTAMPTZ DEFAULT NOW(),
+    end_date TIMESTAMPTZ,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_by VARCHAR(50),
+    is_deleted BOOLEAN DEFAULT FALSE
+);
+COMMENT ON TABLE categories IS 'Chi tiết danh mục với hiệu lực thời gian';
+COMMENT ON COLUMN categories.group_code IS 'Mã nhóm danh mục sở hữu';
+COMMENT ON COLUMN categories.item_code IS 'Mã mục danh mục (Ví dụ: VN, EN)';
+COMMENT ON COLUMN categories.item_name IS 'Tên hiển thị mục danh mục';
+COMMENT ON COLUMN categories.ext_attributes IS 'Thuộc tính mở rộng dạng JSON';
+COMMENT ON COLUMN categories.start_date IS 'Ngày bắt đầu áp dụng';
+COMMENT ON COLUMN categories.end_date IS 'Ngày hết hạn áp dụng';
+COMMENT ON COLUMN categories.created_at IS 'Thời điểm tạo';
+COMMENT ON COLUMN categories.created_by IS 'Người tạo';
+COMMENT ON COLUMN categories.updated_at IS 'Thời điểm cập nhật';
+COMMENT ON COLUMN categories.updated_by IS 'Người cập nhật';
+COMMENT ON COLUMN categories.is_deleted IS 'Cờ xóa mềm';
+
+CREATE TABLE app_category_group (
+    app_code VARCHAR(50) NOT NULL,
+    group_code VARCHAR(50) NOT NULL,
+    is_sync_all BOOLEAN DEFAULT TRUE,
+    sync_mode VARCHAR(20) DEFAULT 'KAFKA',
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    PRIMARY KEY (app_code, group_code)
+);
+COMMENT ON TABLE app_category_group IS 'Cấu hình đồng bộ nhóm danh mục cho ứng dụng';
+COMMENT ON COLUMN app_category_group.app_code IS 'Mã ứng dụng nhận dữ liệu';
+COMMENT ON COLUMN app_category_group.group_code IS 'Mã nhóm danh mục đồng bộ';
+COMMENT ON COLUMN app_category_group.is_sync_all IS 'True: Lấy toàn bộ item. False: Chỉ lấy item chọn lọc';
+COMMENT ON COLUMN app_category_group.sync_mode IS 'Chế độ: KAFKA hoặc WEBHOOK';
+COMMENT ON COLUMN app_category_group.created_at IS 'Thời điểm cấu hình';
+COMMENT ON COLUMN app_category_group.created_by IS 'Người cấu hình';
+
+CREATE TABLE app_category_item (
+    app_code VARCHAR(50) NOT NULL,
+    group_code VARCHAR(50) NOT NULL,
+    item_code VARCHAR(50) NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50),
+    PRIMARY KEY (app_code, group_code, item_code)
+);
+COMMENT ON TABLE app_category_item IS 'Cấu hình đồng bộ mục danh mục lẻ (Partial Sync)';
+COMMENT ON COLUMN app_category_item.app_code IS 'Mã ứng dụng';
+COMMENT ON COLUMN app_category_item.group_code IS 'Mã nhóm danh mục';
+COMMENT ON COLUMN app_category_item.item_code IS 'Mã mục danh mục cụ thể';
+COMMENT ON COLUMN app_category_item.created_at IS 'Thời điểm cấu hình';
+COMMENT ON COLUMN app_category_item.created_by IS 'Người cấu hình';
+
+-------------------------------------------------------------------------------
+-- 5. NHẬT KÝ ĐỒNG BỘ (SYNC LOGS)
+-------------------------------------------------------------------------------
+
+CREATE TABLE sync_logs (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    app_code VARCHAR(50) NOT NULL,
+    entity_type VARCHAR(50) NOT NULL,
+    entity_id VARCHAR(100),
+    action VARCHAR(10),
+    sync_data JSONB,
+    status VARCHAR(20),
+    error_message TEXT,
+    retry_count INT DEFAULT 0,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    created_by VARCHAR(50)
+);
+COMMENT ON TABLE sync_logs IS 'Nhật ký đồng bộ dữ liệu giữa các ứng dụng';
+COMMENT ON COLUMN sync_logs.app_code IS 'Mã ứng dụng đích';
+COMMENT ON COLUMN sync_logs.entity_type IS 'Loại thực thể (CATEGORY, USER, ROLE)';
+COMMENT ON COLUMN sync_logs.entity_id IS 'Mã hoặc ID của bản ghi được đồng bộ';
+COMMENT ON COLUMN sync_logs.action IS 'Hành động: CREATE, UPDATE, DELETE';
+COMMENT ON COLUMN sync_logs.sync_data IS 'Payload dữ liệu thực tế đã gửi đi';
+COMMENT ON COLUMN sync_logs.status IS 'Trạng thái: SUCCESS, FAILED, PENDING';
+COMMENT ON COLUMN sync_logs.error_message IS 'Chi tiết lỗi nếu thất bại';
+COMMENT ON COLUMN sync_logs.retry_count IS 'Số lần đã gửi lại';
+COMMENT ON COLUMN sync_logs.created_at IS 'Thời điểm phát sinh';
+COMMENT ON COLUMN sync_logs.created_by IS 'Hệ thống/Người kích hoạt';
+
+-------------------------------------------------------------------------------
+-- 6. CHỈ MỤC TỐI ƯU (INDEXES)
+-------------------------------------------------------------------------------
+CREATE UNIQUE INDEX idx_u_user_active ON users(username) WHERE is_deleted IS FALSE;
+CREATE INDEX idx_user_owner_polymorphic ON users(owner_id, owner_type);
+CREATE INDEX idx_cat_effective_lookup ON categories(group_code, start_date, end_date) WHERE is_deleted IS FALSE;
+CREATE INDEX idx_sync_log_status_run ON sync_logs(status, created_at);
+
+
+Đây là cấu trúc DB chuẩn, mọi code Java Entity và React Component phải tuân thủ schema này.

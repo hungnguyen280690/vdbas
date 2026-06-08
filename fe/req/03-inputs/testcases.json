@@ -1,0 +1,580 @@
+{
+  "meta": {
+    "functionCode": "EXP.CAPEX_DOSSIER.3.3.2",
+    "functionName": "Quản lý Giấy rút vốn 05.a/TT thanh toán vốn đầu tư",
+    "specRef": "EXP.CAPEX_DOSSIER.3.3.2.CRUD_spec_function.md",
+    "generatedAt": "2026-05-29"
+  },
+  "stats": {
+    "total": 31,
+    "positive": 10,
+    "negative": 21,
+    "byGroup": {
+      "1_TaoMoi": 11,
+      "2_Xem": 4,
+      "3_CapNhat": 5,
+      "4_Xoa": 5,
+      "5_NghiepVuDacThu": 6
+    }
+  },
+  "testcases": [
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.01",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo chứng từ thành công — Chuyển khoản VND",
+      "type": "Positive",
+      "given": "EXP_MAKER đăng nhập; Hồ sơ cha CHI.CAPEX_DOSSIER đang ở trạng thái 'Đang hoàn thiện'; 04.a/TT đã tồn tại và liên kết với Hồ sơ",
+      "when": "Bấm Tạo mới; kiểm tra auto-fill từ Hồ sơ cha; nhập Ngày CT, Hình thức = Chuyển khoản, Loại tiền = VND, thêm ≥1 dòng hạch toán hợp lệ; bấm Lưu",
+      "then": "Lưu thành công; DOC_ID sinh đúng format BIZ-005 ({4KT}-{YYMMDD}-{KB4}{STT3}); DOC_STATUS = 'Đang hoàn thiện'; MSG-OK-SAVE hiển thị; ghi audit đầy đủ",
+      "ref": ["BIZ-005","BIZ-007","BIZ-010","VAL-01"],
+      "automationHints": {
+        "fixture": "capex-dossier/valid-create-transfer-vnd.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 201,
+        "expectedResponse": { "docStatus": "DANG_HOAN_THIEN", "msgCode": "MSG-OK-SAVE" },
+        "uiSelectors": ["[data-testid='input-doc-send-date']","[data-testid='input-content']","[data-testid='btn-save']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.02",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thất bại — Thiếu dòng hạch toán",
+      "type": "Negative",
+      "given": "EXP_MAKER đăng nhập; Hồ sơ cha hợp lệ",
+      "when": "Không thêm dòng chi tiết hạch toán nào; bấm Lưu",
+      "then": "MSG-ERR-MIN-DETAIL-ROW hiển thị; chặn lưu; form giữ nguyên",
+      "ref": ["BIZ-013"],
+      "automationHints": {
+        "fixture": "capex-dossier/missing-detail-rows.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 400,
+        "expectedResponse": { "msgCode": "MSG-ERR-MIN-DETAIL-ROW" },
+        "uiSelectors": ["[data-testid='btn-save']","[data-testid='error-min-detail-row']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.03",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thất bại — Tiền mặt thiếu Người nhận tiền",
+      "type": "Negative",
+      "given": "EXP_MAKER đăng nhập",
+      "when": "Chọn Hình thức = 'Tiền mặt tại KB'; không nhập RECEIVER_NAME, CITIZEN_ID, CITIZEN_ID_DATE, CITIZEN_ID_PLACE; bấm Lưu",
+      "then": "MSG-ERR-RECEIVER-REQUIRED hiển thị; highlight các trường RECEIVER_NAME, CITIZEN_ID, CITIZEN_ID_DATE, CITIZEN_ID_PLACE; chặn lưu",
+      "ref": ["BIZ-014","VAL-22"],
+      "automationHints": {
+        "fixture": "capex-dossier/cash-missing-receiver.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 400,
+        "expectedResponse": { "msgCode": "MSG-ERR-RECEIVER-REQUIRED" },
+        "uiSelectors": ["[data-testid='input-payment-method']","[data-testid='input-receiver-name']","[data-testid='btn-save']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.04",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thất bại — Nợ Có không cân",
+      "type": "Negative",
+      "given": "EXP_MAKER đăng nhập",
+      "when": "Nhập dòng hạch toán có Tổng Nợ VND ≠ Tổng Có VND; bấm Lưu",
+      "then": "MSG-ERR-AMOUNT-MISMATCH hiển thị; chặn lưu",
+      "ref": ["BIZ-012","VAL-10"],
+      "automationHints": {
+        "fixture": "capex-dossier/debit-credit-mismatch.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 400,
+        "expectedResponse": { "msgCode": "MSG-ERR-AMOUNT-MISMATCH" },
+        "uiSelectors": ["[data-testid='btn-save']","[data-testid='error-amount-mismatch']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.05",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thất bại — Nợ Có đồng thời trên 1 dòng",
+      "type": "Negative",
+      "given": "EXP_MAKER đăng nhập",
+      "when": "Nhập cùng lúc DEBIT_VND_AMOUNT > 0 và CREDIT_VND_AMOUNT > 0 trên cùng 1 dòng hạch toán",
+      "then": "MSG-ERR-DEBIT-CREDIT-CONFLICT hiển thị; highlight dòng lỗi; chặn lưu",
+      "ref": ["BIZ-015"],
+      "automationHints": {
+        "fixture": "capex-dossier/debit-credit-conflict.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 400,
+        "expectedResponse": { "msgCode": "MSG-ERR-DEBIT-CREDIT-CONFLICT" },
+        "uiSelectors": ["[data-testid='grid-debit']","[data-testid='btn-save']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.06",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thất bại — Ngày hạch toán ngoài kỳ",
+      "type": "Negative",
+      "given": "Kỳ kế toán đang mở: tháng 5/2026",
+      "when": "Nhập POSTING_DATE = 01/01/2026 (ngoài kỳ đang mở); bấm Lưu",
+      "then": "MSG-ERR-POSTING-PERIOD hiển thị; highlight trường POSTING_DATE; chặn lưu",
+      "ref": ["BIZ-016","VAL-21"],
+      "automationHints": {
+        "fixture": "capex-dossier/posting-date-out-of-period.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 400,
+        "expectedResponse": { "msgCode": "MSG-ERR-POSTING-PERIOD" },
+        "uiSelectors": ["[data-testid='input-posting-date']","[data-testid='btn-save']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.07",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thành công — Loại tiền USD",
+      "type": "Positive",
+      "given": "EXP_MAKER đăng nhập; Hồ sơ cha hợp lệ",
+      "when": "Chọn CURRENCY_CODE = USD; nhập EXCHANGE_RATE_TYPE = 'Tỷ giá NSD', EXCHANGE_RATE_DATE, EXCHANGE_RATE > 0; điền đủ các trường bắt buộc; bấm Lưu",
+      "then": "Lưu thành công; EXCHANGE_RATE × Số tiền NT = Số tiền VND đúng; MSG-OK-SAVE",
+      "ref": ["BIZ-009","VAL-20"],
+      "automationHints": {
+        "fixture": "capex-dossier/valid-create-usd.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 201,
+        "expectedResponse": { "docStatus": "DANG_HOAN_THIEN", "msgCode": "MSG-OK-SAVE" },
+        "uiSelectors": ["[data-testid='input-currency-code']","[data-testid='input-exchange-rate']","[data-testid='btn-save']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.08",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thất bại — USD không nhập tỷ giá",
+      "type": "Negative",
+      "given": "EXP_MAKER đăng nhập",
+      "when": "Chọn CURRENCY_CODE = USD; không nhập EXCHANGE_RATE_TYPE; bấm Lưu",
+      "then": "MSG-ERR-CURRENCY-REQUIRE-RATE hiển thị; chặn lưu",
+      "ref": ["VAL-20","BIZ-009"],
+      "automationHints": {
+        "fixture": "capex-dossier/usd-missing-exchange-rate.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 400,
+        "expectedResponse": { "msgCode": "MSG-ERR-CURRENCY-REQUIRE-RATE" },
+        "uiSelectors": ["[data-testid='input-currency-code']","[data-testid='btn-save']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.09",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thất bại — Không có quyền",
+      "type": "Negative",
+      "given": "User vai trò EXP_VIEWER (không có quyền EXP_MAKER)",
+      "when": "Truy cập nút Tạo mới trên Hồ sơ cha",
+      "then": "Nút Tạo mới ẩn hoặc disable; MSG-ERR-PERMISSION nếu truy cập trực tiếp URL",
+      "ref": ["BIZ-001","VAL-14"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 403,
+        "expectedResponse": { "msgCode": "MSG-ERR-PERMISSION" },
+        "uiSelectors": ["[data-testid='btn-new']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.10",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Tạo thất bại — CCID không hợp lệ",
+      "type": "Negative",
+      "given": "EXP_MAKER đăng nhập",
+      "when": "Nhập tổ hợp GL_SEGMENT1-GL_SEGMENT11 không hợp lệ theo Cross-Validation của hệ thống GL; bấm Lưu",
+      "then": "MSG-ERR-CCID-INVALID hiển thị; highlight segment lỗi; chặn lưu",
+      "ref": ["VAL-19"],
+      "automationHints": {
+        "fixture": "capex-dossier/invalid-ccid.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 400,
+        "expectedResponse": { "msgCode": "MSG-ERR-CCID-INVALID" },
+        "uiSelectors": ["[data-testid='grid-debit']","[data-testid='btn-save']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.1.11",
+      "group": 1,
+      "groupName": "Tạo mới",
+      "name": "Huỷ form khi đã nhập dữ liệu",
+      "type": "Positive",
+      "given": "EXP_MAKER đang nhập dữ liệu trên form NEW; form đã có dữ liệu (dirty)",
+      "when": "Bấm Huỷ hoặc nhấn Esc",
+      "then": "Popup MSG-CFM-CANCEL xuất hiện; xác nhận Huỷ → đóng form; không lưu bất kỳ dữ liệu nào vào DB",
+      "ref": ["A5.A1"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": null,
+        "expectedStatus": null,
+        "expectedResponse": null,
+        "uiSelectors": ["[data-testid='btn-cancel']","[data-testid='dialog-cfm-cancel']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.2.01",
+      "group": 2,
+      "groupName": "Xem",
+      "name": "Xem chứng từ thành công",
+      "type": "Positive",
+      "given": "Chứng từ đã được tạo và lưu; NSD có quyền EXP_VIEWER hoặc EXP_MAKER",
+      "when": "Click link DOC_ID trên danh sách chứng từ của Hồ sơ cha",
+      "then": "Form VIEW mở ở chế độ read-only; hiển thị đầy đủ B1.1 → B1.5 + tab Lịch sử; tất cả trường bị disabled",
+      "ref": ["A4.step4"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "GET /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 200,
+        "expectedResponse": { "docId": "05.a-260101-KB010001" },
+        "uiSelectors": ["[data-testid='form-view']","[data-field-code='DOC_ID']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.2.02",
+      "group": 2,
+      "groupName": "Xem",
+      "name": "Tab Lịch sử thay đổi hiển thị đúng",
+      "type": "Positive",
+      "given": "Chứng từ đã được sửa ít nhất 1 lần; audit log đã ghi nhận",
+      "when": "Mở VIEW; click tab Lịch sử hoặc nhấn Alt+H",
+      "then": "Tab Lịch sử hiển thị: CREATED_BY, CREATED_DATE, hành động UPDATE với oldValue→newValue, IP, ACTION badge",
+      "ref": ["BIZ-007","BIZ-008"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "GET /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}/history",
+        "expectedStatus": 200,
+        "expectedResponse": { "auditLogs": [] },
+        "uiSelectors": ["[data-testid='tab-history']","[data-testid='history-table']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.2.03",
+      "group": 2,
+      "groupName": "Xem",
+      "name": "Xem thất bại — Không có quyền",
+      "type": "Negative",
+      "given": "User không có quyền EXP_VIEWER hoặc EXP_MAKER",
+      "when": "Truy cập trực tiếp URL VIEW của chứng từ",
+      "then": "MSG-ERR-PERMISSION hiển thị; không hiển thị dữ liệu chứng từ",
+      "ref": ["BIZ-001","VAL-14"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "GET /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 403,
+        "expectedResponse": { "msgCode": "MSG-ERR-PERMISSION" },
+        "uiSelectors": ["[data-testid='error-permission']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.2.04",
+      "group": 2,
+      "groupName": "Xem",
+      "name": "Trạng thái GL hiển thị đúng khi hoàn thành",
+      "type": "Positive",
+      "given": "Chứng từ DOC_STATUS = 'Hoàn thành xử lý'",
+      "when": "Mở VIEW của chứng từ",
+      "then": "GL_SEND_STATUS, GL_POSTING_STATUS, PAY_SEND_STATUS hiển thị giá trị; các trạng thái này để trống ở các DOC_STATUS khác",
+      "ref": ["B4.convention9"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "GET /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 200,
+        "expectedResponse": { "docStatus": "HOAN_THANH", "glSendStatus": "Gửi GL thành công" },
+        "uiSelectors": ["[data-field-code='GL_SEND_STATUS']","[data-field-code='GL_POSTING_STATUS']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.3.01",
+      "group": 3,
+      "groupName": "Cập nhật",
+      "name": "Sửa thành công",
+      "type": "Positive",
+      "given": "Chứng từ DOC_STATUS = 'Đang hoàn thiện'; EXP_MAKER đăng nhập",
+      "when": "Bấm Sửa; thay đổi nội dung trường CONTENT; bấm Lưu",
+      "then": "F-VER tăng lên 1; ghi audit oldValue→newValue; MSG-OK-SAVE; form chuyển về VIEW với dữ liệu mới",
+      "ref": ["VAL-15","BIZ-007"],
+      "automationHints": {
+        "fixture": "capex-dossier/valid-update-content.json",
+        "endpoint": "PUT /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 200,
+        "expectedResponse": { "msgCode": "MSG-OK-SAVE" },
+        "uiSelectors": ["[data-testid='btn-edit']","[data-testid='input-content']","[data-testid='btn-save']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.3.02",
+      "group": 3,
+      "groupName": "Cập nhật",
+      "name": "Sửa thất bại — Đang chờ kiểm soát",
+      "type": "Negative",
+      "given": "Chứng từ DOC_STATUS = 'Chờ kiểm soát'",
+      "when": "Bấm nút Sửa (hoặc truy cập EDIT URL trực tiếp)",
+      "then": "Nút Sửa disable; MSG-ERR-STATUS hiển thị nếu truy cập trực tiếp",
+      "ref": ["BIZ-011","VAL-13"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "PUT /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 409,
+        "expectedResponse": { "msgCode": "MSG-ERR-STATUS" },
+        "uiSelectors": ["[data-testid='btn-edit']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.3.03",
+      "group": 3,
+      "groupName": "Cập nhật",
+      "name": "Sửa thất bại — Optimistic lock conflict",
+      "type": "Negative",
+      "given": "2 người dùng A và B cùng mở EDIT cùng một chứng từ",
+      "when": "User A lưu thành công trước; User B cố gắng lưu sau với F-VER cũ",
+      "then": "MSG-ERR-LOCK hiển thị cho User B; yêu cầu tải lại bản ghi trước khi tiếp tục",
+      "ref": ["VAL-15"],
+      "automationHints": {
+        "fixture": "capex-dossier/optimistic-lock-conflict.json",
+        "endpoint": "PUT /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 412,
+        "expectedResponse": { "msgCode": "MSG-ERR-LOCK" },
+        "uiSelectors": ["[data-testid='btn-save']","[data-testid='error-lock']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.3.04",
+      "group": 3,
+      "groupName": "Cập nhật",
+      "name": "DOC_ID immutable khi Sửa",
+      "type": "Negative",
+      "given": "Chứng từ 'Đang hoàn thiện'; mở EDIT",
+      "when": "Kiểm tra trường DOC_ID trên form EDIT",
+      "then": "DOC_ID disabled trên UI; backend reject nếu payload gửi thay đổi DOC_ID",
+      "ref": ["VAL-17","BIZ-005"],
+      "automationHints": {
+        "fixture": "capex-dossier/update-with-doc-id-change.json",
+        "endpoint": "PUT /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 400,
+        "expectedResponse": { "msgCode": "MSG-ERR-FORMAT" },
+        "uiSelectors": ["[data-field-code='DOC_ID'] input"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.3.05",
+      "group": 3,
+      "groupName": "Cập nhật",
+      "name": "Sửa thất bại — Không có quyền EXP_MAKER",
+      "type": "Negative",
+      "given": "Chứng từ 'Đang hoàn thiện'; User vai trò EXP_VIEWER",
+      "when": "Cố bấm nút Sửa",
+      "then": "MSG-ERR-PERMISSION hiển thị; ghi audit bảo mật",
+      "ref": ["VAL-14","BIZ-001"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "PUT /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 403,
+        "expectedResponse": { "msgCode": "MSG-ERR-PERMISSION" },
+        "uiSelectors": ["[data-testid='btn-edit']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.4.01",
+      "group": 4,
+      "groupName": "Xoá",
+      "name": "Xoá thành công",
+      "type": "Positive",
+      "given": "Chứng từ DOC_STATUS = 'Đang hoàn thiện'; EXP_MAKER đăng nhập",
+      "when": "Bấm Xoá; popup mở; nhập lý do ≥ 10 ký tự; tick checkbox; bấm Xác nhận xoá",
+      "then": "DOC_STATUS = DELETED; chứng từ ẩn khỏi danh sách Hồ sơ cha; MSG-OK-DELETE hiển thị; ghi audit",
+      "ref": ["VAL-16","BIZ-002"],
+      "automationHints": {
+        "fixture": "capex-dossier/valid-delete.json",
+        "endpoint": "DELETE /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 200,
+        "expectedResponse": { "docStatus": "DELETED", "msgCode": "MSG-OK-DELETE" },
+        "uiSelectors": ["[data-testid='btn-delete']","[data-testid='input-delete-reason']","[data-testid='checkbox-confirm-reviewed']","[data-testid='btn-confirm-delete']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.4.02",
+      "group": 4,
+      "groupName": "Xoá",
+      "name": "Xoá thất bại — Đang chờ kiểm soát",
+      "type": "Negative",
+      "given": "Chứng từ DOC_STATUS = 'Chờ kiểm soát'",
+      "when": "Cố bấm nút Xoá",
+      "then": "Nút Xoá disable; MSG-ERR-STATUS nếu truy cập trực tiếp",
+      "ref": ["VAL-13","BIZ-011"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "DELETE /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 409,
+        "expectedResponse": { "msgCode": "MSG-ERR-STATUS" },
+        "uiSelectors": ["[data-testid='btn-delete']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.4.03",
+      "group": 4,
+      "groupName": "Xoá",
+      "name": "Xoá thất bại — Lý do quá ngắn",
+      "type": "Negative",
+      "given": "Chứng từ 'Đang hoàn thiện'; EXP_MAKER; popup Xoá đang mở",
+      "when": "Nhập lý do xoá < 10 ký tự",
+      "then": "Nút Xác nhận xoá disable; MSG-ERR-DELETE-CFM hiển thị dưới ô lý do",
+      "ref": ["VAL-16"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": null,
+        "expectedStatus": null,
+        "expectedResponse": null,
+        "uiSelectors": ["[data-testid='input-delete-reason']","[data-testid='btn-confirm-delete']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.4.04",
+      "group": 4,
+      "groupName": "Xoá",
+      "name": "Xoá thất bại — Chưa tick checkbox xác nhận",
+      "type": "Negative",
+      "given": "Chứng từ 'Đang hoàn thiện'; popup Xoá; đã nhập đủ lý do ≥ 10 ký tự",
+      "when": "Không tick checkbox CONFIRM_REVIEWED",
+      "then": "Nút Xác nhận xoá vẫn disable dù lý do đủ dài",
+      "ref": ["VAL-16"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": null,
+        "expectedStatus": null,
+        "expectedResponse": null,
+        "uiSelectors": ["[data-testid='checkbox-confirm-reviewed']","[data-testid='btn-confirm-delete']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.4.05",
+      "group": 4,
+      "groupName": "Xoá",
+      "name": "DOC_ID không tái sử dụng sau khi xoá",
+      "type": "Negative",
+      "given": "DOC_ID = '05.a-260528-KB010011' đã bị xoá (DELETED)",
+      "when": "Tạo mới chứng từ và hệ thống sinh DOC_ID trùng với DOC_ID đã DELETED",
+      "then": "MSG-ERR-DUPLICATE hiển thị; chặn lưu; DOC_ID không được tái sử dụng",
+      "ref": ["BIZ-003","VAL-11"],
+      "automationHints": {
+        "fixture": "capex-dossier/duplicate-doc-id-after-delete.json",
+        "endpoint": "POST /api/v1/exp/capex-dossier/{dossierId}/vouchers",
+        "expectedStatus": 409,
+        "expectedResponse": { "msgCode": "MSG-ERR-DUPLICATE" },
+        "uiSelectors": ["[data-testid='btn-save']","[data-testid='error-duplicate']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.5.01",
+      "group": 5,
+      "groupName": "Nghiệp vụ đặc thù",
+      "name": "Trạng thái đồng bộ khi Hồ sơ gửi kiểm soát",
+      "type": "Positive",
+      "given": "Chứng từ DOC_STATUS = 'Đang hoàn thiện'",
+      "when": "EXP_MAKER gửi Hồ sơ cha CHI.CAPEX_DOSSIER đi kiểm soát thành công",
+      "then": "DOC_STATUS của chứng từ tự động → 'Chờ kiểm soát'; nút Sửa/Xoá bị disable",
+      "ref": ["BIZ-011","A11"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "GET /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 200,
+        "expectedResponse": { "docStatus": "CHO_KIEM_SOAT" },
+        "uiSelectors": ["[data-field-code='DOC_STATUS']","[data-testid='btn-edit']","[data-testid='btn-delete']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.5.02",
+      "group": 5,
+      "groupName": "Nghiệp vụ đặc thù",
+      "name": "Trạng thái đồng bộ khi Hồ sơ bị từ chối kiểm soát",
+      "type": "Positive",
+      "given": "Chứng từ DOC_STATUS = 'Chờ kiểm soát'",
+      "when": "Kiểm soát viên từ chối Hồ sơ cha",
+      "then": "DOC_STATUS chứng từ → 'Đang hoàn thiện'; nút Sửa/Xoá được enable lại",
+      "ref": ["A11"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": "GET /api/v1/exp/capex-dossier/{dossierId}/vouchers/{docId}",
+        "expectedStatus": 200,
+        "expectedResponse": { "docStatus": "DANG_HOAN_THIEN" },
+        "uiSelectors": ["[data-field-code='DOC_STATUS']","[data-testid='btn-edit']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.5.03",
+      "group": 5,
+      "groupName": "Nghiệp vụ đặc thù",
+      "name": "Kỳ hạch toán 13 — hiển thị Area 3rd",
+      "type": "Positive",
+      "given": "EXP_MAKER đang nhập liệu trên form NEW",
+      "when": "Chọn Niên độ = (Năm hiện tại - 1) = 2025; POSTING_DATE = 31/12/2025",
+      "then": "Area 3rd 'Thông tin hạch toán đồng thời' tự động xuất hiện trên Tab Thanh toán chi",
+      "ref": ["A5.A4"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": null,
+        "expectedStatus": null,
+        "expectedResponse": null,
+        "uiSelectors": ["[data-testid='input-fiscal-year']","[data-testid='input-posting-date']","[data-testid='area-3rd-ky13']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.5.04",
+      "group": 5,
+      "groupName": "Nghiệp vụ đặc thù",
+      "name": "Thanh toán liên kho bạc — hiển thị Area 2nd",
+      "type": "Positive",
+      "given": "EXP_MAKER đang nhập liệu",
+      "when": "Chọn Hình thức = 'Tiền mặt tại KB'; Phương thức = 'Điện tử'",
+      "then": "Area 2nd 'Thanh toán liên kho bạc' xuất hiện tự động trên Tab Thanh toán chi",
+      "ref": ["A5.A5"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": null,
+        "expectedStatus": null,
+        "expectedResponse": null,
+        "uiSelectors": ["[data-testid='input-payment-method']","[data-testid='area-2nd-lkb']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.5.05",
+      "group": 5,
+      "groupName": "Nghiệp vụ đặc thù",
+      "name": "Tab Nộp thuế bắt buộc khi có thuế GTGT",
+      "type": "Positive",
+      "given": "04.a/TT liên kết có số tiền thuế GTGT > 0",
+      "when": "Mở form Tạo mới chứng từ Giấy rút vốn",
+      "then": "Tab 'Thông tin nộp thuế' tự động hiển thị; các trường TAX_PAYER_NAME, TAX_CODE, DECLARATION_NO, TAX_ID, TAX_MANAGEMENT_AGENCY bắt buộc (*)",
+      "ref": ["B1.4"],
+      "automationHints": {
+        "fixture": "capex-dossier/create-with-tax.json",
+        "endpoint": "GET /api/v1/exp/capex-dossier/{dossierId}/vouchers/new",
+        "expectedStatus": 200,
+        "expectedResponse": { "hasTax": true },
+        "uiSelectors": ["[data-testid='tab-tax']","[data-field-code='TAX_PAYER_NAME']"]
+      }
+    },
+    {
+      "id": "EXP.CAPEX_DOSSIER.3.3.2.TC.5.06",
+      "group": 5,
+      "groupName": "Nghiệp vụ đặc thù",
+      "name": "Tổng tiền tự tính lại sau thêm dòng hạch toán",
+      "type": "Positive",
+      "given": "EXP_MAKER đang nhập dòng hạch toán trong Tab Thanh toán chi",
+      "when": "Thêm dòng hạch toán mới hoặc cập nhật số tiền trên dòng hiện có",
+      "then": "Hệ thống tự tính lại tổng Nợ/Có; hiển thị chênh lệch nếu Tổng Nợ ≠ Tổng Có + giá trị nộp thuế",
+      "ref": ["BIZ-012","VAL-10"],
+      "automationHints": {
+        "fixture": null,
+        "endpoint": null,
+        "expectedStatus": null,
+        "expectedResponse": null,
+        "uiSelectors": ["[data-testid='grid-debit']","[data-testid='total-debit']","[data-testid='total-credit']"]
+      }
+    }
+  ]
+}

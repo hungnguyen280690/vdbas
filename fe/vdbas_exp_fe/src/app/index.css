@@ -1,0 +1,86 @@
+@import "tailwindcss";
+
+/* ── VDBAS Sidebar — SAP Fiori light theme ───────────────────────────────── */
+
+.vdbas-sidebar {
+  background: #ffffff !important;
+  border-right: 1px solid #D9D9D9 !important;
+}
+
+/* Menu container */
+.vdbas-sidebar-menu,
+.vdbas-sidebar-menu .ant-menu-root {
+  background: transparent !important;
+  color: #32363A !important;
+}
+
+/* Every item / submenu title — full-width, no pill */
+.vdbas-sidebar-menu .ant-menu-item,
+.vdbas-sidebar-menu .ant-menu-submenu-title {
+  background: transparent !important;
+  color: #32363A !important;
+  border-radius: 0 !important;
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+/* Icons */
+.vdbas-sidebar-menu .ant-menu-item .anticon,
+.vdbas-sidebar-menu .ant-menu-submenu-title .anticon {
+  color: #0A6ED1 !important;
+}
+
+/* Hover */
+.vdbas-sidebar-menu .ant-menu-item:hover,
+.vdbas-sidebar-menu .ant-menu-submenu-title:hover {
+  background: #E8F3FF !important;
+  color: #0A6ED1 !important;
+}
+
+.vdbas-sidebar-menu .ant-menu-item:hover .anticon,
+.vdbas-sidebar-menu .ant-menu-submenu-title:hover .anticon {
+  color: #0A6ED1 !important;
+}
+
+/* Selected / active — right-border indicator (Fiori pattern) */
+.vdbas-sidebar-menu .ant-menu-item-selected {
+  background: #E8F3FF !important;
+  color: #0A6ED1 !important;
+  font-weight: 600 !important;
+  border-right: 3px solid #0A6ED1 !important;
+}
+
+.vdbas-sidebar-menu .ant-menu-item-selected .anticon {
+  color: #0A6ED1 !important;
+}
+
+/* Sub-menu inline */
+.vdbas-sidebar-menu .ant-menu-sub {
+  background: #FAFAFA !important;
+}
+
+.vdbas-sidebar-menu .ant-menu-sub .ant-menu-item {
+  background: transparent !important;
+  color: #6A6D70 !important;
+}
+
+.vdbas-sidebar-menu .ant-menu-sub .ant-menu-item:hover {
+  background: #E8F3FF !important;
+  color: #0A6ED1 !important;
+}
+
+.vdbas-sidebar-menu .ant-menu-sub .ant-menu-item-selected {
+  background: #E8F3FF !important;
+  color: #0A6ED1 !important;
+  font-weight: 600 !important;
+  border-right: 3px solid #0A6ED1 !important;
+}
+
+/* Submenu arrow */
+.vdbas-sidebar-menu .ant-menu-submenu-arrow {
+  color: #6A6D70 !important;
+}
+
+.vdbas-sidebar-menu .ant-menu-submenu-title:hover .ant-menu-submenu-arrow {
+  color: #0A6ED1 !important;
+}

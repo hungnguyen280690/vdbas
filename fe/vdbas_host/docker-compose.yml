@@ -1,0 +1,26 @@
+version: '3.8'
+
+services:
+  vdbas-host:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VITE_KEYCLOAK_URL=https://vst-sso.apps.ocp.vst.gov.vn
+        - VITE_KEYCLOAK_REALM=vdbas_dev
+        - VITE_KEYCLOAK_CLIENT_ID=vdbas_fe
+        - VITE_QTDC_REMOTE_URL=http://localhost:3002
+        - VITE_TEMPLATE_REMOTE_URL=http://localhost:3001
+        - VITE_API_BASE_URL=http://localhost:8082/api
+    image: vdbas-host:latest
+    container_name: vdbas-host
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    networks:
+      - host-network
+
+networks:
+  host-network:
+    name: vdbas_host_network
+    driver: bridge

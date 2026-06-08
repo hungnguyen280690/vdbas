@@ -1,0 +1,9 @@
+
+> vdbas-exp-fe@1.0.0 dev
+> dotenv -e .env -- vite
+
+
+  VITE v8.0.13  ready in 2502 ms
+
+  ➜  Local:   http://localhost:3003/
+  ➜  Network: use --host to expose

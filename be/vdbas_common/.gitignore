@@ -1,0 +1,8 @@
+*.class
+*.jar
+*.lst
+target/classes/META-INF/spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports
+target/classes/vdbas_common_messages.properties
+target/classes/vdbas_common_messages_en.properties
+target/classes/vdbas_common_messages_vi.properties
+target/maven-archiver/pom.properties

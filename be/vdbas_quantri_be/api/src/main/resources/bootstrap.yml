@@ -1,0 +1,27 @@
+spring:
+  application:
+    name: vdbas-quantri
+
+  # cloud:
+  #   consul:
+  #     host: localhost
+  #     port: 8500
+
+  #     discovery:
+  #       enabled: true
+  #       register: true
+  #       prefer-ip-address: true
+  #       health-check-path: /actuator/health
+  #       health-check-interval: 10s
+
+  #     config:
+  #       enabled: true
+  #       format: YAML
+  #       data-key: data
+  #       prefixes:
+  #         - config
+  #       default-context: ${spring.application.name}
+  #       profile-separator: "-"
+
+
+

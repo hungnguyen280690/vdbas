@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHI.CAPEX_DOSSIER — Danh sách hồ sơ Chi đầu tư</title>
+<style>
+  :root {
+    --primary: #0b5394; --primary-hover: #084273; --accent: #dc3545;
+    --success: #28a745; --warning: #ffc107; --danger: #dc3545;
+    --text-primary: #212529; --text-muted: #6c757d;
+    --bg-light: #f8f9fa; --bg-white: #ffffff; --border: #dee2e6;
+    --border-radius: 4px; --shadow: 0 1px 3px rgba(0,0,0,.12);
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); font-size: 14px; color: var(--text-primary); background: #eef0f3; }
+  .page-wrapper { max-width: 1440px; margin: 0 auto; padding: 16px; }
+
+  /* Page Header */
+  .page-header { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--border-radius); padding: 12px 24px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .page-title { font-size: 18px; font-weight: 600; color: var(--primary); }
+  .breadcrumb { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+
+  /* Cards */
+  .card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--border-radius); margin-bottom: 12px; box-shadow: var(--shadow); }
+  .card-body { padding: 16px 20px; }
+  .card-header { padding: 10px 20px; border-bottom: 1px solid var(--border); background: #f0f4f9; font-weight: 600; font-size: 13px; color: var(--primary); display: flex; align-items: center; justify-content: space-between; }
+
+  /* Search / Filter Area */
+  .search-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .search-group { display: flex; flex-direction: column; gap: 4px; }
+  .search-group label { font-size: 12px; color: #495057; font-weight: 500; }
+  .form-control { padding: 6px 10px; font-size: 13px; border: 1px solid var(--border); border-radius: var(--border-radius); color: var(--text-primary); background: var(--bg-white); height: 33px; }
+  .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(11,83,148,.15); }
+  input[type="text"].form-control { min-width: 180px; }
+  select.form-control { min-width: 150px; }
+  .search-group-date { display: flex; gap: 6px; align-items: flex-end; }
+  .input-group { display: flex; }
+  .input-group .form-control { border-radius: var(--border-radius) 0 0 var(--border-radius); }
+  .btn-lookup { padding: 6px 10px; border: 1px solid var(--border); border-left: none; background: #f0f4f9; cursor: pointer; border-radius: 0 var(--border-radius) var(--border-radius) 0; font-size: 12px; color: var(--primary); }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; font-size: 13px; font-weight: 500; border-radius: var(--border-radius); cursor: pointer; border: 1px solid transparent; transition: all .15s; white-space: nowrap; height: 33px; }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+  .btn-default { background: #fff; color: #495057; border-color: #ced4da; }
+  .btn-default:hover:not(:disabled) { background: var(--bg-light); }
+  .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-danger:hover:not(:disabled) { background: #b02a37; }
+  .btn-ghost { background: transparent; color: var(--primary); border-color: transparent; padding: 3px 6px; height: auto; font-size: 12px; }
+  .btn-ghost:hover { background: #e8f0fb; border-radius: 3px; }
+  .btn-ghost-danger { background: transparent; color: var(--danger); border-color: transparent; padding: 3px 6px; height: auto; font-size: 12px; }
+  .btn-ghost-danger:hover { background: #fde8ea; border-radius: 3px; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; height: 28px; }
+
+  /* Advanced filter toggle */
+  .adv-filter-area { border-top: 1px solid var(--border); padding: 12px 20px; display: none; background: #fafbfd; }
+  .adv-filter-area.open { display: block; }
+  .filter-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .filter-tag { background: #e8f0fb; color: var(--primary); padding: 3px 10px; border-radius: 12px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+  .filter-tag button { background: none; border: none; cursor: pointer; color: var(--primary); font-size: 14px; line-height: 1; padding: 0 2px; }
+
+  /* Stats Bar */
+  .stats-bar { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; }
+  .stat-item { display: flex; align-items: center; gap: 6px; }
+  .stat-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .stat-value { font-weight: 700; font-size: 16px; }
+  .stat-label { color: var(--text-muted); }
+
+  /* Table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { background: #f0f4f9; color: var(--primary); font-weight: 600; padding: 9px 12px; text-align: left; border: 1px solid var(--border); font-size: 12px; white-space: nowrap; cursor: pointer; user-select: none; }
+  .data-table th.no-sort { cursor: default; }
+  .data-table th:hover:not(.no-sort) { background: #dde4ed; }
+  .data-table td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: middle; }
+  .data-table tbody tr { cursor: pointer; transition: background .1s; }
+  .data-table tbody tr:hover td { background: #f0f5fc; }
+  .data-table .text-right { text-align: right; font-family: monospace; }
+  .data-table tfoot td { background: #f0f4f9; font-weight: 600; padding: 8px 12px; border: 1px solid var(--border); }
+  .actions-col { display: flex; gap: 2px; align-items: center; white-space: nowrap; }
+  .table-link { color: var(--primary); text-decoration: none; font-weight: 600; }
+  .table-link:hover { text-decoration: underline; }
+
+  /* Status Badges */
+  .badge { display: inline-flex; padding: 2px 9px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-DRAFT { background: #e9ecef; color: #495057; }
+  .badge-PENDING_CHECK { background: #cce5ff; color: #004085; }
+  .badge-CHECK_REJECTED { background: #f8d7da; color: #721c24; }
+  .badge-CHECK_CANCELLED { background: #fff3cd; color: #856404; }
+  .badge-PENDING_APPROVE { background: #d1ecf1; color: #0c5460; }
+  .badge-APPROVE_REJECTED { background: #f8d7da; color: #721c24; }
+  .badge-APPROVE_CANCELLED { background: #fff3cd; color: #856404; }
+  .badge-APPROVED { background: #d4edda; color: #155724; }
+  .badge-DELETED { background: #343a40; color: #fff; }
+
+  /* Pagination */
+  .pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-top: 1px solid var(--border); background: var(--bg-white); }
+  .pagination-info { font-size: 12px; color: var(--text-muted); }
+  .pagination-controls { display: flex; gap: 4px; align-items: center; }
+  .page-btn { padding: 4px 10px; font-size: 12px; border: 1px solid var(--border); background: var(--bg-white); cursor: pointer; border-radius: var(--border-radius); }
+  .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .page-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .page-size-select { font-size: 12px; padding: 3px 6px; border: 1px solid var(--border); border-radius: var(--border-radius); }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+  .empty-state-icon { font-size: 40px; margin-bottom: 12px; }
+
+  /* Tooltip */
+  [title] { position: relative; }
+</style>
+</head>
+<body>
+
+<!-- Inline Sample Data -->
+<script type="application/json" id="sample-data">
+{
+  "records": [
+    {"id":"REC-001","DOSSIER_CODE":"HS-CHI-2026-0001","SEND_DATE":"15/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"DRAFT","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"nguyen.van.a","CREATED_DATE":"15/05/2026 09:12:00","LAST_UPDATED_DATE":"15/05/2026 09:12:00","TOTAL_VND":1500000000,"DOCUMENT_COUNT":2},
+    {"id":"REC-002","DOSSIER_CODE":"HS-CHI-2026-0002","SEND_DATE":"10/05/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"PENDING_CHECK","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"tran.thi.b","CREATED_DATE":"08/05/2026 14:30:00","LAST_UPDATED_DATE":"10/05/2026 11:00:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"10/05/2026 11:00:00","TOTAL_VND":3200000000,"DOCUMENT_COUNT":1},
+    {"id":"REC-003","DOSSIER_CODE":"HS-CHI-2026-0003","SEND_DATE":"05/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"PENDING_APPROVE","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"le.van.c","CREATED_DATE":"03/05/2026 10:00:00","LAST_UPDATED_DATE":"05/05/2026 16:00:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"05/05/2026 16:00:00","TOTAL_VND":950000000,"DOCUMENT_COUNT":1},
+    {"id":"REC-004","DOSSIER_CODE":"HS-CHI-2026-0004","SEND_DATE":"28/04/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"APPROVED","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"pham.thi.d","CREATED_DATE":"25/04/2026 08:00:00","LAST_UPDATED_DATE":"28/04/2026 14:30:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"27/04/2026 09:00:00","APPROVED_BY":"tran.approver","APPROVED_DATE":"28/04/2026 14:30:00","TOTAL_VND":5600000000,"DOCUMENT_COUNT":3},
+    {"id":"REC-005","DOSSIER_CODE":"HS-CHI-2026-0005","SEND_DATE":"20/04/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"CHECK_REJECTED","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"hoang.van.e","CREATED_DATE":"18/04/2026 11:00:00","LAST_UPDATED_DATE":"20/04/2026 15:30:00","CHECKED_BY":"nguyen.checker","CHECK_REJECTION_REASON":"Chứng từ chưa đủ hạng mục theo hợp đồng","TOTAL_VND":420000000,"DOCUMENT_COUNT":1},
+    {"id":"REC-006","DOSSIER_CODE":"HS-CHI-2026-0006","SEND_DATE":"15/04/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"APPROVE_REJECTED","DATA_SOURCE_CODE":"DVC","CREATED_BY":"vu.thi.f","CREATED_DATE":"10/04/2026 09:30:00","LAST_UPDATED_DATE":"15/04/2026 16:00:00","CHECKED_BY":"nguyen.checker","APPROVED_BY":"tran.approver","APPROVAL_REJECTION_REASON":"Vượt hạn mức phân bổ ngân sách quý 2/2026","TOTAL_VND":8900000000,"DOCUMENT_COUNT":2},
+    {"id":"REC-007","DOSSIER_CODE":"HS-CHI-2026-0007","SEND_DATE":"28/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"DRAFT","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"nguyen.van.a","CREATED_DATE":"28/05/2026 08:00:00","LAST_UPDATED_DATE":"28/05/2026 08:00:00","TOTAL_VND":0,"DOCUMENT_COUNT":0}
+  ]
+}
+</script>
+
+<div class="page-wrapper">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">Quản lý Chi đầu tư / <strong>Danh sách hồ sơ</strong></div>
+      <h1 class="page-title">📁 Danh sách hồ sơ Chi đầu tư</h1>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <!-- Xuất — Default, left of Tạo mới -->
+      <button class="btn btn-default" data-testid="btn-export" title="Xuất Excel/PDF/CSV (Ctrl+Shift+E)" onclick="alert('Prototype: Xuất Excel/PDF/CSV')">
+        📥 Xuất <span style="font-size:10px; color:#999; margin-left:2px;">Ctrl+Shift+E</span>
+      </button>
+      <!-- Tạo mới — Primary, top right -->
+      <button class="btn btn-primary" data-testid="btn-create-new" title="Tạo mới (Ctrl+N)"
+              onclick="window.location.href='form_detail.html?mode=new'">
+        + Tạo mới <span style="font-size:10px; opacity:.75; margin-left:2px;">Ctrl+N</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search / Filter Card -->
+  <div class="card">
+    <div class="card-body">
+      <!-- Quick search row -->
+      <div class="search-row">
+        <div class="search-group" style="flex:1; min-width:200px;">
+          <label>Tìm nhanh</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="search-input" data-testid="search-input"
+                   placeholder="🔍 Mã hồ sơ, người lập..." oninput="onSearch()" style="border-radius:4px 0 0 4px;" />
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Trạng thái</label>
+          <select class="form-control" id="filter-status" data-testid="filter-status" onchange="onFilter()">
+            <option value="">Tất cả</option>
+            <option value="DRAFT">Đang hoàn thiện</option>
+            <option value="PENDING_CHECK">Chờ kiểm soát</option>
+            <option value="CHECK_REJECTED">Từ chối kiểm soát</option>
+            <option value="CHECK_CANCELLED">Hủy kiểm soát</option>
+            <option value="PENDING_APPROVE">Chờ phê duyệt</option>
+            <option value="APPROVE_REJECTED">Từ chối phê duyệt</option>
+            <option value="APPROVE_CANCELLED">Hủy phê duyệt</option>
+            <option value="APPROVED">Đã phê duyệt</option>
+          </select>
+        </div>
+        <div class="search-group">
+          <label>Nguồn</label>
+          <select class="form-control" id="filter-source" onchange="onFilter()">
+            <option value="">Tất cả</option>
+            <option value="Thủ công">Thủ công</option>
+            <option value="DVC">DVC</option>
+          </select>
+        </div>
+        <!-- Tìm kiếm nâng cao toggle -->
+        <div class="search-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-default" id="btn-adv-toggle" onclick="toggleAdvSearch()">
+            Nâng cao ▼ <span id="adv-filter-count" style="display:none; background:var(--primary);color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;"></span>
+          </button>
+        </div>
+        <!-- Tìm kiếm — Primary, right -->
+        <div class="search-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary" onclick="onFilter()" data-testid="btn-search">🔍 Tìm kiếm</button>
+        </div>
+        <!-- Đặt lại -->
+        <div class="search-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-default" onclick="resetFilter()" data-testid="btn-reset" title="Đặt lại (F5 / Ctrl+R)">↺ Đặt lại</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Filter -->
+    <div class="adv-filter-area" id="adv-filter-area">
+      <div class="search-row" style="margin-bottom:10px;">
+        <div class="search-group">
+          <label>Loại ngày</label>
+          <select class="form-control" id="filter-date-type">
+            <option value="SEND_DATE">Ngày gửi</option>
+            <option value="CREATED_DATE">Ngày lập</option>
+            <option value="CHECKED_DATE">Ngày kiểm soát</option>
+            <option value="APPROVED_DATE">Ngày phê duyệt</option>
+          </select>
+        </div>
+        <div class="search-group">
+          <label>Từ ngày</label>
+          <input type="text" class="form-control" id="filter-from-date" placeholder="dd/mm/yyyy" oninput="onFilter()">
+        </div>
+        <div class="search-group">
+          <label>Đến ngày</label>
+          <input type="text" class="form-control" id="filter-to-date" placeholder="dd/mm/yyyy" oninput="onFilter()">
+        </div>
+        <div class="search-group">
+          <label>Mã dự án</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-project-id" placeholder="F4 tra cứu" oninput="onFilter()">
+            <button class="btn-lookup" title="F4">🔍</button>
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Người lập</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-creator" placeholder="F4 tra cứu" oninput="onFilter()">
+            <button class="btn-lookup" title="F4">🔍</button>
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Người kiểm soát</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-checker" placeholder="F4 tra cứu" oninput="onFilter()">
+            <button class="btn-lookup" title="F4">🔍</button>
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Người phê duyệt</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-approver" placeholder="F4 tra cứu" oninput="onFilter()">
+            <button class="btn-lookup" title="F4">🔍</button>
+          </div>
+        </div>
+        <div class="search-group" style="align-self:flex-end; gap:4px; flex-direction:row;">
+          <button class="btn btn-default btn-sm" onclick="resetAdvFilter()">Xóa bộ lọc</button>
+          <button class="btn btn-primary btn-sm" onclick="onFilter()">🔍 Tìm kiếm</button>
+        </div>
+      </div>
+      <!-- Filter tags -->
+      <div class="filter-tags" id="filter-tags"></div>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="card">
+    <div class="card-body" style="padding:12px 20px;">
+      <div class="stats-bar" id="stats-bar">
+        <div class="stat-item">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Tổng hồ sơ</span>
+        </div>
+        <div style="width:1px; background:var(--border); align-self:stretch;"></div>
+        <div class="stat-item"><span class="stat-dot" style="background:#6c757d;"></span><span id="stat-draft">0</span> Đang hoàn thiện</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#004085;"></span><span id="stat-pending-check">0</span> Chờ kiểm soát</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#0c5460;"></span><span id="stat-pending-approve">0</span> Chờ phê duyệt</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#28a745;"></span><span id="stat-approved">0</span> Đã phê duyệt</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#dc3545;"></span><span id="stat-rejected">0</span> Từ chối</div>
+        <div style="width:1px; background:var(--border); align-self:stretch;"></div>
+        <div class="stat-item">
+          <span style="font-weight:700; color:var(--primary);" id="stat-total-vnd">0 VND</span>
+          <span class="stat-label">Tổng tiền VND</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="card" style="margin-bottom:0; border-bottom:none; border-radius:4px 4px 0 0;">
+    <div class="card-header">
+      <span>Kết quả tìm kiếm</span>
+      <select class="page-size-select" id="page-size-select" onchange="onPageSizeChange()" title="Số bản ghi/trang">
+        <option value="5">5/trang</option>
+        <option value="10" selected>10/trang</option>
+        <option value="20">20/trang</option>
+        <option value="50">50/trang</option>
+      </select>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="list-table">
+        <thead>
+          <tr>
+            <th onclick="sortBy('DOSSIER_CODE')" title="Click để sắp xếp">Mã hồ sơ ↕</th>
+            <th onclick="sortBy('SEND_DATE')">Ngày gửi ↕</th>
+            <th onclick="sortBy('STATE_CODE')">Trạng thái ↕</th>
+            <th onclick="sortBy('CREATED_BY')">Người lập ↕</th>
+            <th onclick="sortBy('CREATED_DATE')">Ngày lập ↕</th>
+            <th onclick="sortBy('RETURNING_REASON')">Lý do từ chối TN ↕</th>
+            <th onclick="sortBy('CHECKED_BY')">Người KS ↕</th>
+            <th onclick="sortBy('CHECKED_DATE')">Ngày KS ↕</th>
+            <th onclick="sortBy('CHECK_REJECTION_REASON')">Lý do từ chối KS ↕</th>
+            <th onclick="sortBy('APPROVED_BY')">Người PD ↕</th>
+            <th onclick="sortBy('APPROVED_DATE')">Ngày PD ↕</th>
+            <th onclick="sortBy('APPROVAL_REJECTION_REASON')">Lý do từ chối PD ↕</th>
+            <th onclick="sortBy('PROJECT_NAME')">Dự án/Công trình ↕</th>
+            <th onclick="sortBy('DOCUMENT_COUNT')">Số CT ↕</th>
+            <th onclick="sortBy('TOTAL_VND')">Tổng tiền VND ↕</th>
+            <th class="no-sort" style="text-align:center;">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="list-tbody" data-testid="list-tbody"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="13" style="text-align:right;">Tổng cộng (<span id="footer-count">0</span> hồ sơ):</td>
+            <td style="text-align:center;" id="footer-doc-total">—</td>
+            <td style="text-align:right; font-family:monospace;" id="footer-vnd-total">0</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-row card" style="border-top:none; border-radius:0 0 4px 4px; margin-bottom:0;">
+    <div class="pagination-info" id="pagination-info" data-testid="pagination-info">Hiển thị 0 – 0 trong tổng số 0 bản ghi</div>
+    <div class="pagination-controls">
+      <button class="page-btn" id="btn-first" onclick="goToPage(1)" title="Trang đầu" data-testid="pagination-first">«</button>
+      <button class="page-btn" id="btn-prev" onclick="goToPage(currentPage-1)" data-testid="pagination-prev">‹ Trước</button>
+      <span id="page-buttons" style="display:flex; gap:3px;"></span>
+      <button class="page-btn" id="btn-next" onclick="goToPage(currentPage+1)" data-testid="pagination-next">Sau ›</button>
+      <button class="page-btn" id="btn-last" onclick="goToPage(totalPages)" title="Trang cuối" data-testid="pagination-last">»</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Data ──────────────────────────────────────────────────
+const SAMPLE = JSON.parse(document.getElementById('sample-data').textContent);
+const ALL_RECORDS = [...SAMPLE.records];
+
+const STATUS_LABELS = {
+  DRAFT:'Đang hoàn thiện', PENDING_CHECK:'Chờ kiểm soát', CHECK_REJECTED:'Từ chối kiểm soát',
+  CHECK_CANCELLED:'Hủy kiểm soát', PENDING_APPROVE:'Chờ phê duyệt', APPROVE_REJECTED:'Từ chối phê duyệt',
+  APPROVE_CANCELLED:'Hủy phê duyệt', APPROVED:'Đã phê duyệt', DELETED:'Đã xóa'
+};
+
+let filtered = [...ALL_RECORDS];
+let currentPage = 1;
+let pageSize = 10;
+let totalPages = 1;
+let sortField = 'CREATED_DATE';
+let sortDir = 'desc';
+let advOpen = false;
+
+// ─── Search & Filter ───────────────────────────────────────
+function onSearch() { currentPage = 1; applyFilters(); }
+function onFilter() { currentPage = 1; applyFilters(); }
+
+function applyFilters() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  const st = document.getElementById('filter-status').value;
+  const src = document.getElementById('filter-source').value;
+  const creator = (document.getElementById('filter-creator')?.value || '').toLowerCase().trim();
+  const checker = (document.getElementById('filter-checker')?.value || '').toLowerCase().trim();
+  const approver = (document.getElementById('filter-approver')?.value || '').toLowerCase().trim();
+  const projectId = (document.getElementById('filter-project-id')?.value || '').toLowerCase().trim();
+  const fromDate = document.getElementById('filter-from-date')?.value || '';
+  const toDate = document.getElementById('filter-to-date')?.value || '';
+
+  filtered = ALL_RECORDS.filter(r => {
+    const matchQ = !q || Object.values(r).join(' ').toLowerCase().includes(q);
+    const matchSt = !st || r.STATE_CODE === st;
+    const matchSrc = !src || r.DATA_SOURCE_CODE === src;
+    const matchCreator = !creator || (r.CREATED_BY || '').toLowerCase().includes(creator);
+    const matchChecker = !checker || (r.CHECKED_BY || '').toLowerCase().includes(checker);
+    const matchApprover = !approver || (r.APPROVED_BY || '').toLowerCase().includes(approver);
+    const matchProjectId = !projectId || (r.PROJECT_CODE || '').toLowerCase().includes(projectId);
+    return matchQ && matchSt && matchSrc && matchCreator && matchChecker && matchApprover && matchProjectId;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    const va = a[sortField] ?? '';
+    const vb = b[sortField] ?? '';
+    const cmp = String(va).localeCompare(String(vb), 'vi');
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+
+  updateStats();
+  totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  if (currentPage > totalPages) currentPage = 1;
+  renderTable();
+  renderPagination();
+  renderFilterTags(st, src, creator, checker, approver, projectId);
+}
+
+function sortBy(field) {
+  if (sortField === field) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortField = field; sortDir = 'asc'; }
+  applyFilters();
+}
+
+function resetFilter() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('filter-status').value = '';
+  document.getElementById('filter-source').value = '';
+  if (document.getElementById('filter-creator')) document.getElementById('filter-creator').value = '';
+  if (document.getElementById('filter-checker')) document.getElementById('filter-checker').value = '';
+  if (document.getElementById('filter-approver')) document.getElementById('filter-approver').value = '';
+  if (document.getElementById('filter-project-id')) document.getElementById('filter-project-id').value = '';
+  if (document.getElementById('filter-from-date')) document.getElementById('filter-from-date').value = '';
+  if (document.getElementById('filter-to-date')) document.getElementById('filter-to-date').value = '';
+  currentPage = 1;
+  applyFilters();
+}
+
+function resetAdvFilter() {
+  if (document.getElementById('filter-creator')) document.getElementById('filter-creator').value = '';
+  if (document.getElementById('filter-checker')) document.getElementById('filter-checker').value = '';
+  if (document.getElementById('filter-approver')) document.getElementById('filter-approver').value = '';
+  if (document.getElementById('filter-project-id')) document.getElementById('filter-project-id').value = '';
+  if (document.getElementById('filter-from-date')) document.getElementById('filter-from-date').value = '';
+  if (document.getElementById('filter-to-date')) document.getElementById('filter-to-date').value = '';
+  applyFilters();
+}
+
+function toggleAdvSearch() {
+  advOpen = !advOpen;
+  document.getElementById('adv-filter-area').classList.toggle('open', advOpen);
+  document.getElementById('btn-adv-toggle').innerHTML = `Nâng cao ${advOpen ? '▲' : '▼'} <span id="adv-filter-count" style="display:none; background:var(--primary);color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;"></span>`;
+}
+
+function renderFilterTags(st, src, creator, checker, approver, projectId) {
+  const tags = [];
+  if (st) tags.push({ label: `Trạng thái: ${STATUS_LABELS[st]}`, field: 'status' });
+  if (src) tags.push({ label: `Nguồn: ${src}`, field: 'source' });
+  if (creator) tags.push({ label: `Người lập: ${creator}`, field: 'creator' });
+  if (checker) tags.push({ label: `Người KS: ${checker}`, field: 'checker' });
+  if (approver) tags.push({ label: `Người PD: ${approver}`, field: 'approver' });
+  if (projectId) tags.push({ label: `Dự án: ${projectId}`, field: 'projectId' });
+  const container = document.getElementById('filter-tags');
+  container.innerHTML = tags.map(t => `<div class="filter-tag">${t.label} <button onclick="clearTag('${t.field}')" title="Xóa bộ lọc">×</button></div>`).join('');
+}
+
+function clearTag(field) {
+  if (field === 'status') document.getElementById('filter-status').value = '';
+  else if (field === 'source') document.getElementById('filter-source').value = '';
+  else if (field === 'creator' && document.getElementById('filter-creator')) document.getElementById('filter-creator').value = '';
+  else if (field === 'checker' && document.getElementById('filter-checker')) document.getElementById('filter-checker').value = '';
+  else if (field === 'approver' && document.getElementById('filter-approver')) document.getElementById('filter-approver').value = '';
+  else if (field === 'projectId' && document.getElementById('filter-project-id')) document.getElementById('filter-project-id').value = '';
+  applyFilters();
+}
+
+// ─── Render Table ──────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('list-tbody');
+  const start = (currentPage - 1) * pageSize;
+  const end = Math.min(start + pageSize, filtered.length);
+  const page = filtered.slice(start, end);
+
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="16" style="text-align:center;padding:40px;color:var(--text-muted);">
+      <div style="font-size:32px;margin-bottom:8px;">📭</div>
+      Không có hồ sơ nào khớp với điều kiện tìm kiếm
+    </td></tr>`;
+    updateFooter([]);
+    return;
+  }
+
+  tbody.innerHTML = page.map(r => {
+    const canEdit = r.STATE_CODE === 'DRAFT';
+    return `<tr data-record-id="${r.id}" data-testid="row-${r.id}"
+          onclick="event.target.closest('tr') && !event.target.closest('.actions-col') && viewRecord('${r.id}')">
+      <td><a href="form_detail.html?id=${r.id}&mode=view" class="table-link" onclick="event.stopPropagation()">${r.DOSSIER_CODE}</a></td>
+      <td>${r.SEND_DATE}</td>
+      <td><span class="badge badge-${r.STATE_CODE}">${STATUS_LABELS[r.STATE_CODE]}</span></td>
+      <td>${r.CREATED_BY}</td>
+      <td>${r.CREATED_DATE}</td>
+      <td>${r.RETURNING_REASON || ''}</td>
+      <td>${r.CHECKED_BY || ''}</td>
+      <td>${r.CHECKED_DATE || ''}</td>
+      <td>${r.CHECK_REJECTION_REASON || ''}</td>
+      <td>${r.APPROVED_BY || ''}</td>
+      <td>${r.APPROVED_DATE || ''}</td>
+      <td>${r.APPROVAL_REJECTION_REASON || ''}</td>
+      <td style="max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.PROJECT_NAME}">${r.PROJECT_NAME}</td>
+      <td style="text-align:center;">${r.DOCUMENT_COUNT}</td>
+      <td class="text-right">${formatNum(r.TOTAL_VND)}</td>
+      <td onclick="event.stopPropagation()">
+        <div class="actions-col">
+          <!-- Xem — Ghost, leftmost -->
+          <button class="btn btn-ghost btn-sm" title="Xem (F3)" data-testid="btn-view-${r.id}"
+                  onclick="viewRecord('${r.id}')">👁 Xem</button>
+          <!-- Sửa — Ghost, middle -->
+          <button class="btn btn-ghost btn-sm" title="${canEdit ? 'Sửa (F2)' : 'Chỉ sửa khi Đang hoàn thiện'}"
+                  ${canEdit ? '' : 'disabled'} data-testid="btn-edit-${r.id}"
+                  onclick="editRecord('${r.id}')">✏ Sửa</button>
+          <!-- Xoá — Ghost Danger, rightmost -->
+          <button class="btn btn-ghost-danger btn-sm" title="${canEdit ? 'Xoá' : 'Chỉ xoá khi Đang hoàn thiện'}"
+                  ${canEdit ? '' : 'disabled'} data-testid="btn-delete-${r.id}"
+                  onclick="deleteRecord('${r.id}', '${r.DOSSIER_CODE}')">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  updateFooter(page);
+}
+
+function viewRecord(id) { window.location.href = `form_detail.html?id=${id}&mode=view`; }
+function editRecord(id) { window.location.href = `form_detail.html?id=${id}&mode=edit`; }
+function deleteRecord(id, fileId) {
+  if (confirm(`Bạn có muốn xoá hồ sơ ${fileId}?\n\nThao tác này sẽ mở form xác nhận xoá.`)) {
+    window.location.href = `form_detail.html?id=${id}&mode=view`;
+  }
+}
+
+function updateFooter(page) {
+  document.getElementById('footer-count').textContent = filtered.length;
+  const totalVnd = filtered.reduce((s, r) => s + (r.TOTAL_VND || 0), 0);
+  const totalDocs = filtered.reduce((s, r) => s + (r.DOCUMENT_COUNT || 0), 0);
+  document.getElementById('footer-vnd-total').textContent = formatNum(totalVnd);
+  document.getElementById('footer-doc-total').textContent = totalDocs;
+}
+
+// ─── Stats ────────────────────────────────────────────────
+function updateStats() {
+  const total = filtered.length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-draft').textContent = filtered.filter(r => r.STATE_CODE === 'DRAFT').length;
+  document.getElementById('stat-pending-check').textContent = filtered.filter(r => r.STATE_CODE === 'PENDING_CHECK').length;
+  document.getElementById('stat-pending-approve').textContent = filtered.filter(r => r.STATE_CODE === 'PENDING_APPROVE').length;
+  document.getElementById('stat-approved').textContent = filtered.filter(r => r.STATE_CODE === 'APPROVED').length;
+  document.getElementById('stat-rejected').textContent = filtered.filter(r => ['CHECK_REJECTED','APPROVE_REJECTED'].includes(r.STATE_CODE)).length;
+  const totalVnd = filtered.reduce((s, r) => s + (r.TOTAL_VND || 0), 0);
+  document.getElementById('stat-total-vnd').textContent = formatNum(totalVnd) + ' VND';
+}
+
+// ─── Pagination ───────────────────────────────────────────
+function renderPagination() {
+  const start = (currentPage - 1) * pageSize + 1;
+  const end = Math.min(currentPage * pageSize, filtered.length);
+  document.getElementById('pagination-info').textContent =
+    filtered.length === 0 ? 'Không có kết quả' :
+    `Hiển thị ${start} – ${end} trong tổng số ${filtered.length} bản ghi`;
+
+  document.getElementById('btn-prev').disabled = currentPage <= 1;
+  document.getElementById('btn-next').disabled = currentPage >= totalPages;
+  document.getElementById('btn-first').disabled = currentPage <= 1;
+  document.getElementById('btn-last').disabled = currentPage >= totalPages;
+
+  // Page number buttons
+  const pagesEl = document.getElementById('page-buttons');
+  const pages = [];
+  const delta = 2;
+  for (let i = Math.max(1, currentPage - delta); i <= Math.min(totalPages, currentPage + delta); i++) pages.push(i);
+  pagesEl.innerHTML = pages.map(p =>
+    `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`
+  ).join('');
+}
+
+function goToPage(p) {
+  currentPage = Math.max(1, Math.min(p, totalPages));
+  renderTable();
+  renderPagination();
+}
+
+function onPageSizeChange() {
+  pageSize = parseInt(document.getElementById('page-size-select').value);
+  currentPage = 1;
+  totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  renderTable();
+  renderPagination();
+}
+
+// ─── Helpers ──────────────────────────────────────────────
+function formatNum(n) { return n ? n.toLocaleString('vi-VN') : '0'; }
+
+// ─── Keyboard ─────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && e.key === 'n') { e.preventDefault(); window.location.href = 'form_detail.html?mode=new'; }
+  if (e.key === 'F5') { e.preventDefault(); resetFilter(); }
+});
+
+// ─── Init ─────────────────────────────────────────────────
+applyFilters();
+</script>
+</body>
+</html>

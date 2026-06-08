@@ -1,0 +1,985 @@
+[[1;34mINFO[m] Scanning for projects...
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m-----------------------< [0;36mcom.fis.vdbas.qtdc:api[0;1m >-----------------------[m
+[[1;34mINFO[m] [1mBuilding api 0.0.1-SNAPSHOT[m
+[[1;34mINFO[m] [1m--------------------------------[ jar ]---------------------------------[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m>>> [0;32mspring-boot-maven-plugin:4.0.5:run[m [1m(default-cli)[0;1m > [0;1mtest-compile[m @ [36mapi[0;1m >>>[m
+Downloading from nexus-snapshots: https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/common/0.0.1-SNAPSHOT/maven-metadata.xml
+[[1;33mWARNING[m] Could not transfer metadata com.fis.vdbas.qtdc:common:0.0.1-SNAPSHOT/maven-metadata.xml from/to nexus-snapshots (https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/): Transfer failed for https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/common/0.0.1-SNAPSHOT/maven-metadata.xml
+[[1;33mWARNING[m] Failure to transfer com.fis.vdbas.qtdc:common:0.0.1-SNAPSHOT/maven-metadata.xml from https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/ was cached in the local repository, resolution will not be reattempted until the update interval of nexus-snapshots has elapsed or updates are forced. Original error: Could not transfer metadata com.fis.vdbas.qtdc:common:0.0.1-SNAPSHOT/maven-metadata.xml from/to nexus-snapshots (https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/): Transfer failed for https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/common/0.0.1-SNAPSHOT/maven-metadata.xml
+Downloading from nexus-snapshots: https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/vdbas-qttt-be/0.0.1-SNAPSHOT/maven-metadata.xml
+[[1;33mWARNING[m] Could not transfer metadata com.fis.vdbas.qtdc:vdbas-qttt-be:0.0.1-SNAPSHOT/maven-metadata.xml from/to nexus-snapshots (https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/): Transfer failed for https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/vdbas-qttt-be/0.0.1-SNAPSHOT/maven-metadata.xml
+Downloading from nexus-snapshots: https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/domain/0.0.1-SNAPSHOT/maven-metadata.xml
+[[1;33mWARNING[m] Could not transfer metadata com.fis.vdbas.qtdc:domain:0.0.1-SNAPSHOT/maven-metadata.xml from/to nexus-snapshots (https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/): Transfer failed for https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/domain/0.0.1-SNAPSHOT/maven-metadata.xml
+[[1;33mWARNING[m] Failure to transfer com.fis.vdbas.qtdc:domain:0.0.1-SNAPSHOT/maven-metadata.xml from https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/ was cached in the local repository, resolution will not be reattempted until the update interval of nexus-snapshots has elapsed or updates are forced. Original error: Could not transfer metadata com.fis.vdbas.qtdc:domain:0.0.1-SNAPSHOT/maven-metadata.xml from/to nexus-snapshots (https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/): Transfer failed for https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/domain/0.0.1-SNAPSHOT/maven-metadata.xml
+Downloading from nexus-snapshots: https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/application/0.0.1-SNAPSHOT/maven-metadata.xml
+[[1;33mWARNING[m] Could not transfer metadata com.fis.vdbas.qtdc:application:0.0.1-SNAPSHOT/maven-metadata.xml from/to nexus-snapshots (https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/): Transfer failed for https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/application/0.0.1-SNAPSHOT/maven-metadata.xml
+[[1;33mWARNING[m] Failure to transfer com.fis.vdbas.qtdc:application:0.0.1-SNAPSHOT/maven-metadata.xml from https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/ was cached in the local repository, resolution will not be reattempted until the update interval of nexus-snapshots has elapsed or updates are forced. Original error: Could not transfer metadata com.fis.vdbas.qtdc:application:0.0.1-SNAPSHOT/maven-metadata.xml from/to nexus-snapshots (https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/): Transfer failed for https://ac-nexus.apps.ocp.vst.gov.vn/repository/maven-snapshots/com/fis/vdbas/qtdc/application/0.0.1-SNAPSHOT/maven-metadata.xml
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:resources[m [1m(default-resources)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] Copying 1 resource from src/main/resources to target/classes
+[[1;34mINFO[m] Copying 4 resources from src/main/resources to target/classes
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.14.1:compile[m [1m(default-compile)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] Nothing to compile - all classes are up to date.
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-resources-plugin:3.3.1:testResources[m [1m(default-testResources)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] skip non existing resourceDirectory /home/hung/Documents/GitHub/vdbas/be/vdbas_quantri_be/api/src/test/resources
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mmaven-compiler-plugin:3.14.1:testCompile[m [1m(default-testCompile)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] No sources to compile
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m<<< [0;32mspring-boot-maven-plugin:4.0.5:run[m [1m(default-cli)[0;1m < [0;1mtest-compile[m @ [36mapi[0;1m <<<[m
+[[1;34mINFO[m] 
+[[1;34mINFO[m] 
+[[1;34mINFO[m] [1m--- [0;32mspring-boot-maven-plugin:4.0.5:run[m [1m(default-cli)[m @ [36mapi[0;1m ---[m
+[[1;34mINFO[m] Attaching agents: []
+
+  .   ____          _            __ _ _
+ /\\ / ___'_ __ _ _(_)_ __  __ _ \ \ \ \
+( ( )\___ | '_ | '_| | '_ \/ _` | \ \ \ \
+ \\/  ___)| |_)| | | | | || (_| |  ) ) ) )
+  '  |____| .__|_| |_|_| |_\__, | / / / /
+ =========|_|==============|___/=/_/_/_/
+
+ :: Spring Boot ::                (v4.0.5)
+
+2026-06-07T18:24:44.512+07:00  INFO 122578 --- [vdbas-quantri] [           main] c.fis.vdbas.qtdc.VdbasQtttApplication    : Starting VdbasQtttApplication using Java 21.0.11 with PID 122578 (/home/hung/Documents/GitHub/vdbas/be/vdbas_quantri_be/api/target/classes started by hung in /home/hung/Documents/GitHub/vdbas/be/vdbas_quantri_be/api)
+2026-06-07T18:24:44.514+07:00 DEBUG 122578 --- [vdbas-quantri] [           main] c.fis.vdbas.qtdc.VdbasQtttApplication    : Running with Spring Boot v4.0.5, Spring v7.0.7
+2026-06-07T18:24:44.515+07:00  INFO 122578 --- [vdbas-quantri] [           main] c.fis.vdbas.qtdc.VdbasQtttApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-06-07T18:24:45.797+07:00  INFO 122578 --- [vdbas-quantri] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-07T18:24:45.798+07:00  INFO 122578 --- [vdbas-quantri] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2026-06-07T18:24:46.055+07:00  INFO 122578 --- [vdbas-quantri] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 236 ms. Found 13 JPA repository interfaces.
+2026-06-07T18:24:46.639+07:00  INFO 122578 --- [vdbas-quantri] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-06-07T18:24:46.641+07:00  INFO 122578 --- [vdbas-quantri] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-06-07T18:24:46.671+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.administrative.AdministrativeTransformationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.672+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.administrative.AdministrativeUnitRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.672+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.auth.ApplicationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.673+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.auth.PermissionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.674+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.auth.RolePermissionRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.674+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.auth.RoleRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.674+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.profile.OrganizationMngmtScopeRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.674+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.profile.OrganizationPersonRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.674+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.profile.OrganizationProfileRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.674+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.profile.OrganizationTransformationRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.674+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.profile.PersonProfileRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.675+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.user.UserRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.675+07:00  INFO 122578 --- [vdbas-quantri] [           main] .RepositoryConfigurationExtensionSupport : Spring Data Redis - Could not safely identify store assignment for repository candidate interface com.fis.vdbas.qtdc.domain.user.UserRoleRepository; If you want this repository to be a Redis repository, consider annotating your entities with one of these annotations: org.springframework.data.redis.core.RedisHash (preferred), or consider extending one of the following types with your repository: org.springframework.data.keyvalue.repository.KeyValueRepository
+2026-06-07T18:24:46.675+07:00  INFO 122578 --- [vdbas-quantri] [           main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 25 ms. Found 0 Redis repository interfaces.
+2026-06-07T18:24:47.590+07:00  INFO 122578 --- [vdbas-quantri] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat initialized with port 8082 (http)
+2026-06-07T18:24:47.602+07:00  INFO 122578 --- [vdbas-quantri] [           main] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2026-06-07T18:24:47.602+07:00  INFO 122578 --- [vdbas-quantri] [           main] o.apache.catalina.core.StandardEngine    : Starting Servlet engine: [Apache Tomcat/11.0.21]
+2026-06-07T18:24:47.641+07:00  INFO 122578 --- [vdbas-quantri] [           main] b.w.c.s.WebApplicationContextInitializer : Root WebApplicationContext: initialization completed in 3053 ms
+2026-06-07T18:24:48.006+07:00  INFO 122578 --- [vdbas-quantri] [           main] org.hibernate.orm.jpa                    : HHH008540: Processing PersistenceUnitInfo [name: default]
+2026-06-07T18:24:48.056+07:00  INFO 122578 --- [vdbas-quantri] [           main] org.hibernate.orm.core                   : HHH000001: Hibernate ORM core version 7.2.7.Final
+2026-06-07T18:24:48.491+07:00  INFO 122578 --- [vdbas-quantri] [           main] o.s.o.j.p.SpringPersistenceUnitInfo      : No LoadTimeWeaver setup: ignoring JPA class transformer
+2026-06-07T18:24:48.524+07:00  INFO 122578 --- [vdbas-quantri] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2026-06-07T18:24:49.616+07:00  INFO 122578 --- [vdbas-quantri] [           main] com.zaxxer.hikari.pool.HikariPool        : HikariPool-1 - Added connection oracle.jdbc.driver.T4CConnection@d3b0397
+2026-06-07T18:24:49.620+07:00  INFO 122578 --- [vdbas-quantri] [           main] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2026-06-07T18:24:50.136+07:00  WARN 122578 --- [vdbas-quantri] [           main] org.hibernate.orm.deprecation            : HHH90000025: OracleDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2026-06-07T18:24:50.656+07:00  WARN 122578 --- [vdbas-quantri] [           main] org.hibernate.orm.jdbc                   : HHH100123: Low default JDBC fetch size: 10 (consider setting 'hibernate.jdbc.fetch_size')
+2026-06-07T18:24:50.663+07:00  INFO 122578 --- [vdbas-quantri] [           main] org.hibernate.orm.connections.pooling    : HHH10001005: Database info:
+	Database JDBC URL [jdbc:oracle:thin:@//172.16.5.20:1521/vdbaspdb]
+	Database driver: Oracle JDBC driver
+	Database dialect: OracleDialect
+	Database version: 23.26.1
+	Default catalog/schema: undefined/VDBAS_QTDC
+	Autocommit mode: undefined/unknown
+	Isolation level: READ_COMMITTED [default READ_COMMITTED]
+	JDBC fetch size: 10
+	Pool: DataSourceConnectionProvider
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-06-07T18:24:51.869+07:00  INFO 122578 --- [vdbas-quantri] [           main] org.hibernate.orm.core                   : HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-06-07T18:25:22.323+07:00  INFO 122578 --- [vdbas-quantri] [           main] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2026-06-07T18:25:22.407+07:00  INFO 122578 --- [vdbas-quantri] [           main] o.s.d.j.r.query.QueryEnhancerFactories   : Hibernate is in classpath; If applicable, HQL parser will be used.
+2026-06-07T18:25:24.821+07:00 TRACE 122578 --- [vdbas-quantri] [           main] eGlobalAuthenticationAutowiredConfigurer : Eagerly initializing {org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration$EnableWebSecurityConfiguration=org.springframework.boot.security.autoconfigure.web.servlet.ServletWebSecurityAutoConfiguration$EnableWebSecurityConfiguration@ea57bb7}
+2026-06-07T18:25:24.823+07:00 DEBUG 122578 --- [vdbas-quantri] [           main] swordEncoderAuthenticationManagerBuilder : No authenticationProviders and no parentAuthenticationManager defined. Returning null.
+2026-06-07T18:25:24.959+07:00 DEBUG 122578 --- [vdbas-quantri] [           main] o.s.s.web.DefaultSecurityFilterChain     : Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, LogoutFilter, GatewayAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-06-07T18:25:25.475+07:00  WARN 122578 --- [vdbas-quantri] [           main] i.m.c.i.b.cache.CaffeineCacheMetrics     : The cache 'user_permissions_cache' is not recording statistics. No meters except 'cache.size' will be registered. Call 'Caffeine#recordStats()' prior to building the cache for metrics to be recorded.
+2026-06-07T18:25:25.478+07:00  WARN 122578 --- [vdbas-quantri] [           main] i.m.c.i.b.cache.CaffeineCacheMetrics     : The cache 'organization_cache' is not recording statistics. No meters except 'cache.size' will be registered. Call 'Caffeine#recordStats()' prior to building the cache for metrics to be recorded.
+2026-06-07T18:25:25.478+07:00  WARN 122578 --- [vdbas-quantri] [           main] i.m.c.i.b.cache.CaffeineCacheMetrics     : The cache 'administrative_unit_cache' is not recording statistics. No meters except 'cache.size' will be registered. Call 'Caffeine#recordStats()' prior to building the cache for metrics to be recorded.
+2026-06-07T18:25:25.620+07:00  INFO 122578 --- [vdbas-quantri] [           main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 2 endpoints beneath base path '/actuator'
+2026-06-07T18:25:25.694+07:00  INFO 122578 --- [vdbas-quantri] [           main] o.s.boot.tomcat.TomcatWebServer          : Tomcat started on port 8082 (http) with context path '/'
+2026-06-07T18:25:25.705+07:00  INFO 122578 --- [vdbas-quantri] [           main] c.fis.vdbas.qtdc.VdbasQtttApplication    : Started VdbasQtttApplication in 41.912 seconds (process running for 42.476)
+2026-06-07T18:25:31.644+07:00  INFO 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-06-07T18:25:31.644+07:00  INFO 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2026-06-07T18:25:31.647+07:00  INFO 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 3 ms
+2026-06-07T18:25:31.667+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:25:31.667+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/me/apps
+2026-06-07T18:25:31.669+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:25:31.672+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:25:31.674+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:25:31.675+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:25:31.676+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:25:31.696+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:25:31.705+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:25:31.705+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/me/apps
+2026-06-07T18:25:31.705+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:25:31.705+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:25:31.705+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:25:31.705+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:25:31.706+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:25:31.708+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking LogoutFilter (6/13)
+2026-06-07T18:25:31.709+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.s.w.a.logout.LogoutFilter            : Did not match request to Or [PathPattern [GET /logout], PathPattern [POST /logout], PathPattern [PUT /logout], PathPattern [DELETE /logout]]
+2026-06-07T18:25:31.709+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking GatewayAuthFilter (7/13)
+2026-06-07T18:25:31.709+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] .s.s.w.c.SupplierDeferredSecurityContext : Created SecurityContextImpl [Null authentication]
+2026-06-07T18:25:31.711+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking RequestCacheAwareFilter (8/13)
+2026-06-07T18:25:31.711+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderAwareRequestFilter (9/13)
+2026-06-07T18:25:31.712+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking AnonymousAuthenticationFilter (10/13)
+2026-06-07T18:25:31.712+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking SessionManagementFilter (11/13)
+2026-06-07T18:25:31.713+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Did not set SecurityContextHolder since already authenticated UsernamePasswordAuthenticationToken [Principal=6FCD264E878349EF9C5B32A6DA90448C, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[]]
+2026-06-07T18:25:31.713+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] s.CompositeSessionAuthenticationStrategy : Preparing session with ChangeSessionIdAuthenticationStrategy (1/1)
+2026-06-07T18:25:31.713+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking ExceptionTranslationFilter (12/13)
+2026-06-07T18:25:31.713+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking AuthorizationFilter (13/13)
+2026-06-07T18:25:31.715+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] estMatcherDelegatingAuthorizationManager : Authorizing GET /api/me/apps
+2026-06-07T18:25:31.715+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] estMatcherDelegatingAuthorizationManager : Checking authorization on GET /api/me/apps using org.springframework.security.authorization.AuthenticatedAuthorizationManager@2b371d94
+2026-06-07T18:25:31.717+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/me/apps
+2026-06-07T18:25:31.735+07:00  INFO 122578 --- [vdbas-quantri] [nio-8082-exec-2] c.f.v.q.a.auth.UserPermissionController  : User ID: 6FCD264E878349EF9C5B32A6DA90448C
+2026-06-07T18:25:34.393+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:25:35.219+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:25:35.219+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/me/menus?appCode=EXP
+2026-06-07T18:25:35.219+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:25:35.219+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:25:35.219+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:25:35.219+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/me/apis?appCode=EXP
+2026-06-07T18:25:35.219+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:25:35.219+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:25:35.219+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:25:35.220+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-3] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:25:35.220+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:25:35.220+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:25:35.220+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:25:35.220+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-4] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:25:35.220+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-3] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:25:35.220+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-4] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:25:35.227+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:25:35.227+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Securing GET /api/me/menus?appCode=EXP
+2026-06-07T18:25:35.227+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:25:35.227+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:25:35.227+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:25:35.227+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Securing GET /api/me/apis?appCode=EXP
+2026-06-07T18:25:35.227+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:25:35.227+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:25:35.228+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:25:35.228+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:25:35.228+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:25:35.228+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:25:35.228+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:25:35.228+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:25:35.228+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking LogoutFilter (6/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.s.w.a.logout.LogoutFilter            : Did not match request to Or [PathPattern [GET /logout], PathPattern [POST /logout], PathPattern [PUT /logout], PathPattern [DELETE /logout]]
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking LogoutFilter (6/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking GatewayAuthFilter (7/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] .s.s.w.c.SupplierDeferredSecurityContext : Created SecurityContextImpl [Null authentication]
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.s.w.a.logout.LogoutFilter            : Did not match request to Or [PathPattern [GET /logout], PathPattern [POST /logout], PathPattern [PUT /logout], PathPattern [DELETE /logout]]
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking RequestCacheAwareFilter (8/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking GatewayAuthFilter (7/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderAwareRequestFilter (9/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking AnonymousAuthenticationFilter (10/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] .s.s.w.c.SupplierDeferredSecurityContext : Created SecurityContextImpl [Null authentication]
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking SessionManagementFilter (11/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking RequestCacheAwareFilter (8/13)
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.s.w.a.AnonymousAuthenticationFilter  : Did not set SecurityContextHolder since already authenticated UsernamePasswordAuthenticationToken [Principal=6FCD264E878349EF9C5B32A6DA90448C, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[]]
+2026-06-07T18:25:35.229+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderAwareRequestFilter (9/13)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] s.CompositeSessionAuthenticationStrategy : Preparing session with ChangeSessionIdAuthenticationStrategy (1/1)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking AnonymousAuthenticationFilter (10/13)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking ExceptionTranslationFilter (12/13)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking SessionManagementFilter (11/13)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Invoking AuthorizationFilter (13/13)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.s.w.a.AnonymousAuthenticationFilter  : Did not set SecurityContextHolder since already authenticated UsernamePasswordAuthenticationToken [Principal=6FCD264E878349EF9C5B32A6DA90448C, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[]]
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] s.CompositeSessionAuthenticationStrategy : Preparing session with ChangeSessionIdAuthenticationStrategy (1/1)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking ExceptionTranslationFilter (12/13)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] estMatcherDelegatingAuthorizationManager : Authorizing GET /api/me/menus?appCode=EXP
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Invoking AuthorizationFilter (13/13)
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] estMatcherDelegatingAuthorizationManager : Checking authorization on GET /api/me/menus?appCode=EXP using org.springframework.security.authorization.AuthenticatedAuthorizationManager@2b371d94
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] estMatcherDelegatingAuthorizationManager : Authorizing GET /api/me/apis?appCode=EXP
+2026-06-07T18:25:35.230+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] estMatcherDelegatingAuthorizationManager : Checking authorization on GET /api/me/apis?appCode=EXP using org.springframework.security.authorization.AuthenticatedAuthorizationManager@2b371d94
+2026-06-07T18:25:35.230+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.security.web.FilterChainProxy        : Secured GET /api/me/menus?appCode=EXP
+2026-06-07T18:25:35.231+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.security.web.FilterChainProxy        : Secured GET /api/me/apis?appCode=EXP
+2026-06-07T18:25:35.468+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-6] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:25:35.534+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-5] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:26:31.814+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:26:31.814+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/me/apps
+2026-06-07T18:26:31.814+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:26:31.814+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:26:31.815+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:26:31.815+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:26:31.815+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-7] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:26:31.815+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-7] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:26:31.820+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:26:31.821+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Securing GET /api/me/apps
+2026-06-07T18:26:31.821+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:26:31.821+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:26:31.821+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:26:31.821+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:26:31.821+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:26:31.821+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking LogoutFilter (6/13)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.s.w.a.logout.LogoutFilter            : Did not match request to Or [PathPattern [GET /logout], PathPattern [POST /logout], PathPattern [PUT /logout], PathPattern [DELETE /logout]]
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking GatewayAuthFilter (7/13)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] .s.s.w.c.SupplierDeferredSecurityContext : Created SecurityContextImpl [Null authentication]
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking RequestCacheAwareFilter (8/13)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderAwareRequestFilter (9/13)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking AnonymousAuthenticationFilter (10/13)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking SessionManagementFilter (11/13)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.s.w.a.AnonymousAuthenticationFilter  : Did not set SecurityContextHolder since already authenticated UsernamePasswordAuthenticationToken [Principal=6FCD264E878349EF9C5B32A6DA90448C, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[]]
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] s.CompositeSessionAuthenticationStrategy : Preparing session with ChangeSessionIdAuthenticationStrategy (1/1)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking ExceptionTranslationFilter (12/13)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Invoking AuthorizationFilter (13/13)
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] estMatcherDelegatingAuthorizationManager : Authorizing GET /api/me/apps
+2026-06-07T18:26:31.822+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] estMatcherDelegatingAuthorizationManager : Checking authorization on GET /api/me/apps using org.springframework.security.authorization.AuthenticatedAuthorizationManager@2b371d94
+2026-06-07T18:26:31.823+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.security.web.FilterChainProxy        : Secured GET /api/me/apps
+2026-06-07T18:26:31.823+07:00  INFO 122578 --- [vdbas-quantri] [nio-8082-exec-8] c.f.v.q.a.auth.UserPermissionController  : User ID: 6FCD264E878349EF9C5B32A6DA90448C
+2026-06-07T18:26:31.825+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-8] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:26:32.605+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:26:32.605+07:00 TRACE 122578 --- [vdbas-quantri] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:26:32.605+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/me/menus?appCode=EXP
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:26:32.606+07:00 DEBUG 122578 --- [vdbas-quantri] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Securing OPTIONS /api/me/apis?appCode=EXP
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-9] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:26:32.606+07:00 TRACE 122578 --- [vdbas-quantri] [io-8082-exec-10] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:26:32.607+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-9] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:26:32.607+07:00 TRACE 122578 --- [vdbas-quantri] [io-8082-exec-10] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:26:32.613+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:26:32.613+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Trying to match request against DefaultSecurityFilterChain defined as 'securityFilterChain' in [class path resource [com/fis/vdbas/common/security/SecurityConfig.class]] matching [any request] and having filters [DisableEncodeUrl, WebAsyncManagerIntegration, SecurityContextHolder, HeaderWriter, Cors, Logout, GatewayAuth, RequestCacheAware, SecurityContextHolderAwareRequest, AnonymousAuthentication, SessionManagement, ExceptionTranslation, Authorization] (1/1)
+2026-06-07T18:26:32.614+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Securing GET /api/me/menus?appCode=EXP
+2026-06-07T18:26:32.614+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Securing GET /api/me/apis?appCode=EXP
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking DisableEncodeUrlFilter (1/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking WebAsyncManagerIntegrationFilter (2/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderFilter (3/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking HeaderWriterFilter (4/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:26:32.614+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking CorsFilter (5/13)
+2026-06-07T18:26:32.615+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking LogoutFilter (6/13)
+2026-06-07T18:26:32.615+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking LogoutFilter (6/13)
+2026-06-07T18:26:32.615+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.s.w.a.logout.LogoutFilter            : Did not match request to Or [PathPattern [GET /logout], PathPattern [POST /logout], PathPattern [PUT /logout], PathPattern [DELETE /logout]]
+2026-06-07T18:26:32.615+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.s.w.a.logout.LogoutFilter            : Did not match request to Or [PathPattern [GET /logout], PathPattern [POST /logout], PathPattern [PUT /logout], PathPattern [DELETE /logout]]
+2026-06-07T18:26:32.615+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking GatewayAuthFilter (7/13)
+2026-06-07T18:26:32.615+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking GatewayAuthFilter (7/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] .s.s.w.c.SupplierDeferredSecurityContext : Created SecurityContextImpl [Null authentication]
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] .s.s.w.c.SupplierDeferredSecurityContext : Created SecurityContextImpl [Null authentication]
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking RequestCacheAwareFilter (8/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking RequestCacheAwareFilter (8/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderAwareRequestFilter (9/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking SecurityContextHolderAwareRequestFilter (9/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking AnonymousAuthenticationFilter (10/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking AnonymousAuthenticationFilter (10/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking SessionManagementFilter (11/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking SessionManagementFilter (11/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.s.w.a.AnonymousAuthenticationFilter  : Did not set SecurityContextHolder since already authenticated UsernamePasswordAuthenticationToken [Principal=6FCD264E878349EF9C5B32A6DA90448C, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[]]
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.s.w.a.AnonymousAuthenticationFilter  : Did not set SecurityContextHolder since already authenticated UsernamePasswordAuthenticationToken [Principal=6FCD264E878349EF9C5B32A6DA90448C, Credentials=[PROTECTED], Authenticated=true, Details=null, Granted Authorities=[]]
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] s.CompositeSessionAuthenticationStrategy : Preparing session with ChangeSessionIdAuthenticationStrategy (1/1)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] s.CompositeSessionAuthenticationStrategy : Preparing session with ChangeSessionIdAuthenticationStrategy (1/1)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking ExceptionTranslationFilter (12/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking ExceptionTranslationFilter (12/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Invoking AuthorizationFilter (13/13)
+2026-06-07T18:26:32.616+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Invoking AuthorizationFilter (13/13)
+2026-06-07T18:26:32.617+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] estMatcherDelegatingAuthorizationManager : Authorizing GET /api/me/menus?appCode=EXP
+2026-06-07T18:26:32.617+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] estMatcherDelegatingAuthorizationManager : Authorizing GET /api/me/apis?appCode=EXP
+2026-06-07T18:26:32.617+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] estMatcherDelegatingAuthorizationManager : Checking authorization on GET /api/me/menus?appCode=EXP using org.springframework.security.authorization.AuthenticatedAuthorizationManager@2b371d94
+2026-06-07T18:26:32.617+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] estMatcherDelegatingAuthorizationManager : Checking authorization on GET /api/me/apis?appCode=EXP using org.springframework.security.authorization.AuthenticatedAuthorizationManager@2b371d94
+2026-06-07T18:26:32.618+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.security.web.FilterChainProxy        : Secured GET /api/me/menus?appCode=EXP
+2026-06-07T18:26:32.618+07:00 DEBUG 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.security.web.FilterChainProxy        : Secured GET /api/me/apis?appCode=EXP
+2026-06-07T18:26:32.621+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-1] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:26:32.621+07:00 TRACE 122578 --- [vdbas-quantri] [nio-8082-exec-2] o.s.s.w.header.writers.HstsHeaderWriter  : Not injecting HSTS header since it did not match request to [Is Secure]
+2026-06-07T18:31:45.795+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@3ae16147 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:31:52.902+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@2e441eec (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:01.272+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@75d160fd (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:06.278+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@41b73346 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:11.284+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@67a19ca4 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:16.290+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@5ed8e770 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:21.296+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@72dc7dbc (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:26.300+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@d2e38d4 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:49.655+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@1b0aa50d (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:32:54.661+07:00  WARN 122578 --- [vdbas-quantri] [l-1:housekeeper] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Failed to validate connection oracle.jdbc.driver.T4CConnection@d3b0397 (ORA-17008: Closed connection
+https://docs.oracle.com/error-help/db/ora-17008/). Possibly consider using a shorter maxLifetime value.
+2026-06-07T18:33:45.963+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (d61fe80c-8989-4a81-ad9b-6ceac4590d56)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=7PaIXU1rSgmwVgxXgoRoGg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=7PaIXU1rSgmwVgxXgoRoGg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:34:46.274+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (4b60eed4-0cbb-4c10-aa59-5fde16f6b23a)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=I1zWFpD9Sb+kCETSa9UGHA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=I1zWFpD9Sb+kCETSa9UGHA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:35:47.283+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (347acbd8-c194-4397-8a5d-ba99fae847e8)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=khZsP1ZSRCmeHtwfD8S26A==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=khZsP1ZSRCmeHtwfD8S26A==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:36:51.172+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (04157845-2489-49ec-b8f0-a95f6c72a908)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=JfrkQpYPQ/yacMy2QO9Mdg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=JfrkQpYPQ/yacMy2QO9Mdg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:38:01.229+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (77a39ccc-249d-40a7-bd59-fc5118d521ee)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=GstKx3rKRKegMppTWrRAHg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=GstKx3rKRKegMppTWrRAHg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:39:11.346+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (0f8d1ad2-4942-411f-9407-0a11568668fb)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=D3uA7ojxQz6Yz4jcxDNEzQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=D3uA7ojxQz6Yz4jcxDNEzQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:40:21.408+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (ef94e4db-8f3e-491a-91b6-3258038c9821)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=RA+YSpL/QBCNvWmNQ5tphg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=RA+YSpL/QBCNvWmNQ5tphg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:41:31.476+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (fdc40245-be1d-4968-a1fb-2813b6e13fb7)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=VO13eHayREmNWE8ISb3F4Q==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=VO13eHayREmNWE8ISb3F4Q==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:42:41.543+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (15523c3f-6747-4f4a-8a1f-017e020568d3)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=zgmV9YGnQaakdjitWHIbHw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=zgmV9YGnQaakdjitWHIbHw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:43:51.605+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (b781fee6-a224-4f45-9e2f-0e633830250e)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=OLgB9EMSSKmTrkObappcuw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=OLgB9EMSSKmTrkObappcuw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:45:01.643+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (5ad586ce-2ead-4f25-bc4e-eca4c1677dce)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=4QD+eKRORBKQmJ5hmIWBLQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=4QD+eKRORBKQmJ5hmIWBLQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:46:11.703+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (ccc7d72c-6beb-41f3-94ea-80686293bd40)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=7DQ1jI/yR6iTvIXakLX59g==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=7DQ1jI/yR6iTvIXakLX59g==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:47:21.747+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (e3859130-fa1e-4fb7-85f9-2591acbe8888)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=rcApW7ztR+uBX5EWiEW1YQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=rcApW7ztR+uBX5EWiEW1YQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:48:31.802+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (389820cb-427d-463a-bb97-3a9ff5e7cc61)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=EsyS65/2TriorIyH2elKTA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=EsyS65/2TriorIyH2elKTA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:49:41.865+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (bf4a6eac-24e6-430a-910b-3cee4e1c5fbf)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=3R+l3wJWTXWgGywrCqDLKQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=3R+l3wJWTXWgGywrCqDLKQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:50:51.919+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (57acc8e6-e2f6-4e34-9e91-003bc89455ce)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=xt+N0+qLQSKanwnq/+akLg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=xt+N0+qLQSKanwnq/+akLg==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:52:01.960+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (cdea647d-96cd-4db9-b2a2-2bfb5de6049c)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=bHpDM12/TtuJ7yf8HGMrWQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=bHpDM12/TtuJ7yf8HGMrWQ==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:53:12.017+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (4e1b001f-5f77-4fb2-80bc-fa1a5bf12832)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=6fgFOrLESEqS6Fd/MQuhSw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=6fgFOrLESEqS6Fd/MQuhSw==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:54:22.058+07:00  WARN 122578 --- [vdbas-quantri] [onnection-adder] com.zaxxer.hikari.pool.PoolBase          : HikariPool-1 - Pool is empty, failed to create/setup connection (47458be2-4cf3-400f-9bd1-d76f8c7dfad0)
+
+java.sql.SQLTimeoutException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=d4RnOvqZR96xwVHK8TNJvA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.jdbc.driver.T4CConnection.handleLogonNetException(T4CConnection.java:1912) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.PhysicalConnection.connect(PhysicalConnection.java:1210) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CDriverExtension.getConnection(T4CDriverExtension.java:106) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:887) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.OracleDriver.connect(OracleDriver.java:694) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at com.zaxxer.hikari.util.DriverDataSource.getConnection(DriverDataSource.java:144) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newConnection(PoolBase.java:373) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.PoolBase.newPoolEntry(PoolBase.java:210) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool.createPoolEntry(HikariPool.java:488) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:752) ~[HikariCP-7.0.2.jar:na]
+	at com.zaxxer.hikari.pool.HikariPool$PoolEntryCreator.call(HikariPool.java:731) ~[HikariCP-7.0.2.jar:na]
+	at java.base/java.util.concurrent.FutureTask.run(FutureTask.java:317) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1144) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:642) ~[na:na]
+	at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+Caused by: oracle.net.ns.NetException: ORA-12170: Cannot connect. TCP connect timeout of 30000ms for host 172.16.5.20 port 1521. (CONNECTION_ID=d4RnOvqZR96xwVHK8TNJvA==)
+https://docs.oracle.com/error-help/db/ora-12170/
+	at oracle.net.nt.TcpNTAdapter.handleEstablishSocketException(TcpNTAdapter.java:385) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.establishSocket(TcpNTAdapter.java:350) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.TcpNTAdapter.connect(TcpNTAdapter.java:228) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnOption.connect(ConnOption.java:357) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.executeConnOption(ConnStrategy.java:1296) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.nt.ConnStrategy.execute(ConnStrategy.java:791) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.resolver.AddrResolution.resolveAndExecute(AddrResolution.java:724) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.establishConnection(NSProtocol.java:972) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.net.ns.NSProtocol.connect(NSProtocol.java:341) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.connectNetworkSessionProtocol(T4CConnection.java:3746) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	at oracle.jdbc.driver.T4CConnection.logon(T4CConnection.java:1107) ~[ojdbc11-23.9.0.25.07.jar:23.9.0.25.07]
+	... 14 common frames omitted
+
+2026-06-07T18:54:52.909+07:00  INFO 122578 --- [vdbas-quantri] [ionShutdownHook] o.s.boot.tomcat.GracefulShutdown         : Commencing graceful shutdown. Waiting for active requests to complete
+2026-06-07T18:54:52.935+07:00  INFO 122578 --- [vdbas-quantri] [tomcat-shutdown] o.s.boot.tomcat.GracefulShutdown         : Graceful shutdown complete
+2026-06-07T18:54:53.066+07:00  INFO 122578 --- [vdbas-quantri] [ionShutdownHook] j.LocalContainerEntityManagerFactoryBean : Closing JPA EntityManagerFactory for persistence unit 'default'
+2026-06-07T18:54:53.072+07:00  INFO 122578 --- [vdbas-quantri] [ionShutdownHook] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...

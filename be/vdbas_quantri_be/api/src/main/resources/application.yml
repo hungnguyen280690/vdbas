@@ -1,0 +1,105 @@
+server:
+  port: 8080 # Sync port with server
+  forward-headers-strategy: framework
+
+logging:
+  level:
+    ROOT: INFO
+    org.springframework: INFO
+    # PROD: usually set LOG_LEVEL_APP=INFO
+    com.fis.vdbas.qtdc: ${LOG_LEVEL_APP:INFO}
+    # PROD: usually set LOG_LEVEL_SQL=ERROR
+    org.hibernate.SQL: ${LOG_LEVEL_SQL:ERROR}
+    org.springframework.web.cors: TRACE
+    org.springframework.security: TRACE
+
+spring:
+  application:
+    name: vdbas-quantri
+
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisReactiveAutoConfiguration
+      - org.springframework.boot.autoconfigure.data.redis.RedisRepositoriesAutoConfiguration
+
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${SPRING_DATA_REDIS_PASSWORD:}
+
+  messages:
+    basename: messages
+    encoding: UTF-8
+    fallback-to-system-locale: false
+    default-locale: en
+
+  datasource:
+    # PROD: configure DB_HOST, DB_PORT, DB_NAME variables corresponding to the Database server
+    url: jdbc:oracle:thin:@//${DB_HOST:localhost}:${DB_PORT:1521}/${DB_NAME:ORCLPDB1}
+    # PROD: configure Database user and password
+    username: ${DB_USER:vdbas}
+    password: ${DB_PASSWORD:qttt@123}
+    driver-class-name: oracle.jdbc.OracleDriver
+
+  jpa:
+    # Default is PROD config (false) - DEV can pass DB_SHOW_SQL=true
+    show-sql: ${DB_SHOW_SQL:false}
+    hibernate:
+      # Default is PROD config (validate) - DEV can pass DB_DDL_AUTO=none
+      ddl-auto: ${DB_DDL_AUTO:validate}
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.OracleDialect
+        format_sql: ${DB_FORMAT_SQL:true}
+    open-in-view: false
+
+
+management:
+  health:
+    redis:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when_authorized
+
+keycloak:
+  server-url: ${KEYCLOAK_URL:http://localhost:8080}
+  realm: ${KEYCLOAK_REALM:vdbas_dev}
+  client-id: vdbas
+  # PROD: pass actual secret via KEYCLOAK_SECRET
+  client-secret: ${KEYCLOAK_SECRET:T34pLw26uDQ3egBpIvMuLqCZ0ipfgrlX}
+  # PROD: pass default password via KEYCLOAK_DEFAULT_PASSWORD
+  default-password: ${KEYCLOAK_DEFAULT_PASSWORD:ChangeMe123!}
+
+app:
+  security:
+    default-role: QTTT_ROLE_DEFAULT
+  cache:
+    # PROD: should pass environment variables CACHE_TYPE=redis, SPRING_DATA_REDIS_HOST, SPRING_DATA_REDIS_PORT, SPRING_DATA_REDIS_PASSWORD
+    type: ${CACHE_TYPE:memory}
+    default-ttl: 15
+  cors:
+    # PROD: pass actual origin (e.g., CORS_ALLOWED_ORIGINS=https://domain.com)
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+    allowed-methods: ${CORS_ALLOWED_METHODS:GET,POST,PUT,DELETE,OPTIONS}
+    allowed-headers: "*"
+    allow-credentials: true
+
+springdoc:
+  api-docs:
+    path: /docs/api-docs
+    # PROD: disabled by default on PROD - DEV can pass SWAGGER_ENABLED=true
+    enabled: ${SWAGGER_ENABLED:false}
+  swagger-ui:
+    path: /docs/swagger-ui.html
+    enabled: ${SWAGGER_ENABLED:false}
+    operations-sorter: method
+    tags-sorter: alpha
+    try-it-out-enabled: true
+  show-actuator: false
