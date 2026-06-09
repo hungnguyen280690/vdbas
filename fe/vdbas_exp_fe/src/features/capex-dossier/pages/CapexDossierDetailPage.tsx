@@ -32,6 +32,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
   const createMutation = useCapexDossier.useCreate({ onSuccess: () => onBack() })
   const updateMutation = useCapexDossier.useUpdate({ onSuccess: () => onBack() })
   const deleteMutation = useCapexDossier.useDelete({ onSuccess: () => onBack() })
+  const submitMutation = useCapexDossier.useSubmit({ onSuccess: () => onBack() })
   const { data: projectsData } = useCapexDossier.useProjects()
   const projects = useMemo(() => (projectsData as any[]) ?? [], [projectsData])
 
@@ -115,14 +116,11 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
   }
 
   const handleSubmit = async () => {
-    if (!hasDocuments && !isNew) {
-      message.warning('Cần có ít nhất một chứng từ trước khi gửi kiểm soát')
-      return
-    }
+    if (!recordId) return
     try {
-      await handleSave()
+      await submitMutation.mutateAsync(recordId)
     } catch {
-      /* validation failed */
+      /* handled */
     }
   }
 
@@ -144,7 +142,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
     }
   }
 
-  const isSaving = createMutation.isPending || updateMutation.isPending
+  const isSaving = createMutation.isPending || updateMutation.isPending || submitMutation.isPending
 
   // ── Document grid columns ────────────────────────────────────────────────
   const docColumns = [
@@ -191,7 +189,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
   const tabItems = [
     {
       key:      'general',
-      label:    'Thông tin chung',
+      label:    <span data-testid="tab-general">Thông tin chung</span>,
       children: (
         <Form
           form={form}
@@ -215,7 +213,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
             {/* Row 1 */}
             <Col span={8}>
               <Form.Item name={CapexDossier.DOSSIER_CODE} label="Mã hồ sơ">
-                <Input disabled placeholder="(Tự động sinh sau khi Lưu)" />
+                <Input disabled placeholder="(Tự động sinh sau khi Lưu)" data-testid="input-payment-dossier-id" />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -224,7 +222,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                 label={<span>Ngày gửi hồ sơ <span style={{ color: '#dc3545' }}>*</span></span>}
                 rules={[{ required: true, message: 'Vui lòng chọn ngày gửi' }]}
               >
-                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" data-testid="input-send-date" />
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -233,7 +231,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                 label={<span>Nguồn <span style={{ color: '#dc3545' }}>*</span></span>}
                 rules={[{ required: true, message: 'Vui lòng chọn nguồn' }]}
               >
-                <Select disabled={mode !== 'new'}>
+                <Select disabled={mode !== 'new'} data-testid="select-source">
                   <Select.Option value="MANUAL">Thủ công</Select.Option>
                   <Select.Option value="DVC">DVC</Select.Option>
                 </Select>
@@ -253,10 +251,11 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                       style={{ width: 'calc(100% - 32px)' }}
                       placeholder="Nhập hoặc F4 để tra cứu"
                       onChange={(e) => onProjectCodeChange(e.target.value)}
+                      data-testid="input-project-id"
                     />
                   </Form.Item>
                   <Tooltip title="F4 — Tra cứu dự án">
-                    <Button icon={<SearchOutlined />} />
+                    <Button icon={<SearchOutlined />} data-testid="btn-lookup-project" />
                   </Tooltip>
                 </Input.Group>
               </Form.Item>
@@ -266,7 +265,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                 name={CapexDossier.PROJECT_NAME}
                 label={<span>Tên dự án/công trình <span style={{ color: '#fd7e14' }}>(*)</span></span>}
               >
-                <Input readOnly placeholder="(Tự động fill theo Mã dự án)" />
+                <Input readOnly placeholder="(Tự động fill theo Mã dự án)" data-testid="input-project-name" />
               </Form.Item>
             </Col>
 
@@ -277,10 +276,10 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                   <Form.Item name={CapexDossier.PROJECT_SPECIFIC_CODE} label="Mã dự án đặc thù">
                     <Input.Group compact>
                       <Form.Item name={CapexDossier.PROJECT_SPECIFIC_CODE} noStyle>
-                        <Input style={{ width: 'calc(100% - 32px)' }} placeholder="F4 — Chỉ dành cho Military" />
+                        <Input style={{ width: 'calc(100% - 32px)' }} placeholder="F4 — Chỉ dành cho Military" data-testid="input-project-spec-id" />
                       </Form.Item>
                       <Tooltip title="F4">
-                        <Button icon={<SearchOutlined />} />
+                        <Button icon={<SearchOutlined />} data-testid="btn-lookup-project-spec" />
                       </Tooltip>
                     </Input.Group>
                   </Form.Item>
@@ -290,7 +289,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                     name={CapexDossier.PROJECT_SPECIFIC_NAME}
                     label={<span>Tên dự án đặc thù <span style={{ color: '#fd7e14' }}>(*)</span></span>}
                   >
-                    <Input readOnly placeholder="(Tự động fill)" />
+                    <Input readOnly placeholder="(Tự động fill)" data-testid="input-project-spec-name" />
                   </Form.Item>
                 </Col>
               </>
@@ -305,10 +304,10 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
               >
                 <Input.Group compact>
                   <Form.Item name={CapexDossier.PROJECT_MANAGEMENT_CODE} noStyle>
-                    <Input style={{ width: 'calc(100% - 32px)' }} placeholder="Nhập hoặc F4 để tra cứu" />
+                    <Input style={{ width: 'calc(100% - 32px)' }} placeholder="Nhập hoặc F4 để tra cứu" data-testid="input-project-management-board-id" />
                   </Form.Item>
                   <Tooltip title="F4 — Tra cứu ĐVQHNS">
-                    <Button icon={<SearchOutlined />} />
+                    <Button icon={<SearchOutlined />} data-testid="btn-lookup-board" />
                   </Tooltip>
                 </Input.Group>
               </Form.Item>
@@ -318,14 +317,14 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                 name={CapexDossier.PROJECT_MANAGEMENT_NAME}
                 label={<span>Tên ĐVQHNS <span style={{ color: '#fd7e14' }}>(*)</span></span>}
               >
-                <Input readOnly placeholder="(Tự động fill theo Mã ĐVQHNS)" />
+                <Input readOnly placeholder="(Tự động fill theo Mã ĐVQHNS)" data-testid="input-project-management-board-name" />
               </Form.Item>
             </Col>
 
             {/* Row 4 */}
             <Col span={8}>
               <Form.Item name={CapexDossier.STATE_CODE} label="Trạng thái hồ sơ">
-                <Input disabled />
+                <Input disabled data-testid="input-status" />
               </Form.Item>
             </Col>
           </Row>
@@ -334,7 +333,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
     },
     {
       key:      'documents',
-      label:    'Danh sách chứng từ',
+      label:    <span data-testid="tab-documents">Danh sách chứng từ</span>,
       disabled: isNew,
       children: (
         <div style={{ padding: '16px 20px' }}>
@@ -414,7 +413,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
     },
     {
       key:      'history',
-      label:    'Lịch sử giao dịch',
+      label:    <span data-testid="tab-history">Lịch sử giao dịch</span>,
       children: (
         <div style={{ padding: '16px 20px' }}>
           <Table
@@ -430,7 +429,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
     },
     {
       key:      'approval',
-      label:    'Trạng thái phê duyệt',
+      label:    <span data-testid="tab-approval">Trạng thái phê duyệt</span>,
       children: (
         <div style={{ padding: '24px 40px' }}>
           <Steps
@@ -512,6 +511,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                   size="small"
                   title="Sửa (F2)"
                   onClick={() => onEdit?.(recordId!)}
+                  data-testid="btn-edit-top"
                 >
                   Sửa
                 </Button>
@@ -559,6 +559,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
               icon={<DeleteOutlined />}
               onClick={() => setShowDelete(true)}
               title="Xoá (Delete)"
+              data-testid="btn-delete"
             >
               Xoá
             </Button>
@@ -568,14 +569,15 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
         {/* Right — default/primary actions */}
         <Space>
           {isView ? (
-            <Button icon={<ArrowLeftOutlined />} onClick={onBack}>Quay lại</Button>
+            <Button icon={<ArrowLeftOutlined />} onClick={onBack} data-testid="btn-back">Quay lại</Button>
           ) : (
             <>
-              <Button onClick={handleCancel} title="Huỷ (Esc)">Huỷ</Button>
+              <Button onClick={handleCancel} title="Huỷ (Esc)" data-testid="btn-cancel">Huỷ</Button>
               <Button
                 icon={<SaveOutlined />}
                 onClick={handleSaveDraft}
                 title="Lưu nháp (Ctrl+Shift+S)"
+                data-testid="btn-save-draft"
               >
                 Lưu nháp
               </Button>
@@ -585,6 +587,7 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                 loading={isSaving}
                 onClick={handleSave}
                 title="Lưu (Ctrl+S)"
+                data-testid="btn-save"
               >
                 Lưu
               </Button>
@@ -592,9 +595,10 @@ const CapexDossierDetailPage = ({ recordId, mode, onBack, onEdit }: CapexDossier
                 <Button
                   type="primary"
                   icon={<SendOutlined />}
-                  disabled={!hasDocuments && !isNew}
+                  loading={submitMutation.isPending}
                   onClick={handleSubmit}
                   title="Gửi kiểm soát (F9)"
+                  data-testid="btn-submit"
                 >
                   Gửi kiểm soát
                 </Button>

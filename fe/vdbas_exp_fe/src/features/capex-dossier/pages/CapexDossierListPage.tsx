@@ -283,6 +283,7 @@ const CapexDossierListPage = ({ onNavigate }: CapexDossierListPageProps) => {
             icon={<PlusOutlined />}
             onClick={() => onNavigate(null, 'new')}
             title="Tạo mới (Ctrl+N)"
+            data-testid="btn-create-new"
           >
             Tạo mới
           </Button>
@@ -301,6 +302,7 @@ const CapexDossierListPage = ({ onNavigate }: CapexDossierListPageProps) => {
                 onChange={(e) => setInputFilters({ keyword: e.target.value })}
                 onPressEnter={handleSearch}
                 allowClear
+                data-testid="search-input"
               />
             </Col>
             <Col style={{ minWidth: 160 }}>
@@ -314,6 +316,7 @@ const CapexDossierListPage = ({ onNavigate }: CapexDossierListPageProps) => {
                   setFilters((prev) => ({ ...prev, stateCode: v }))
                   setPagination((prev) => ({ ...prev, current: 1 }))
                 }}
+                data-testid="filter-status"
               >
                 {(Object.entries(STATE_LABELS) as [StateCode, string][]).map(([code, label]) => (
                   <Select.Option key={code} value={code}>{label}</Select.Option>
@@ -345,7 +348,7 @@ const CapexDossierListPage = ({ onNavigate }: CapexDossierListPageProps) => {
               </Button>
             </Col>
             <Col>
-              <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch}>
+              <Button type="primary" icon={<SearchOutlined />} onClick={handleSearch} data-testid="btn-search">
                 Tìm kiếm
               </Button>
             </Col>
@@ -444,6 +447,7 @@ const CapexDossierListPage = ({ onNavigate }: CapexDossierListPageProps) => {
           size="small"
           scroll={{ x: 2000 }}
           onChange={handleTableChange}
+          data-testid="list-tbody"
           onRow={(record) => ({
             onClick: () => onNavigate(record.dossierId, 'view'),
             style: { cursor: 'pointer' },

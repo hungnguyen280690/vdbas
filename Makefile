@@ -69,3 +69,21 @@ clean: stop
 	@cd be/vdbas_common && mvn clean
 	@cd be/vdbas_quantri_be && mvn clean
 	@cd be/vdbas_exp_be && mvn clean
+
+.PHONY: test-e2e test-e2e-report install-e2e
+
+install-e2e:
+	@echo -e "$(BLUE)Installing Playwright and dependencies...$(NC)"
+	@cd fe/vdbas_exp_fe && npm install && npx playwright install chromium --with-deps
+
+test-e2e:
+	@echo -e "$(BLUE)Running Playwright E2E tests via Docker...$(NC)"
+	@docker run --rm --network="host" \
+		-v $(ROOT_DIR):/work \
+		-w /work/fe/vdbas_exp_fe \
+		mcr.microsoft.com/playwright:v1.60.0-noble \
+		/bin/bash -c "npx playwright test"
+
+test-e2e-report:
+	@echo -e "$(BLUE)Opening Playwright Test Report...$(NC)"
+	@cd fe/vdbas_exp_fe && npx playwright show-report

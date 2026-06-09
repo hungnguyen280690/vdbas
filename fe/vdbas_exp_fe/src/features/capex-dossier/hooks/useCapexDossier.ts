@@ -39,32 +39,33 @@ export const useCapexDossier = {
   useCreate: (options: any = {}) => {
     const qc = useQueryClient()
     return useMutation({
+      ...options,
       mutationFn: (data: any) => createCapexDossier(data),
       onSuccess: (data, variables, context) => {
         qc.invalidateQueries({ queryKey: [QK] })
         if (!options.skipNotification) message.success('Tạo hồ sơ thành công')
         if (options.onSuccess) options.onSuccess(data, variables, context)
       },
-      ...options,
     })
   },
 
   useUpdate: (options: any = {}) => {
     const qc = useQueryClient()
     return useMutation({
+      ...options,
       mutationFn: (variables: any) => updateCapexDossier(variables.dossierId, variables),
       onSuccess: (data, variables, context) => {
         qc.invalidateQueries({ queryKey: [QK] })
         if (!options.skipNotification) message.success('Cập nhật hồ sơ thành công')
         if (options.onSuccess) options.onSuccess(data, variables, context)
       },
-      ...options,
     })
   },
 
   useDelete: (options: any = {}) => {
     const qc = useQueryClient()
     return useMutation({
+      ...options,
       mutationFn: ({
         dossierId,
         deleteReason,
@@ -79,26 +80,26 @@ export const useCapexDossier = {
         if (!options.skipNotification) message.success('Xóa hồ sơ thành công')
         if (options.onSuccess) options.onSuccess(data, variables, context)
       },
-      ...options,
     })
   },
 
   useSubmit: (options: any = {}) => {
     const qc = useQueryClient()
     return useMutation({
+      ...options,
       mutationFn: (dossierId: string) => submitCapexDossier(dossierId),
       onSuccess: (data, variables, context) => {
         qc.invalidateQueries({ queryKey: [QK] })
         if (!options.skipNotification) message.success('Đã gửi hồ sơ để kiểm soát')
         if (options.onSuccess) options.onSuccess(data, variables, context)
       },
-      ...options,
     })
   },
 
   useWorkflowAction: (options: any = {}) => {
     const qc = useQueryClient()
     return useMutation({
+      ...options,
       mutationFn: ({
         dossierId,
         action,
@@ -112,7 +113,6 @@ export const useCapexDossier = {
         qc.invalidateQueries({ queryKey: [QK] })
         if (options.onSuccess) options.onSuccess(data, variables, context)
       },
-      ...options,
     })
   },
 }

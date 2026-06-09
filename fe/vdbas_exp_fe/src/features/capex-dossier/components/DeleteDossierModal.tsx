@@ -50,6 +50,7 @@ const DeleteDossierModal = ({ open, dossierCode, onCancel, onConfirm, loading }:
           disabled={!canConfirm}
           loading={loading}
           onClick={handleConfirm}
+          data-testid="btn-confirm-delete"
         >
           Xác nhận xoá
         </Button>,
@@ -76,6 +77,7 @@ const DeleteDossierModal = ({ open, dossierCode, onCancel, onConfirm, loading }:
             value={reason}
             onChange={(e) => setReason(e.target.value)}
             status={reason.length > 0 && reason.trim().length < 10 ? 'error' : undefined}
+            data-testid="input-delete-reason"
           />
         </Form.Item>
 
@@ -83,6 +85,7 @@ const DeleteDossierModal = ({ open, dossierCode, onCancel, onConfirm, loading }:
           checked={confirmed}
           onChange={(e) => setConfirmed(e.target.checked)}
           style={{ fontSize: 13 }}
+          data-testid="checkbox-confirm-reviewed"
         >
           Tôi đã rà soát và xác nhận xoá hồ sơ này
         </Checkbox>
