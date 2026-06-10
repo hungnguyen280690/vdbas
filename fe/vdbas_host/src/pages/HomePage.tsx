@@ -12,6 +12,8 @@ export interface AppDefinition {
   icon: string
   color: string
   available: boolean
+  remoteCode?: string   // federation remote name to register (if different from key)
+  expose?: string       // exposed module name to load (defaults to 'App')
 }
 
 export const APPS: AppDefinition[] = [
@@ -80,12 +82,24 @@ export const APPS: AppDefinition[] = [
     available: false,
   },
   {
-    key: 'exp',
-    label: 'Quản lý chi',
-    description: 'Phân hệ quản lý chi',
-    icon: '📋',
+    key: 'chi_dt',
+    label: 'Chi đầu tư',
+    description: 'Phân hệ quản lý chi đầu tư (CAPEX)',
+    icon: '🏗️',
     color: '#0ea5e9',
     available: true,
+    remoteCode: 'exp',
+    expose: 'ChiDauTu',
+  },
+  {
+    key: 'chi_tx',
+    label: 'Chi thường xuyên',
+    description: 'Phân hệ quản lý chi thường xuyên',
+    icon: '📑',
+    color: '#10b981',
+    available: true,
+    remoteCode: 'exp',
+    expose: 'ChiThuongXuyen',
   },
 ]
 
@@ -101,7 +115,7 @@ const HomePage: React.FC = () => {
   const isAppAvailable = (app: AppDefinition) => {
     if (!app.available) return false
     if (!apps) return false
-    return apps.some((a) => a.appCode.toLowerCase() === app.key.toLowerCase())
+    return apps.some((a) => a.appCode.toLowerCase() === (app.remoteCode ?? app.key).toLowerCase())
   }
 
   return (

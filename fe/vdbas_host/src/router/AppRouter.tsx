@@ -34,7 +34,7 @@ class ErrorBoundary extends React.Component<
 }
 
 // ── Dynamic Remote Loader Component ───────────────────────────────────────────
-const RemoteAppLoader: React.FC<{ appCode: string; appUrl: string }> = ({ appCode, appUrl }) => {
+const RemoteAppLoader: React.FC<{ appCode: string; appUrl: string; expose?: string }> = ({ appCode, appUrl, expose }) => {
   const [Component, setComponent] = useState<React.ComponentType<any> | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -48,7 +48,7 @@ const RemoteAppLoader: React.FC<{ appCode: string; appUrl: string }> = ({ appCod
           [{ name: appCode, entry, type: 'module' }],
           { force: true },
         )
-        const module = await loadRemote(`${appCode}/App`) as { default: React.ComponentType<any> }
+        const module = await loadRemote(`${appCode}/${expose ?? 'App'}`) as { default: React.ComponentType<any> }
         if (active) {
           setComponent(() => module.default)
         }
@@ -63,7 +63,7 @@ const RemoteAppLoader: React.FC<{ appCode: string; appUrl: string }> = ({ appCod
     return () => {
       active = false
     }
-  }, [appCode, appUrl])
+  }, [appCode, appUrl, expose])
 
   if (error) {
     throw new Error(error)
@@ -143,7 +143,9 @@ export const AppRouter: React.FC = () => {
 
       {/* Render routes for all statically defined apps with dynamic permission checks */}
       {APPS.map((app) => {
-        const userApp = apps?.find((a) => a.appCode.toLowerCase() === app.key.toLowerCase())
+        const userApp = apps?.find(
+          (a) => a.appCode.toLowerCase() === (app.remoteCode ?? app.key).toLowerCase()
+        )
         
         // Nếu app chưa available trong hệ thống (available = false), render ComingSoon
         if (!app.available) {
@@ -163,7 +165,7 @@ export const AppRouter: React.FC = () => {
             element={
               userApp ? (
                 <RemoteFrame label={app.label}>
-                  <RemoteAppLoader appCode={userApp.appCode.toLowerCase()} appUrl={userApp.appUrl} />
+                  <RemoteAppLoader appCode={userApp.appCode.toLowerCase()} appUrl={userApp.appUrl} expose={app.expose} />
                 </RemoteFrame>
               ) : (
                 <ForbiddenPage />
@@ -188,7 +190,6 @@ export const AppRouter: React.FC = () => {
 
       {/* Placeholder apps */}
       <Route path="/thu/*" element={<ComingSoon label="Thu" />} />
-      <Route path="/chi/*" element={<ComingSoon label="Chi" />} />
 
       <Route path="/403" element={<ForbiddenPage />} />
       <Route path="*" element={<NotFoundPage />} />
