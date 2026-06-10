@@ -63,6 +63,7 @@ export const PermissionProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   )
 }
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const usePermissions = (): PermissionContextValue => {
   const ctx = useContext(PermissionContext)
   if (!ctx) throw new Error('usePermissions must be used within a PermissionProvider')

@@ -102,7 +102,7 @@ const CategoryGroupsPage: React.FC = () => {
     }
 
     return params
-  }, [pagination.current, pagination.pageSize, filters])
+  }, [pagination, filters])
 
   // 6. Queries
   const { data, isLoading } = CategoryGroupsHooks.useList(queryParams)
