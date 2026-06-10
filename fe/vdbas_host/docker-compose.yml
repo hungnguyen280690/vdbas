@@ -3,13 +3,15 @@ version: '3.8'
 services:
   vdbas-host:
     build:
-      context: .
-      dockerfile: Dockerfile
+      context: ../vdbas_host
+      dockerfile: ../vdbas_host/Dockerfile
       args:
-        - VITE_KEYCLOAK_URL=https://vst-sso.apps.ocp.vst.gov.vn
-        - VITE_KEYCLOAK_REALM=vdbas_dev
-        - VITE_KEYCLOAK_CLIENT_ID=vdbas_fe
+        # - VITE_KEYCLOAK_URL=${VITE_KEYCLOAK_URL:-http://localhost:8180}
+        - VITE_KEYCLOAK_URL=${VITE_KEYCLOAK_URL:-https://vst-sso.apps.ocp.vst.gov.vn}
+        - VITE_KEYCLOAK_REALM=${VITE_KEYCLOAK_REALM:-vdbas_dev}
+        - VITE_KEYCLOAK_CLIENT_ID=${VITE_KEYCLOAK_CLIENT_ID:-vdbas_fe}
         - VITE_QTDC_REMOTE_URL=http://localhost:3002
+        - VITE_EXP_REMOTE_URL=http://localhost:3003
         - VITE_TEMPLATE_REMOTE_URL=http://localhost:3001
         - VITE_API_BASE_URL=http://localhost:8082/api
     image: vdbas-host:latest

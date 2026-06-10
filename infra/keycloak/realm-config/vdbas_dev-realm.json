@@ -1,0 +1,91 @@
+{
+  "realm": "vdbas_dev",
+  "enabled": true,
+  "displayName": "VDBAS Dev",
+  "sslRequired": "none",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": false,
+  "accessTokenLifespan": 3600,
+  "clients": [
+    {
+      "clientId": "vdbas_fe",
+      "name": "VDBAS Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": [
+        "http://localhost:3000/*",
+        "http://localhost:5173/*",
+        "http://localhost:3001/*",
+        "http://localhost:3002/*"
+      ],
+      "webOrigins": [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "http://localhost:3001",
+        "http://localhost:3002"
+      ],
+      "protocol": "openid-connect",
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    },
+    {
+      "clientId": "vdbas",
+      "name": "VDBAS Backend",
+      "enabled": true,
+      "publicClient": false,
+      "standardFlowEnabled": false,
+      "serviceAccountsEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "secret": "T34pLw26uDQ3egBpIvMuLqCZ0ipfgrlX",
+      "protocol": "openid-connect"
+    }
+  ],
+  "roles": {
+    "realm": [
+      { "name": "QTTT_ROLE_DEFAULT", "description": "Default quantri role" },
+      { "name": "exp_ROLE_DEFAULT", "description": "Default exp role" },
+      { "name": "admin", "description": "Administrator" }
+    ]
+  },
+  "users": [
+    {
+      "username": "admin.dev",
+      "email": "admin.dev@vdbas.local",
+      "firstName": "Admin",
+      "lastName": "Dev",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "ChangeMe123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["QTTT_ROLE_DEFAULT", "exp_ROLE_DEFAULT", "admin"]
+    },
+    {
+      "username": "user.dev",
+      "email": "user.dev@vdbas.local",
+      "firstName": "User",
+      "lastName": "Dev",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        {
+          "type": "password",
+          "value": "ChangeMe123!",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["QTTT_ROLE_DEFAULT", "exp_ROLE_DEFAULT"]
+    }
+  ]
+}
