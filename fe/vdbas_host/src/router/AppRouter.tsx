@@ -134,7 +134,13 @@ export const AppRouter: React.FC = () => {
 
   // Lọc ra các apps từ API không nằm trong danh sách APPS mặc định để đăng ký route động hoàn toàn
   const registeredKeys = new Set(APPS.map((a) => a.key.toLowerCase()))
-  const extraApps = apps?.filter((a) => !registeredKeys.has(a.appCode.toLowerCase())) || []
+  const registeredRemoteCodes = new Set(
+    APPS.flatMap((a) => a.remoteCode ? [a.remoteCode.toLowerCase()] : [])
+  )
+  const extraApps = apps?.filter(
+    (a) => !registeredKeys.has(a.appCode.toLowerCase()) &&
+           !registeredRemoteCodes.has(a.appCode.toLowerCase())
+  ) || []
 
   return (
     <Routes>

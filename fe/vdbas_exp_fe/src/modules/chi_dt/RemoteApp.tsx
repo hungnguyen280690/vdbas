@@ -1,5 +1,5 @@
 /**
- * RemoteApp for chi_dt — exposed as `exp/App` via Module Federation.
+ * RemoteApp for chi_dt — exposed as `exp/ChiDauTu` via Module Federation.
  *
  * This component is loaded by the vdbas_host shell. It:
  *  - Skips Keycloak initialization (the host has already authenticated)
