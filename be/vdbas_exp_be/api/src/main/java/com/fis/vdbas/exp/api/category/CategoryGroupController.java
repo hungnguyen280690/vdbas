@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/category-groups")
+@RequestMapping("/api/category-groups")
 @RequiredArgsConstructor
 public class CategoryGroupController {
 

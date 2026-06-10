@@ -8,7 +8,6 @@ import com.fis.vdbas.qtdc.common.Constants;
 import com.fis.vdbas.qtdc.application.auth.mapper.PermissionMapper;
 import com.fis.vdbas.qtdc.domain.auth.Permission;
 import com.fis.vdbas.qtdc.domain.auth.PermissionRepository;
-import com.fis.vdbas.qtdc.domain.user.User;
 import com.fis.vdbas.qtdc.domain.user.UserRepository;
 import com.fis.vdbas.common.util.UUIDUtils;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import static com.fis.vdbas.common.util.Constants.FLAG_FALSE;
 import static com.fis.vdbas.common.util.Constants.FLAG_TRUE;
@@ -43,35 +41,6 @@ public class UserPermissionService {
     private final ApplicationService applicationService;
     private final PermissionMapper permissionMapper;
 
-    /**
-     * Resolves external user ID (Keycloak subject) or fallback header ID
-     * to the internal database UUID of the User.
-     *
-     * @param userIdStr User ID string
-     * @return Resolved UUID, or parsed UUID as fallback
-     */
-    private UUID getInternalUserId(String userIdStr) {
-        if (userIdStr == null || userIdStr.isBlank()) {
-            return null;
-        }
-        // 1. Try finding by externalId (Keycloak subject ID)
-        Optional<User> userOpt = userRepository.findByExternalId(userIdStr);
-        if (userOpt.isPresent()) {
-            return userOpt.get().getId();
-        }
-        // 2. Fallback: try finding by internal UUID in users table
-        try {
-            UUID uuid = UUIDUtils.parseUUID(userIdStr);
-            if (uuid != null && userRepository.existsById(uuid)) {
-                return uuid;
-            }
-        } catch (Exception e) {
-            log.warn("Failed to parse or look up userIdStr as UUID: {}", userIdStr);
-        }
-        // 3. Last fallback: return parsed UUID directly
-        return UUIDUtils.parseUUID(userIdStr);
-    }
-
      /**
      * Retrieves the list of applications for a user.
      * <p>
@@ -85,12 +54,8 @@ public class UserPermissionService {
     @Transactional(readOnly = true)
     @Cacheable(value = CacheConstants.USER_PERMISSIONS_CACHE, key = "T(com.fis.vdbas.qtdc.common.Constants).PREFIX_APP_CACHE + #userId")
     public List<PermissionAppDto> getUserAppPermissionsByUserId(String userId) {
-        UUID internalUserId = getInternalUserId(userId);
-        if (internalUserId == null) {
-            return new ArrayList<>();
-        }
         List<String> permissions = permissionRepository.findUserPermissionsByUserIdAndType(
-                internalUserId, "MENU");
+                UUIDUtils.parseUUID(userId), "MENU");
         List<PermissionAppDto> result = new ArrayList<>();
         if (permissions != null) {
             List<ApplicationDto> applications = applicationService.findAll();
@@ -122,12 +87,8 @@ public class UserPermissionService {
     @Transactional(readOnly = true)
     @Cacheable(value = CacheConstants.USER_PERMISSIONS_CACHE, key = "T(com.fis.vdbas.qtdc.common.Constants).PREFIX_MENU_CACHE + #appCode + '_' + #userId")
     public List<PermissionDto> getUserMenuPermissionsByUserId(String appCode, String userId) {
-        UUID internalUserId = getInternalUserId(userId);
-        if (internalUserId == null) {
-            return new ArrayList<>();
-        }
         List<Permission> permissions = permissionRepository.findUserPermissionsByUserIdAndAppCodeAndType(
-                internalUserId, appCode, "MENU");
+                UUIDUtils.parseUUID(userId), appCode, "MENU");
         List<PermissionDto> result = permissionMapper.toDtoList(permissions);
         return result;
     }
@@ -146,12 +107,8 @@ public class UserPermissionService {
     @Transactional(readOnly = true)
     @Cacheable(value = CacheConstants.USER_PERMISSIONS_CACHE, key = "T(com.fis.vdbas.qtdc.common.Constants).PREFIX_API_CACHE + #appCode + '_' + #userId")
     public List<PermissionDto> getUserApiPermissionsByUserId(String appCode, String userId) {
-        UUID internalUserId = getInternalUserId(userId);
-        if (internalUserId == null) {
-            return new ArrayList<>();
-        }
         List<Permission> permissions = permissionRepository.findUserPermissionsByUserIdAndAppCodeAndType(
-                internalUserId, appCode, "API");
+                UUIDUtils.parseUUID(userId), appCode, "API");
         List<PermissionDto> result = permissions.stream()
                 .filter(p -> p.getPath() != null && !p.getPath().isBlank())
                 .map(permissionMapper::toDto)
@@ -172,13 +129,9 @@ public class UserPermissionService {
     @Transactional(readOnly = true)
     @Cacheable(value = CacheConstants.USER_PERMISSIONS_CACHE, key = "T(com.fis.vdbas.qtdc.common.Constants).PREFIX_APP_CACHE + #userId")
     private List<String> getAllApplicationByUserId(String userId) {
-        UUID internalUserId = getInternalUserId(userId);
-        if (internalUserId == null) {
-            return new ArrayList<>();
-        }
         List<String> permissions = permissionRepository.findUserPermissionsByUserIdAndType(
-                internalUserId, "MENU");
-        List<String> result = permissions == null ? new ArrayList<>() : permissions;
+                UUIDUtils.parseUUID(userId), "MENU");
+        List<String> result = permissions == null ? new ArrayList() : permissions;
         return result;
     }
 
