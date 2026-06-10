@@ -1,8 +1,8 @@
 import { createContext, useContext, useEffect, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useAuth } from './AuthContext'
-import { getMyMenus, getMyApis } from '../services/aclService'
-import type { MenuItem, ApiPermission, PermissionContextValue } from '@/types/index'
+import { getMyMenus, getMyApis } from '@/shared/services/aclService'
+import type { MenuItem, ApiPermission, PermissionContextValue } from '@/shared/types/index'
 
 const PermissionContext = createContext<PermissionContextValue | null>(null)
 

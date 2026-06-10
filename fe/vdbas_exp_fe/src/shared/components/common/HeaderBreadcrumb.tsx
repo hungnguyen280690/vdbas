@@ -1,7 +1,7 @@
 import { Breadcrumb } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { usePermissions } from '../../contexts/PermissionContext'
-import { findPathInTree } from '../../utils/treeUtils'
+import { usePermissions } from '@/shared/contexts/PermissionContext'
+import { findPathInTree } from '@/shared/utils/treeUtils'
 
 const HeaderBreadcrumb: React.FC<{ currentPath: string }> = ({ currentPath }) => {
   const { t: translate } = useTranslation()

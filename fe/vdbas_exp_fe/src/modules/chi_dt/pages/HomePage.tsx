@@ -1,6 +1,6 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { useAuth } from '@/contexts/AuthContext'
+import { useAuth } from '@/shared/contexts/AuthContext'
 
 /**
  * HomePage — default landing page for authenticated users.

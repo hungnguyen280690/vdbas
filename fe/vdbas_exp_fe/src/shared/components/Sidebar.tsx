@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { Menu, type MenuProps } from 'antd'
 import { useTranslation } from 'react-i18next'
 import { AppstoreOutlined, MenuFoldOutlined, MenuUnfoldOutlined } from '@ant-design/icons'
-import { usePermissions } from '../contexts/PermissionContext'
-import type { MenuItem as MenuItemData } from '@/types/index'
+import { usePermissions } from '@/shared/contexts/PermissionContext'
+import type { MenuItem as MenuItemData } from '@/shared/types/index'
 
 type AntMenuItem = Required<MenuProps>['items'][number]
 

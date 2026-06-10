@@ -20,11 +20,11 @@ import {
   ReloadOutlined,
 } from '@ant-design/icons'
 import { useTranslation } from 'react-i18next'
-import { usePermissions } from '../contexts/PermissionContext'
-import { CategoryGroupsHooks } from '../hooks/useAcl'
-import CategoryGroupFormModal from '../components/CategoryGroupFormModal'
-import { CategoryGroup } from '../models/CategoryGroup'
-import type { CategoryGroupRecord, PaginationState } from '@/types/index'
+import { usePermissions } from '@/shared/contexts/PermissionContext'
+import { CategoryGroupsHooks } from '@/shared/hooks/useAcl'
+import CategoryGroupFormModal from '@/shared/components/CategoryGroupFormModal'
+import { CategoryGroup } from '@/shared/models/CategoryGroup'
+import type { CategoryGroupRecord, PaginationState } from '@/shared/types/index'
 
 interface FilterState {
   groupCode: string

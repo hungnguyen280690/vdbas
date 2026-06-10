@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Modal, Form, Input, Button, Switch, message } from 'antd'
 import { useTranslation } from 'react-i18next'
-import { CategoryGroupsHooks } from '../hooks/useAcl'
+import { CategoryGroupsHooks } from '@/shared/hooks/useAcl'
 import DynamicExtAttributes from './common/DynamicExtAttributes'
-import { CategoryGroup } from '../models/CategoryGroup'
-import type { CategoryGroupRecord, ExtAttributes } from '@/types/index'
+import { CategoryGroup } from '@/shared/models/CategoryGroup'
+import type { CategoryGroupRecord, ExtAttributes } from '@/shared/types/index'
 
 interface CategoryGroupFormModalProps {
   open: boolean

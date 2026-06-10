@@ -1,4 +1,4 @@
-import type { TreeNode } from '@/types/index'
+import type { TreeNode } from '@/shared/types/index'
 
 export const listToTree = (
   list: TreeNode[],

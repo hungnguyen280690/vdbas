@@ -3,8 +3,8 @@ import { Input, Select, DatePicker, Button, Checkbox, Radio } from 'antd'
 import { PlusOutlined, DeleteOutlined } from '@ant-design/icons'
 import dayjs from 'dayjs'
 import 'dayjs/locale/vi'
-import { useAttributeMetadata } from '../../hooks/useMetadata'
-import type { ExtAttributes, AttributeMetadata } from '@/types/index'
+import { useAttributeMetadata } from '@/shared/hooks/useMetadata'
+import type { ExtAttributes, AttributeMetadata } from '@/shared/types/index'
 
 dayjs.locale('vi')
 const { TextArea } = Input

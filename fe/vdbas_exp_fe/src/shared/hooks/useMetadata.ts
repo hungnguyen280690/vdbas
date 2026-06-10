@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query'
-import { metadataService } from '../services/metadataService'
-import type { AttributeMetadata } from '@/types/index'
+import { metadataService } from '@/shared/services/metadataService'
+import type { AttributeMetadata } from '@/shared/types/index'
 
 export const useAttributeMetadata = (scope: string | undefined) =>
   useQuery<AttributeMetadata[]>({

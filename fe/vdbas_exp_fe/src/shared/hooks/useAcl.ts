@@ -1,14 +1,14 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
-import i18n from '../i18n'
+import i18n from '@/shared/i18n'
 import {
   listCategoryGroups, getCategoryGroup, createCategoryGroup,
   updateCategoryGroup, updateCategoryGroupActive, deleteCategoryGroup,
-} from '../services/aclService'
+} from '@/shared/services/aclService'
 import type {
   CategoryGroupRecord, CategoryGroupPayload,
   PagedResponse, MutationHookOptions,
-} from '@/types/index'
+} from '@/shared/types/index'
 
 type UpdateVariables = CategoryGroupPayload & { groupCode: string }
 type UpdateActiveVariables = { groupCode: string; isActive: boolean }

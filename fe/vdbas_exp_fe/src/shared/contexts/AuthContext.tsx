@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState } from 'react'
-import type { AuthContextValue, JwtUser } from '@/types/index'
+import type { AuthContextValue, JwtUser } from '@/shared/types/index'
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 

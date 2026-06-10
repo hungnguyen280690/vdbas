@@ -1,4 +1,4 @@
-import type { AttributeMetadata } from '@/types/index'
+import type { AttributeMetadata } from '@/shared/types/index'
 
 export const metadataService = {
   getAttributeMetadata: async (_scope: string): Promise<AttributeMetadata[]> => {

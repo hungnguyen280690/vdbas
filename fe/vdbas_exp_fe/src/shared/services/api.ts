@@ -1,5 +1,5 @@
 import axios, { type AxiosInstance, type AxiosRequestConfig } from 'axios'
-import i18n from '../i18n'
+import i18n from '@/shared/i18n'
 import { message } from 'antd'
 
 interface ApiError extends Error {

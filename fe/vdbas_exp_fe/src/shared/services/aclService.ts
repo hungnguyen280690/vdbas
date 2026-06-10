@@ -5,7 +5,7 @@ import type {
   MenuItem,
   ApiPermission,
   PagedResponse,
-} from '@/types/index'
+} from '@/shared/types/index'
 
 const APP_CODE = import.meta.env.VITE_APP_CODE
 
