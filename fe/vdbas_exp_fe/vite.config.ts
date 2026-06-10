@@ -15,7 +15,7 @@ export default defineConfig({
       dts: false,
       exposes: {
         // RemoteApp: full app without Keycloak init — for embedding inside the host
-        './App': './src/RemoteApp.jsx',
+        './App': './src/RemoteApp.tsx',
       },
       shared: {
         react: { singleton: true, requiredVersion: '^19.2.6' },
