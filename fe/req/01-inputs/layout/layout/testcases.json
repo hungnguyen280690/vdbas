@@ -3,7 +3,7 @@
     "functionCode": "CHI.CAPEX_DOSSIER",
     "functionName": "Quản lý hồ sơ Chi đầu tư",
     "specRef": "CHI.CAPEX_DOSSIER.CRUD_spec_function.md",
-    "generatedAt": "2026-05-28",
+    "generatedAt": "2026-06-11",
     "tcIdPattern": "CHI.CAPEX_DOSSIER.TC.<Group>.<Seq>"
   },
   "stats": {
@@ -24,9 +24,9 @@
       "groupName": "Tạo mới",
       "name": "Tạo hồ sơ thành công",
       "type": "Positive",
-      "given": "Maker đã đăng nhập; LOV.01 và LOV.03 đã cấu hình",
-      "when": "Nhập đủ: PROJECT_ID='7122155', PROJECT_MANAGEMENT_BOARD_ID='3029123', SEND_DATE=ngày hợp lệ, SOURCE='Thủ công'; bấm **Lưu**",
-      "then": "Lưu thành công; INVEST_PAYMENT_FILE_ID tự sinh; trạng thái = **Đang hoàn thiện**; hiển thị MSG-OK-SAVE; CREATED_BY và CREATED_DATE tự điền",
+      "given": "Maker đã đăng nhập; LOV.01, LOV.03 và LOV.05 đã cấu hình",
+      "when": "Nhập đủ: PROJECT_CODE='7122155', PROJECT_MANAGEMENT_CODE='3029123', SEND_DATE=ngày hợp lệ, DATA_SOURCE_CODE='MANUAL'; bấm **Lưu**",
+      "then": "Lưu thành công; DOSSIER_CODE tự sinh; trạng thái = **Đang hoàn thiện**; hiển thị MSG-OK-SAVE; CREATED_BY và CREATED_DATE tự điền",
       "ref": ["VAL-01", "BIZ-007"],
       "automationHints": {
         "fixture": "dossier/valid-create-full.json",
@@ -61,14 +61,14 @@
       "name": "Tạo hồ sơ không thành công — Trường bắt buộc bỏ trống",
       "type": "Negative",
       "given": "Maker đã đăng nhập",
-      "when": "Để trống PROJECT_ID; bấm **Lưu**",
-      "then": "Highlight đỏ trường PROJECT_ID; MSG-ERR-REQUIRED; chặn lưu",
+      "when": "Để trống PROJECT_CODE; bấm **Lưu**",
+      "then": "Highlight đỏ trường PROJECT_CODE; MSG-ERR-REQUIRED; chặn lưu",
       "ref": ["VAL-01"],
       "automationHints": {
         "fixture": "dossier/missing-project-id.json",
         "endpoint": "POST /api/v1/chi/capex-dossier",
         "expectedStatus": 400,
-        "expectedResponse": { "msgCode": "MSG-ERR-REQUIRED", "field": "PROJECT_ID" },
+        "expectedResponse": { "msgCode": "MSG-ERR-REQUIRED", "field": "PROJECT_CODE" },
         "uiSelectors": ["[data-testid='input-project-id']", "[data-testid='btn-save']"]
       }
     },
@@ -97,14 +97,14 @@
       "name": "Tạo hồ sơ không thành công — PROJECT_ID ngoài danh mục",
       "type": "Negative",
       "given": "Maker đã đăng nhập",
-      "when": "Nhập PROJECT_ID không thuộc LOV.01; bấm **Lưu**",
-      "then": "MSG-ERR-LOOKUP; trường PROJECT_ID bị clear",
+      "when": "Nhập PROJECT_CODE không thuộc LOV.01; bấm **Lưu**",
+      "then": "MSG-ERR-LOOKUP; trường PROJECT_CODE bị clear",
       "ref": ["VAL-03"],
       "automationHints": {
         "fixture": "dossier/invalid-project-id.json",
         "endpoint": "POST /api/v1/chi/capex-dossier",
         "expectedStatus": 400,
-        "expectedResponse": { "msgCode": "MSG-ERR-LOOKUP", "field": "PROJECT_ID" },
+        "expectedResponse": { "msgCode": "MSG-ERR-LOOKUP", "field": "PROJECT_CODE" },
         "uiSelectors": ["[data-testid='input-project-id']", "[data-testid='btn-save']"]
       }
     },
@@ -115,8 +115,8 @@
       "name": "Cascading fill PROJECT_NAME sau khi chọn PROJECT_ID",
       "type": "Positive",
       "given": "Maker đang nhập trên form NEW",
-      "when": "Chọn PROJECT_ID = '7122155' từ LOV.01",
-      "then": "PROJECT_NAME tự điền = 'Dự án nâng cấp bệnh viện Bạch Mai'; trường read-only; PROJECT_MANAGEMENT_BOARD_ID được gợi ý",
+      "when": "Chọn PROJECT_CODE = '7122155' từ LOV.01",
+      "then": "PROJECT_NAME tự điền = 'Dự án nâng cấp bệnh viện Bạch Mai'; trường read-only; PROJECT_MANAGEMENT_CODE được gợi ý",
       "ref": ["VAL-06"],
       "automationHints": {
         "fixture": null,
@@ -133,15 +133,15 @@
       "name": "PROJECT_SPEC_ID chỉ hiển thị khi Military",
       "type": "Positive",
       "given": "Maker đang nhập; chọn PROJECT_ID có Project_Type = Military",
-      "when": "Xem form sau khi chọn PROJECT_ID = '7004686'",
-      "then": "Trường PROJECT_SPEC_ID hiển thị và cho phép chọn từ LOV.01",
+      "when": "Xem form sau khi chọn PROJECT_CODE = '7004686'",
+      "then": "Trường PROJECT_SPECIFIC_CODE hiển thị và cho phép chọn",
       "ref": ["VAL-06", "B1.1"],
       "automationHints": {
         "fixture": null,
         "endpoint": null,
         "expectedStatus": null,
         "expectedResponse": null,
-        "uiSelectors": ["[data-testid='input-project-id']", "[data-field-code='PROJECT_SPEC_ID']"]
+        "uiSelectors": ["[data-testid='input-project-id']", "[data-field-code='PROJECT_SPECIFIC_CODE']"]
       }
     },
     {
@@ -151,15 +151,15 @@
       "name": "PROJECT_SPEC_ID ẩn khi không phải Military",
       "type": "Positive",
       "given": "Maker đang nhập; chọn PROJECT_ID có Project_Type = Citizen",
-      "when": "Xem form sau khi chọn PROJECT_ID = '7122155'",
-      "then": "Trường PROJECT_SPEC_ID không hiển thị trên form",
+      "when": "Xem form sau khi chọn PROJECT_CODE = '7122155'",
+      "then": "Trường PROJECT_SPECIFIC_CODE không hiển thị trên form",
       "ref": ["VAL-06", "B1.1"],
       "automationHints": {
         "fixture": null,
         "endpoint": null,
         "expectedStatus": null,
         "expectedResponse": null,
-        "uiSelectors": ["[data-testid='input-project-id']", "[data-field-code='PROJECT_SPEC_ID']"]
+        "uiSelectors": ["[data-testid='input-project-id']", "[data-field-code='PROJECT_SPECIFIC_CODE']"]
       }
     },
     {
@@ -241,7 +241,7 @@
       "name": "Cảnh báo hồ sơ trùng",
       "type": "Positive",
       "given": "Đã có hồ sơ cùng PROJECT_ID='7122155' + PROJECT_MANAGEMENT_BOARD_ID='3029123' trong N phút gần đây",
-      "when": "Tạo hồ sơ mới với cùng giá trị PROJECT_ID và PROJECT_MANAGEMENT_BOARD_ID",
+      "when": "Tạo hồ sơ mới với cùng giá trị PROJECT_CODE và PROJECT_MANAGEMENT_CODE",
       "then": "Cảnh báo MSG-WRN-DUPLICATE; hiển thị nút **Tiếp tục** và **Huỷ**",
       "ref": ["VAL-18"],
       "automationHints": {
@@ -260,7 +260,7 @@
       "type": "Positive",
       "given": "Maker tạo mới hồ sơ",
       "when": "Mở form NEW",
-      "then": "SOURCE = 'Thủ công' (mặc định); read-only sau khi lưu lần đầu",
+      "then": "DATA_SOURCE_CODE = 'MANUAL' (mặc định, hiển thị 'Thủ công'); read-only sau khi lưu lần đầu",
       "ref": ["B1.1"],
       "automationHints": {
         "fixture": null,
@@ -314,7 +314,7 @@
       "type": "Positive",
       "given": "Hồ sơ đã có nhiều lần sửa đổi (F-VER > 1)",
       "when": "Mở VIEW; click tab **Lịch sử** (Alt+H)",
-      "then": "Hiển thị danh sách audit: CREATED_BY, CREATED_DATE, LAST_UPDATED_BY, LAST_UPDATED_DATE, action, oldValue→newValue; sort DESC mới nhất lên đầu",
+      "then": "Hiển thị danh sách audit: SEQ_NO, ACTION_DATE, UPDATED_BY, UPDATED_DATE, action, oldValue→newValue; sort DESC mới nhất lên đầu",
       "ref": ["BIZ-007", "BIZ-008"],
       "automationHints": {
         "fixture": "dossier/with-history.json",
@@ -350,7 +350,7 @@
       "type": "Positive",
       "given": "Hồ sơ có 3 chứng từ đã được lưu",
       "when": "Mở VIEW; xem tab §B1.2",
-      "then": "Hiển thị đủ 3 chứng từ với đầy đủ cột: STT, DOC_ID, DOC_DATE, POSTING_DATE, DOC_NAME, PAYMENT_AMOUNT, VND_PAYMENT_AMOUNT",
+      "then": "Hiển thị đủ 3 chứng từ với đầy đủ cột: STT, DOCUMENT_NUMBER, DOCUMENT_DATE, ACCOUNTING_DATE, CURRENCY_TYPE_CODE, PAYMENT_REQUEST_AMOUNT, PAYMENT_REQUEST_AMOUNT_VND",
       "ref": ["B1.2"],
       "automationHints": {
         "fixture": "dossier/with-three-docs.json",
@@ -375,7 +375,7 @@
         "endpoint": "PUT /api/v1/chi/capex-dossier/{id}",
         "expectedStatus": 200,
         "expectedResponse": { "status": "DRAFT", "msgCode": "MSG-OK-SAVE" },
-        "uiSelectors": ["[data-testid='btn-edit']", "[data-testid='input-send-date']", "[data-testid='btn-save']"]
+        "uiSelectors": ["[data-testid='btn-edit']", "[data-testid='input-send-date']", "[data-testid='btn-save-edit']"]
       }
     },
     {
@@ -429,25 +429,25 @@
         "endpoint": "PUT /api/v1/chi/capex-dossier/{id}",
         "expectedStatus": 412,
         "expectedResponse": { "msgCode": "MSG-ERR-LOCK" },
-        "uiSelectors": ["[data-testid='btn-save']"]
+        "uiSelectors": ["[data-testid='btn-save-edit']"]
       }
     },
     {
       "id": "CHI.CAPEX_DOSSIER.TC.3.05",
       "group": 3,
       "groupName": "Cập nhật",
-      "name": "INVEST_PAYMENT_FILE_ID immutable khi Sửa",
+      "name": "DOSSIER_CODE immutable khi Sửa",
       "type": "Negative",
-      "given": "Hồ sơ **Đang hoàn thiện** đã có INVEST_PAYMENT_FILE_ID",
-      "when": "Mở Sửa; kiểm tra trường INVEST_PAYMENT_FILE_ID",
-      "then": "Trường INVEST_PAYMENT_FILE_ID disabled trên UI; backend reject nếu client gửi thay đổi (400)",
+      "given": "Hồ sơ **Đang hoàn thiện** đã có DOSSIER_CODE",
+      "when": "Mở Sửa; kiểm tra trường DOSSIER_CODE",
+      "then": "Trường DOSSIER_CODE disabled trên UI; backend reject nếu client gửi thay đổi (400)",
       "ref": ["VAL-17"],
       "automationHints": {
         "fixture": "dossier/modify-immutable-field.json",
         "endpoint": "PUT /api/v1/chi/capex-dossier/{id}",
         "expectedStatus": 400,
-        "expectedResponse": { "msgCode": "MSG-ERR-FORMAT", "field": "INVEST_PAYMENT_FILE_ID" },
-        "uiSelectors": ["[data-field-code='INVEST_PAYMENT_FILE_ID']"]
+        "expectedResponse": { "msgCode": "MSG-ERR-FORMAT", "field": "DOSSIER_CODE" },
+        "uiSelectors": ["[data-field-code='DOSSIER_CODE']"]
       }
     },
     {

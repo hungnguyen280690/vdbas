@@ -168,6 +168,19 @@
   /* Char counter */
   .char-counter { font-size: 11px; color: var(--text-muted); text-align: right; }
   .char-counter.warn { color: var(--danger); }
+
+  /* Tooltip on disabled buttons */
+  button[disabled] { position: relative; }
+  button[disabled]:hover::after {
+    content: attr(data-disabled-reason);
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: #333; color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 4px;
+    white-space: nowrap; z-index: 999; pointer-events: none; font-weight: normal;
+  }
+  button[disabled]:hover::before {
+    content: ''; position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: #333; z-index: 999; pointer-events: none;
+  }
 </style>
 </head>
 <body>
@@ -200,11 +213,11 @@
     </div>
     <div class="header-actions">
       <!-- In phiếu — only VIEW -->
-      <button class="btn btn-default btn-sm" data-show-mode="view" data-testid="btn-print" title="In phiếu (Ctrl+P)">
+      <button class="btn btn-default btn-sm" data-show-mode="view" data-testid="btn-print" title="In phiếu (Ctrl+P)" onclick="openPrintPreview()">
         🖨 In phiếu <span class="shortcut">Ctrl+P</span>
       </button>
       <!-- Sửa — top right on VIEW -->
-      <button class="btn btn-default btn-sm" data-show-mode="view" data-testid="btn-edit-top" onclick="switchToEdit()" title="Sửa (F2)">
+      <button class="btn btn-default btn-sm" data-show-mode="view" data-testid="btn-edit" onclick="switchToEdit()" title="Sửa (F2)">
         ✏ Sửa <span class="shortcut">F2</span>
       </button>
       <!-- Status badge -->
@@ -217,9 +230,9 @@
     <div class="tab-nav" id="tab-nav">
       <button class="tab-btn active" onclick="switchTab('tab-general', this)">📋 Thông tin chung</button>
       <button class="tab-btn" onclick="switchTab('tab-documents', this)" data-tab-documents>📄 Danh sách chứng từ</button>
-      <button class="tab-btn" onclick="switchTab('tab-attach', this)">📎 Đính kèm</button>
-      <button class="tab-btn" onclick="switchTab('tab-history', this)" title="Alt+H">🕐 Lịch sử</button>
-      <button class="tab-btn" onclick="switchTab('tab-approval', this)" title="Alt+P">✅ Trạng thái phê duyệt</button>
+      <button class="tab-btn" onclick="switchTab('tab-attach', this)">📎 Đính kèm tài liệu</button>
+      <button class="tab-btn" onclick="switchTab('tab-history', this)" title="Alt+H">🕐 Lịch sử <span class="shortcut">Alt+H</span></button>
+      <button class="tab-btn" onclick="switchTab('tab-approval', this)" title="Alt+P">✅ Trạng thái phê duyệt <span class="shortcut">Alt+P</span></button>
     </div>
   </div>
 
@@ -249,7 +262,7 @@
                  class="form-control" readonly
                  placeholder="(Tự động sinh sau khi Lưu)"
                  data-api-field="header.paymentDossierId"
-                 data-testid="input-payment-dossier-id" />
+                 data-testid="input-dossier-code" />
         </div>
 
         <!-- SEND_DATE -->
@@ -269,25 +282,6 @@
                  data-testid="input-send-date" />
         </div>
 
-        <!-- DATA_SOURCE_CODE -->
-        <div class="form-group"
-             data-field-code="DATA_SOURCE_CODE"
-             data-field-type="String"
-             data-component="Dropdown"
-             data-required="Y"
-             data-spec-ref="B1.1.row10"
-             data-validation="VAL-03"
-             data-show-when=""
-             data-lov="LOV.03">
-          <label>Nguồn <span class="req">*</span></label>
-          <select name="DATA_SOURCE_CODE" class="form-control"
-                  data-api-field="header.source"
-                  data-testid="select-source">
-            <option value="Thủ công">Thủ công</option>
-            <option value="DVC">DVC</option>
-          </select>
-        </div>
-
         <!-- PROJECT_CODE -->
         <div class="form-group span-2"
              data-field-code="PROJECT_CODE"
@@ -304,7 +298,7 @@
             <input name="PROJECT_CODE" type="text"
                    class="form-control" placeholder="Nhập hoặc F4 để tra cứu"
                    data-api-field="header.projectId"
-                   data-testid="input-project-id"
+                   data-testid="input-project-code"
                    oninput="onProjectIdChange(this.value)" />
             <button type="button" class="btn-lookup" title="F4 — Tra cứu dự án" data-testid="btn-lookup-project">🔍</button>
           </div>
@@ -347,7 +341,7 @@
             <input name="PROJECT_SPECIFIC_CODE" type="text"
                    class="form-control" placeholder="F4 — Chỉ dành cho Military"
                    data-api-field="header.projectSpecId"
-                   data-testid="input-project-spec-id" />
+                   data-testid="input-project-specific-code" />
             <button type="button" class="btn-lookup" title="F4" data-testid="btn-lookup-spec">🔍</button>
           </div>
         </div>
@@ -369,7 +363,7 @@
                  class="form-control" readonly
                  placeholder="(Tự động fill)"
                  data-api-field="header.projectSpecName"
-                 data-testid="input-project-spec-name" />
+                 data-testid="input-project-specific-name" />
         </div>
 
         <!-- PROJECT_MANAGEMENT_CODE -->
@@ -382,13 +376,13 @@
              data-spec-ref="B1.1.row7"
              data-validation="VAL-01,VAL-03,VAL-06"
              data-show-when=""
-             data-lov="LOV.01.GL_SEGMENT6">
+             data-lov="LOV.05">
           <label>Mã ĐVQHNS <span class="req">*</span></label>
           <div class="input-group">
             <input name="PROJECT_MANAGEMENT_CODE" type="text"
                    class="form-control" placeholder="Nhập hoặc F4 để tra cứu"
                    data-api-field="header.projectManagementBoardId"
-                   data-testid="input-project-management-board-id"
+                   data-testid="input-project-management-code"
                    oninput="onBoardIdChange(this.value)" />
             <button type="button" class="btn-lookup" title="F4 — Tra cứu ĐVQHNS" data-testid="btn-lookup-board">🔍</button>
           </div>
@@ -404,31 +398,48 @@
              data-spec-ref="B1.1.row8"
              data-validation="VAL-06"
              data-show-when=""
-             data-lov="LOV.01.GL_SEGMENT6">
+             data-lov="LOV.05">
           <label>Tên ĐVQHNS <span class="cond">(*)</span></label>
           <input name="PROJECT_MANAGEMENT_NAME" type="text"
                  class="form-control" readonly
                  placeholder="(Tự động fill theo Mã ĐVQHNS)"
                  data-api-field="header.projectManagementBoardName"
-                 data-testid="input-project-management-board-name" />
+                 data-testid="input-project-management-name" />
         </div>
 
         <!-- STATE_CODE -->
         <div class="form-group"
              data-field-code="STATE_CODE"
              data-field-type="String"
-             data-component="TextBox"
+             data-component="Label"
              data-required="Y"
              data-spec-ref="B1.1.row9"
              data-validation="VAL-13"
              data-show-when=""
              data-lov="LOV.STATUS">
           <label>Trạng thái hồ sơ <span class="req">*</span></label>
-          <input name="STATE_CODE" type="text"
-                 class="form-control" readonly
-                 value="Đang hoàn thiện"
+          <span name="STATE_CODE"
                  data-api-field="header.paymentDossierStatus"
-                 data-testid="input-status" />
+                 data-testid="input-state-code">DRAFT</span>
+        </div>
+
+        <!-- DATA_SOURCE_CODE -->
+        <div class="form-group"
+             data-field-code="DATA_SOURCE_CODE"
+             data-field-type="String"
+             data-component="Dropdown"
+             data-required="Y"
+             data-spec-ref="B1.1.row10"
+             data-validation="VAL-03"
+             data-show-when=""
+             data-lov="LOV.03">
+          <label>Nguồn <span class="req">*</span></label>
+          <select name="DATA_SOURCE_CODE" class="form-control"
+                  data-api-field="header.source"
+                  data-testid="input-data-source-code">
+            <option value="Thủ công">Thủ công</option>
+            <option value="DVC">DVC</option>
+          </select>
         </div>
       </div>
     </div>
@@ -440,6 +451,10 @@
         💡 Lưu hồ sơ trước để có thể thêm chứng từ.
       </div>
       <div id="doc-grid-area">
+        <!-- CURRENCY field for documents grid -->
+        <input type="hidden" name="CURRENCY_TYPE_CODE" id="doc-currency"
+               data-field-code="CURRENCY_TYPE_CODE" data-api-field="documents[].currencyTypeCode"
+               value="VND" />
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <span style="font-size:13px; font-weight:600; color:var(--primary);">Danh sách chứng từ</span>
           <button class="btn btn-default btn-sm" data-show-mode="edit" data-testid="btn-add-doc" title="Thêm mới chứng từ (Ctrl+Shift+N). Số chứng từ được tự động sinh khi thêm mới từ chức năng EXP.CAPEX_DOSSIER.3.3.1" style="display:none;">
@@ -450,13 +465,13 @@
           <table class="data-table" id="doc-table">
             <thead>
               <tr>
-                <th style="width:50px;">STT</th>
-                <th>Số chứng từ</th>
-                <th>Ngày chứng từ</th>
-                <th>Ngày hạch toán</th>
-                <th>Tên chứng từ</th>
-                <th class="text-right">Số tiền nguyên tệ</th>
-                <th class="text-right">Số tiền VND</th>
+                <th style="width:50px;" data-field-code="DOC_SEQ_NO">STT</th>
+                <th data-field-code="DOCUMENT_NUMBER">Số chứng từ</th>
+                <th data-field-code="DOCUMENT_DATE">Ngày chứng từ</th>
+                <th data-field-code="ACCOUNTING_DATE">Ngày hạch toán</th>
+                <th data-field-code="CURRENCY_TYPE_CODE" data-api-field="documents[].currencyTypeCode">Loại tiền</th>
+                <th class="text-right" data-field-code="PAYMENT_REQUEST_AMOUNT">Số tiền nguyên tệ</th>
+                <th class="text-right" data-field-code="PAYMENT_REQUEST_AMOUNT_VND">Số tiền VND</th>
               </tr>
             </thead>
             <tbody id="doc-tbody">
@@ -465,7 +480,7 @@
             <tfoot>
               <tr>
                 <td colspan="5" style="text-align:right; font-weight:600;">Tổng cộng:</td>
-                <td class="text-right">—</td>
+                <td class="text-right" id="doc-total-fx">—</td>
                 <td class="text-right" id="doc-total">0</td>
               </tr>
             </tfoot>
@@ -476,20 +491,54 @@
 
     <!-- TAB: Đính kèm (B3.3) -->
     <div class="tab-pane" id="tab-attach">
-      <div class="upload-zone" data-show-mode="new,edit" data-testid="upload-zone-attachments" style="display:none;" onclick="alert('Prototype: Chọn file để upload (≤10MB, định dạng pdf/jpg/png/docx)')">
-        <p>📎 Kéo thả file vào đây hoặc click để chọn</p>
-        <p style="margin-top:4px; font-size:11px;">Hỗ trợ: PDF, JPG, PNG, DOCX — Tối đa 10MB/file</p>
-        <button class="btn btn-default btn-sm" style="margin-top:8px;" data-testid="btn-upload">Chọn file</button>
+      <!-- Upload zone + inline form — only new/edit -->
+      <div data-show-mode="new,edit" style="display:none;">
+        <div class="upload-zone" data-testid="upload-zone-attachments"
+             data-field-code="FILE_BLOB" data-spec-ref="B3.3.row4"
+             onclick="alert('Prototype: Chọn file để upload (≤10MB, định dạng pdf/jpg/png/docx)')">
+          <p>📎 Kéo thả file vào đây hoặc click để chọn</p>
+          <p style="margin-top:4px; font-size:11px;">Hỗ trợ: PDF, JPG, PNG, DOCX — Tối đa 10MB/file</p>
+          <button class="btn btn-default btn-sm" style="margin-top:8px;" data-testid="btn-upload">Chọn file</button>
+        </div>
+        <!-- Upload metadata fields -->
+        <div style="display:flex; gap:16px; margin-top:12px; flex-wrap:wrap;">
+          <div class="form-group" style="min-width:200px;"
+               data-field-code="DOC_TYPE" data-component="Dropdown"
+               data-required="Y" data-spec-ref="B3.3.row2"
+               data-lov="LOV.DOC_TYPE">
+            <label>Loại tài liệu <span class="req">*</span></label>
+            <select name="DOC_TYPE" class="form-control" data-testid="select-doc-type"
+                    data-api-field="attachments[].docType">
+              <option value="">-- Chọn loại --</option>
+              <option value="ORIGINAL">Chứng từ gốc</option>
+              <option value="CONTRACT">Hợp đồng</option>
+              <option value="INVOICE">Hoá đơn</option>
+              <option value="STATEMENT">Bảng kê</option>
+              <option value="OTHER">Văn bản khác</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1; min-width:240px;"
+               data-field-code="NOTE" data-component="TextArea"
+               data-required="N" data-spec-ref="B3.3.row3"
+               data-max-length="250">
+            <label>Mô tả</label>
+            <textarea name="NOTE" class="form-control" maxlength="250" rows="2"
+                      placeholder="Mô tả file đính kèm (tuỳ chọn)"
+                      data-testid="input-note"
+                      data-api-field="attachments[].note"></textarea>
+          </div>
+        </div>
       </div>
+      <!-- Attachment list table -->
       <table class="data-table" style="margin-top:12px;">
         <thead>
           <tr>
-            <th>Tên file</th>
-            <th>Loại tài liệu</th>
-            <th>Kích thước</th>
-            <th>Người upload</th>
-            <th>Ngày upload</th>
-            <th>Thao tác</th>
+            <th data-field-code="FILE_NAME">Tên file</th>
+            <th data-field-code="DOC_TYPE">Loại tài liệu</th>
+            <th data-field-code="FILE_SIZE">Kích thước</th>
+            <th data-field-code="UPLOADED_BY">Người upload</th>
+            <th data-field-code="UPLOADED_DATE">Ngày upload</th>
+            <th class="no-sort">Thao tác</th>
           </tr>
         </thead>
         <tbody>
@@ -503,16 +552,15 @@
       <table class="history-table">
         <thead>
           <tr>
-            <th>STT</th>
-            <th>Người tạo</th>
-            <th>Ngày tạo</th>
-            <th>Người cập nhật cuối</th>
-            <th>Ngày cập nhật cuối</th>
-            <th>Hành động</th>
+            <th style="width:40px;">STT</th>
+            <th data-field-code="CREATED_BY">Người thực hiện</th>
+            <th data-field-code="ACTION_DATE" data-api-field="history[].actionDate">Thời gian thực hiện</th>
+            <th>Loại thao tác</th>
+            <th>Chi tiết thay đổi (oldValue → newValue)</th>
           </tr>
         </thead>
         <tbody id="history-tbody">
-          <tr><td colspan="6" class="grid-empty">Chưa có lịch sử</td></tr>
+          <tr><td colspan="5" class="grid-empty">Chưa có lịch sử</td></tr>
         </tbody>
       </table>
     </div>
@@ -545,7 +593,7 @@
     <!-- LEFT: Danger actions -->
     <div class="action-bar-left">
       <!-- Xoá — only VIEW/EDIT when DRAFT + maker owner -->
-      <button class="btn btn-danger" data-show-mode="view,edit" data-testid="btn-delete" title="Xoá (Delete)"
+      <button class="btn btn-danger" data-show-mode="view" data-testid="btn-delete" title="Xoá (Delete)"
               data-action="delete" style="display:none;">
         🗑 Xoá <span class="shortcut">Del</span>
       </button>
@@ -565,8 +613,12 @@
       <button class="btn btn-default" data-show-mode="new,edit" data-testid="btn-save-draft" onclick="onSaveDraft()" title="Lưu nháp (Ctrl+Shift+S)">
         💾 Lưu nháp <span class="shortcut">Ctrl+Shift+S</span>
       </button>
-      <!-- Lưu — Primary -->
-      <button class="btn btn-primary" data-show-mode="new,edit" data-testid="btn-save" onclick="onSave()" title="Lưu (Ctrl+S)">
+      <!-- Lưu — Primary (NEW mode only) -->
+      <button class="btn btn-primary" data-show-mode="new" data-testid="btn-save" onclick="onSave()" title="Lưu (Ctrl+S)" data-event="EXP.CAPEX_DOSSIER.NEW.SAVE">
+        ✔ Lưu <span class="shortcut">Ctrl+S</span>
+      </button>
+      <!-- Lưu — Primary (EDIT mode only) -->
+      <button class="btn btn-primary" data-show-mode="edit" id="btn-save-edit" data-testid="btn-save-edit" onclick="onSaveEdit()" title="Lưu (Ctrl+S)" data-event="EXP.CAPEX_DOSSIER.EDIT.SAVE">
         ✔ Lưu <span class="shortcut">Ctrl+S</span>
       </button>
       <!-- Gửi kiểm soát — Primary on NEW/EDIT when has docs -->
@@ -589,6 +641,11 @@
       <p style="margin-bottom:12px; font-size:13px;">
         Bạn đang thực hiện xoá hồ sơ <strong id="delete-record-id"></strong>. Hành động này không thể hoàn tác.
       </p>
+      <!-- STATE_CODE (B3.1.row2) -->
+      <div class="form-group" data-field-code="STATE_CODE" data-component="Label" data-spec-ref="B3.1.row2" style="margin-bottom:12px;">
+        <label>Trạng thái hiện tại</label>
+        <span id="delete-record-state"></span>
+      </div>
       <!-- DELETE_REASON -->
       <div class="form-group" style="margin-bottom:12px;"
            data-field-code="DELETE_REASON"
@@ -596,7 +653,8 @@
            data-component="TextArea"
            data-required="Y"
            data-spec-ref="B3.1.row3"
-           data-validation="VAL-16">
+           data-validation="VAL-16"
+           data-max-length="500">
         <label>Lý do xoá <span class="req">*</span> <small style="font-weight:normal;">(tối thiểu 10 ký tự)</small></label>
         <textarea id="delete-reason" name="DELETE_REASON" class="form-control" rows="3"
                   maxlength="500" placeholder="Nhập lý do xoá hồ sơ..."
@@ -615,9 +673,36 @@
            data-validation="VAL-16">
         <input type="checkbox" id="confirm-reviewed"
                data-api-field="confirmReviewed"
-               data-testid="checkbox-confirm-reviewed"
+               data-testid="input-confirm-reviewed"
                onchange="checkDeleteForm()" />
         <label for="confirm-reviewed">Tôi đã rà soát và xác nhận xoá hồ sơ này</label>
+      </div>
+      <!-- DELETED_BY + DELETED_DATE (B3.1 read-only Labels) -->
+      <div style="display:flex; gap:16px; margin-top:12px; flex-wrap:wrap;">
+        <div class="form-group" style="flex:1;"
+             data-field-code="DELETED_BY"
+             data-field-type="String"
+             data-component="Label"
+             data-spec-ref="B3.1.row5">
+          <label>Người xoá</label>
+          <input type="text" class="form-control" readonly
+                 id="delete-deleted-by"
+                 data-api-field="deletedBy"
+                 data-testid="input-deleted-by"
+                 value="" placeholder="(User hiện tại)" />
+        </div>
+        <div class="form-group" style="flex:1;"
+             data-field-code="DELETED_DATE"
+             data-field-type="DateTime"
+             data-component="Label"
+             data-spec-ref="B3.1.row6">
+          <label>Thời gian xoá</label>
+          <input type="text" class="form-control" readonly
+                 id="delete-deleted-date"
+                 data-api-field="deletedDate"
+                 data-testid="input-deleted-date"
+                 value="" placeholder="(Thời gian hệ thống)" />
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -631,7 +716,7 @@
               data-action="confirm-delete"
               data-testid="btn-confirm-delete"
               onclick="onConfirmDelete()">
-        Xác nhận xoá
+        Xác nhận xoá <span class="shortcut">Enter</span>
       </button>
     </div>
   </div>
@@ -650,6 +735,81 @@
     <div class="modal-footer">
       <button class="btn btn-default" onclick="document.getElementById('dialog-cancel-confirm').hidden=true">Tiếp tục chỉnh sửa</button>
       <button class="btn btn-primary" onclick="window.location.href='form_list.html'">Xác nhận huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lookup Popup B3.4: EXP.CAPEX_DOSSIER.LOOKUP.PROJECT -->
+<div id="dialog-lookup-project" class="modal-overlay" hidden style="align-items:flex-start; padding-top:60px;">
+  <div class="modal" style="min-width:700px; max-width:860px; max-height:80vh; display:flex; flex-direction:column;">
+    <div class="modal-header">
+      <span style="font-size:16px;">🔍</span>
+      <span class="modal-title">Tra cứu Dự án / Công trình (LOV.01)</span>
+      <button style="margin-left:auto; background:none; border:none; font-size:18px; cursor:pointer;" onclick="closeLookup()">×</button>
+    </div>
+    <div class="modal-body" style="border-bottom:1px solid var(--border); flex-shrink:0;">
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div class="form-group" style="min-width:150px;">
+          <label>Mã dự án</label>
+          <input type="text" class="form-control" id="lov-project-code" placeholder="Tìm chính xác / chứa" oninput="filterLOV()">
+        </div>
+        <div class="form-group" style="flex:1; min-width:180px;">
+          <label>Tên dự án</label>
+          <input type="text" class="form-control" id="lov-project-name" placeholder="Tìm chứa, không phân biệt hoa thường" oninput="filterLOV()">
+        </div>
+        <div class="form-group" style="min-width:130px;">
+          <label>Loại dự án</label>
+          <select class="form-control" id="lov-project-type" onchange="filterLOV()">
+            <option value="">Tất cả</option>
+            <option value="Military">Military</option>
+            <option value="Citizen">Citizen</option>
+          </select>
+        </div>
+        <div class="form-group" style="min-width:140px;">
+          <label>Mã ĐVQHNS</label>
+          <input type="text" class="form-control" id="lov-segment6" placeholder="Lọc theo BQL" oninput="filterLOV()">
+        </div>
+      </div>
+    </div>
+    <div style="overflow-y:auto; flex:1;">
+      <table class="data-table" style="font-size:12px;">
+        <thead style="position:sticky; top:0; z-index:1;">
+          <tr>
+            <th>Mã dự án</th>
+            <th>Tên dự án</th>
+            <th>Loại</th>
+            <th>Mã ĐVQHNS</th>
+            <th>Tên ĐVQHNS</th>
+          </tr>
+        </thead>
+        <tbody id="lov-tbody"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <span style="font-size:12px; color:var(--text-muted);" id="lov-count">0 kết quả</span>
+      <button class="btn btn-default" onclick="closeLookup()">Đóng (Esc)</button>
+    </div>
+  </div>
+</div>
+
+<!-- VAL-18 Duplicate Warning Dialog -->
+<div id="dialog-duplicate-warning" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <span class="icon-warn" style="color:var(--warning);">⚠</span>
+      <span class="modal-title">Phát hiện hồ sơ tương tự</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; margin-bottom:8px;">Đã có hồ sơ được lập gần đây với cùng:</p>
+      <ul style="font-size:13px; padding-left:20px; margin-bottom:12px; color:var(--primary);">
+        <li id="dup-project-info">Mã dự án: —</li>
+        <li id="dup-board-info">Mã ĐVQHNS: —</li>
+      </ul>
+      <p style="font-size:13px; color:var(--text-muted);">Bạn có muốn tiếp tục tạo hồ sơ mới?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="document.getElementById('dialog-duplicate-warning').hidden=true; window.location.href='form_list.html'">Huỷ</button>
+      <button class="btn btn-primary" onclick="document.getElementById('dialog-duplicate-warning').hidden=true">Tiếp tục</button>
     </div>
   </div>
 </div>
@@ -680,12 +840,31 @@ function init() {
   if (record) loadRecord(record);
   else setNewModeDefaults();
   updateDocGrid();
+  toggleForeignCurrencyCol();
   updateApprovalWorkflow();
   bindKeyboard();
   // Track dirty
   document.querySelectorAll('.form-control').forEach(el => {
     el.addEventListener('input', () => { isDirty = true; });
   });
+  wireF4Buttons();
+  renderHistory(record);
+  // Expose global for duplicate check
+  window.ALL_RECORDS_GLOBAL = SAMPLE.records;
+  // Auto-open delete dialog when navigated from list with action=delete
+  if (params.get('action') === 'delete' && record) {
+    const canDelete = record.STATE_CODE === 'DRAFT';
+    if (canDelete) {
+      setTimeout(() => { document.getElementById('dialog-delete-confirm').hidden = false; }, 300);
+    }
+  }
+  // MSG-WRN-OUTSIDE-HOUR: cảnh báo ngoài giờ giao dịch khi mở NEW/EDIT
+  if (mode === 'new' || mode === 'edit') {
+    const h = new Date().getHours();
+    if (h < 8 || h >= 17) {
+      setTimeout(() => document.getElementById('dialog-outside-hour').hidden = false, 1200);
+    }
+  }
 }
 
 // ─── Mode Application ────────────────────────────────────
@@ -721,21 +900,78 @@ function applyMode() {
   const addDocBtn = document.querySelector('[data-testid="btn-add-doc"]');
   if (addDocBtn) addDocBtn.style.display = mode === 'edit' ? '' : 'none';
 
-  // Doc tab — not show in new
+  // tab-documents: hide tab button + content in new mode (spec: showWhen "mode !== 'new'")
+  const tabDocBtn = document.querySelector('[data-tab-documents]');
   if (mode === 'new') {
+    if (tabDocBtn) tabDocBtn.style.display = 'none';
+    document.getElementById('tab-documents').setAttribute('hidden', '');
     document.getElementById('doc-new-notice').style.display = '';
     document.getElementById('doc-grid-area').style.display = 'none';
+  } else {
+    if (tabDocBtn) tabDocBtn.style.display = '';
+    document.getElementById('tab-documents').removeAttribute('hidden');
+  }
+
+  // btn-edit: only enable for DRAFT / CHECK_CANCELLED (spec stateMachine canEdit states)
+  const editBtn = document.querySelector('[data-testid="btn-edit"]');
+  if (editBtn && mode === 'view' && record) {
+    const canEdit = ['DRAFT', 'CHECK_CANCELLED'].includes(record.STATE_CODE);
+    editBtn.disabled = !canEdit;
+    editBtn.title = canEdit ? 'Sửa (F2)' : 'Không thể sửa ở trạng thái ' + (record.STATE_CODE || '');
+  }
+
+  // btn-delete: only for DRAFT (canDelete state in spec)
+  const deleteBtn = document.querySelector('[data-testid="btn-delete"]');
+  if (deleteBtn && record) {
+    const canDelete = record.STATE_CODE === 'DRAFT';
+    deleteBtn.disabled = !canDelete;
   }
 
   // DATA_SOURCE_CODE: read-only in edit/view (if already saved)
   if (mode === 'edit' || mode === 'view') {
     const sourceEl = document.querySelector('[name="DATA_SOURCE_CODE"]');
-    if (sourceEl) sourceEl.disabled = true;
+    if (sourceEl) {
+      if (sourceEl.tagName === 'SELECT') {
+        sourceEl.disabled = true;
+        // Add hidden backup input to preserve value on form submit
+        if (!document.getElementById('DATA_SOURCE_CODE_hidden')) {
+          const hidden = document.createElement('input');
+          hidden.type = 'hidden';
+          hidden.id = 'DATA_SOURCE_CODE_hidden';
+          hidden.name = 'DATA_SOURCE_CODE';
+          hidden.value = sourceEl.value;
+          sourceEl.parentNode.appendChild(hidden);
+        }
+      } else {
+        sourceEl.readOnly = true;
+      }
+    }
   }
 
   // DOSSIER_CODE: always readonly
   const fileIdEl = document.querySelector('[name="DOSSIER_CODE"]');
-  if (fileIdEl) fileIdEl.disabled = true;
+  if (fileIdEl) fileIdEl.readOnly = true;
+
+  // ARIA labels
+  document.querySelectorAll('button[data-testid]').forEach(btn => {
+    if (!btn.getAttribute('aria-label') && btn.title) btn.setAttribute('aria-label', btn.title);
+  });
+  // data-disabled-reason on specific buttons
+  const submitBtn = document.getElementById('btn-submit');
+  if (submitBtn) submitBtn.setAttribute('data-disabled-reason', 'Cần có ít nhất 1 chứng từ hợp lệ trước khi gửi kiểm soát');
+  const deleteBtnReason = document.querySelector('[data-testid="btn-delete"]');
+  if (deleteBtnReason) deleteBtnReason.setAttribute('data-disabled-reason', 'Chỉ xóa được khi hồ sơ ở trạng thái Đang hoàn thiện và là Maker gốc');
+
+  // VAL-15 / E11: Simulate concurrent edit check (prototype: Military records show warning for demo)
+  if (mode === 'edit' && record && record.PROJECT_TYPE === 'Military' && record.STATE_CODE === 'DRAFT') {
+    // Demo: 30% chance of concurrent edit warning for Military records
+    if (Math.random() < 0.3) {
+      setTimeout(() => {
+        document.getElementById('concurrent-msg').innerHTML = `Hồ sơ đang được <strong>nguyen.van.other</strong> chỉnh sửa, vui lòng thử lại sau.`;
+        document.getElementById('dialog-concurrent').hidden = false;
+      }, 800);
+    }
+  }
 }
 
 function loadRecord(r) {
@@ -748,10 +984,11 @@ function loadRecord(r) {
     PROJECT_SPECIFIC_NAME: r.PROJECT_SPECIFIC_NAME || '',
     PROJECT_MANAGEMENT_CODE: r.PROJECT_MANAGEMENT_CODE,
     PROJECT_MANAGEMENT_NAME: r.PROJECT_MANAGEMENT_NAME,
-    STATE_CODE: STATUS_LABELS[r.STATE_CODE] || r.STATE_CODE,
+    STATE_CODE: null, // handled separately below
     DATA_SOURCE_CODE: r.DATA_SOURCE_CODE
   };
   Object.entries(fieldMap).forEach(([code, val]) => {
+    if (val === null) return; // skip nulls (handled separately)
     const group = document.querySelector(`[data-field-code="${code}"]`);
     if (!group) return;
     const input = group.querySelector('input, select, textarea');
@@ -760,6 +997,12 @@ function loadRecord(r) {
       Array.from(input.options).forEach(opt => { opt.selected = opt.value === val; });
     }
   });
+  // STATE_CODE is now a span (Label component)
+  const stateSpan = document.querySelector('[data-field-code="STATE_CODE"] span');
+  if (stateSpan) {
+    stateSpan.setAttribute('data-value', r.STATE_CODE);
+    stateSpan.textContent = STATUS_LABELS[r.STATE_CODE] || r.STATE_CODE;
+  }
   // Status badge
   const badge = document.getElementById('status-badge');
   badge.textContent = STATUS_LABELS[r.STATE_CODE] || r.STATE_CODE;
@@ -770,6 +1013,8 @@ function loadRecord(r) {
 
   // Delete dialog record id
   document.getElementById('delete-record-id').textContent = r.DOSSIER_CODE;
+  const deleteStateEl = document.getElementById('delete-record-state');
+  if (deleteStateEl) deleteStateEl.textContent = STATUS_LABELS[r.STATE_CODE] || r.STATE_CODE;
 
   // Enable/disable submit based on docs
   const submitBtn = document.getElementById('btn-submit');
@@ -784,8 +1029,8 @@ function setNewModeDefaults() {
   const sendDateEl = document.querySelector('[name="SEND_DATE"]');
   if (sendDateEl) sendDateEl.value = `${dd}/${mm}/${yyyy}`;
 
-  const statusEl = document.querySelector('[name="STATE_CODE"]');
-  if (statusEl) statusEl.value = 'Đang hoàn thiện';
+  const statusEl = document.querySelector('[data-field-code="STATE_CODE"] span');
+  if (statusEl) statusEl.textContent = 'DRAFT';
 
   const badge = document.getElementById('status-badge');
   badge.textContent = 'Đang hoàn thiện';
@@ -803,8 +1048,8 @@ function onProjectIdChange(val) {
       nameEl.value = proj.PROJECT_NAME;
       nameEl.classList.remove('error');
     }
-    if (boardIdEl && !boardIdEl.value) boardIdEl.value = proj.GL_SEGMENT6_CODE;
-    if (boardNameEl && !boardNameEl.value) {
+    if (boardIdEl) { boardIdEl.value = proj.GL_SEGMENT6_CODE; }
+    if (boardNameEl) {
       boardNameEl.value = proj.GL_SEGMENT6_NAME;
       boardNameEl.classList.remove('error');
     }
@@ -824,6 +1069,11 @@ function onBoardIdChange(val) {
     if (proj) nameEl.classList.remove('error');
   }
   isDirty = true;
+  // VAL-18: check duplicate khi đã có cả project + board
+  if (mode === 'new') {
+    const projCode = document.querySelector('[name="PROJECT_CODE"]')?.value;
+    if (projCode && val) checkDuplicate(projCode, val);
+  }
 }
 
 function showMilitaryFields(show) {
@@ -840,27 +1090,46 @@ function updateDocGrid() {
   if (!docs.length) {
     tbody.innerHTML = '<tr><td colspan="7" class="grid-empty">Chưa có chứng từ nào</td></tr>';
     document.getElementById('doc-total').textContent = '0';
+    document.getElementById('doc-total-fx').textContent = '—';
     return;
   }
   let total = 0;
+  let sumFx = 0;
   tbody.innerHTML = docs.map((d, i) => {
     total += d.PAYMENT_REQUEST_AMOUNT_VND || 0;
+    sumFx += d.PAYMENT_REQUEST_AMOUNT || 0;
     return `<tr>
       <td>${i+1}</td>
       <td><a href="#" onclick="alert('Prototype: Mở EXP.CAPEX_DOSSIER.3.3.1 — ${d.DOCUMENT_NUMBER}')">${d.DOCUMENT_NUMBER}</a></td>
       <td>${d.DOCUMENT_DATE}</td>
       <td>${d.ACCOUNTING_DATE}</td>
-      <td>${d.DOC_NAME}</td>
-      <td class="text-right">${d.PAYMENT_REQUEST_AMOUNT ? formatNum(d.PAYMENT_REQUEST_AMOUNT) : '—'}</td>
-      <td class="text-right">${formatNum(d.PAYMENT_REQUEST_AMOUNT_VND)}</td>
+      <td>${d.currencyTypeCode || d.currency || 'VND'}</td>
+      <td class="text-right col-fx">${d.PAYMENT_REQUEST_AMOUNT ? d.PAYMENT_REQUEST_AMOUNT.toLocaleString('vi-VN', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'}</td>
+      <td class="text-right">${(d.PAYMENT_REQUEST_AMOUNT_VND||0).toLocaleString('vi-VN', {maximumFractionDigits:0})}</td>
     </tr>`;
   }).join('');
-  document.getElementById('doc-total').textContent = formatNum(total);
+  document.getElementById('doc-total').textContent = total.toLocaleString('vi-VN', {maximumFractionDigits:0});
+  document.getElementById('doc-total-fx').textContent = sumFx > 0 ? sumFx.toLocaleString('vi-VN', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—';
+  toggleForeignCurrencyCol();
 }
 
 function formatNum(n) {
   return n ? n.toLocaleString('vi-VN') : '0';
 }
+
+// ─── Foreign Currency Column Toggle ─────────────────────
+function toggleForeignCurrencyCol() {
+  const currency = (document.getElementById('doc-currency')?.value || 'VND').trim().toUpperCase();
+  const isVND = currency === 'VND';
+  document.querySelectorAll('#doc-table th[data-field-code="PAYMENT_REQUEST_AMOUNT"], #doc-table td.col-fx').forEach(el => {
+    if (isVND) el.setAttribute('hidden', '');
+    else el.removeAttribute('hidden');
+  });
+}
+
+document.getElementById('doc-currency')?.addEventListener('change', function() {
+  updateDocGrid();
+});
 
 // ─── Approval Workflow ───────────────────────────────────
 function updateApprovalWorkflow() {
@@ -915,7 +1184,9 @@ function onCancel() {
   }
 }
 
-function onSave() {
+function onSave(event) {
+  const btn = event?.target;
+  if (btn && !btn.disabled) { btn.disabled = true; setTimeout(() => { if(btn) btn.disabled = false; }, 2000); }
   // Prototype: validate & show success
   const projectId = document.querySelector('[name="PROJECT_CODE"]')?.value;
   const projectName = document.querySelector('[name="PROJECT_NAME"]')?.value;
@@ -924,21 +1195,21 @@ function onSave() {
   const boardName = document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]')?.value;
 
   let hasError = false;
-  if (!projectId) { alert('⚠ Vui lòng nhập Mã dự án/công trình'); hasError = true; }
+  if (!projectId) { alert('[MSG-ERR-REQUIRED] ⚠ Vui lòng nhập Mã dự án/công trình'); hasError = true; }
   else if (!projectName) {
     document.querySelector('[name="PROJECT_NAME"]').classList.add('error');
-    alert('⚠ Tên dự án/công trình không được để trống khi đã chọn Mã dự án');
+    alert('[MSG-ERR-REQUIRED] ⚠ Tên dự án/công trình không được để trống khi đã chọn Mã dự án');
     hasError = true;
   }
 
-  if (!boardId) { alert('⚠ Vui lòng nhập Mã ĐVQHNS'); hasError = true; }
+  if (!boardId) { alert('[MSG-ERR-REQUIRED] ⚠ Vui lòng nhập Mã ĐVQHNS'); hasError = true; }
   else if (!boardName) {
     document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]').classList.add('error');
-    alert('⚠ Tên ĐVQHNS không được để trống khi đã chọn Mã ĐVQHNS');
+    alert('[MSG-ERR-REQUIRED] ⚠ Tên ĐVQHNS không được để trống khi đã chọn Mã ĐVQHNS');
     hasError = true;
   }
 
-  if (!sendDate) { alert('⚠ Vui lòng nhập Ngày gửi hồ sơ'); hasError = true; }
+  if (!sendDate) { alert('[MSG-ERR-REQUIRED] ⚠ Vui lòng nhập Ngày gửi hồ sơ'); hasError = true; }
 
   if (hasError) return;
 
@@ -947,12 +1218,23 @@ function onSave() {
   window.location.href = 'form_list.html';
 }
 
-function onSaveDraft() {
+function onSaveEdit(event) {
+  const btn = document.getElementById('btn-save-edit');
+  if (btn && !btn.disabled) { btn.disabled = true; setTimeout(() => { if(btn) btn.disabled = false; }, 2000); }
+  // Reuse same validation as onSave
+  onSave(event);
+}
+
+function onSaveDraft(event) {
+  const btn = event?.target;
+  if (btn && !btn.disabled) { btn.disabled = true; setTimeout(() => { if(btn) btn.disabled = false; }, 2000); }
   alert('💾 MSG-OK-SAVE: Lưu nháp thành công!\nTrạng thái: Đang hoàn thiện');
   isDirty = false;
 }
 
-function onSubmit() {
+function onSubmit(event) {
+  const btn = event?.target;
+  if (btn && !btn.disabled) { btn.disabled = true; setTimeout(() => { if(btn) btn.disabled = false; }, 2000); }
   // Same validation as onSave
   const projectId = document.querySelector('[name="PROJECT_CODE"]')?.value;
   const projectName = document.querySelector('[name="PROJECT_NAME"]')?.value;
@@ -990,6 +1272,18 @@ function onConfirmDelete() {
 // Delete button trigger
 document.querySelectorAll('[data-action="delete"]').forEach(btn => {
   btn.addEventListener('click', () => {
+    // B3.1: populate DELETED_BY (current user) and DELETED_DATE (current datetime)
+    const now = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    const dateStr = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const deletedByEl = document.getElementById('delete-deleted-by');
+    const deletedDateEl = document.getElementById('delete-deleted-date');
+    if (deletedByEl) deletedByEl.value = record?.CREATED_BY || 'current.user';
+    if (deletedDateEl) deletedDateEl.value = dateStr;
+    // reset form
+    document.getElementById('delete-reason').value = '';
+    document.getElementById('confirm-reviewed').checked = false;
+    document.getElementById('btn-confirm-delete').disabled = true;
     document.getElementById('dialog-delete-confirm').hidden = false;
   });
 });
@@ -1003,10 +1297,277 @@ function bindKeyboard() {
     if (e.key === 'Escape') { onCancel(); }
     if (e.altKey && e.key === 'h') { switchTab('tab-history', document.querySelector('[onclick*="tab-history"]')); }
     if (e.altKey && e.key === 'p') { switchTab('tab-approval', document.querySelector('[onclick*="tab-approval"]')); }
+    // Enter confirms delete when delete dialog is open and confirm button is enabled (spec: BTN_CONFIRM_DELETE shortcut=Enter)
+    if (e.key === 'Enter' && !document.getElementById('dialog-delete-confirm').hidden) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-confirm-delete');
+      if (btn && !btn.disabled) btn.click();
+    }
+    // F2 — Sửa (khi ở view mode)
+    if (e.key === 'F2' && mode === 'view') { e.preventDefault(); switchToEdit(); }
+    // F4 — mở lookup
+    if (e.key === 'F4') {
+      e.preventDefault();
+      if (mode === 'view') return;
+      const focused = document.activeElement;
+      if (focused && focused.name === 'PROJECT_MANAGEMENT_CODE') {
+        openLookup('board');
+      } else {
+        openLookup('project');
+      }
+    }
+    // Ctrl+Shift+N — thêm chứng từ
+    if (e.ctrlKey && e.shiftKey && e.key === 'N') { e.preventDefault(); alert('Prototype: Mở LOV.Chứng từ để thêm mới chứng từ (Ctrl+Shift+N)'); }
+    // Ctrl+U — upload đính kèm
+    if (e.ctrlKey && e.key === 'u') { e.preventDefault(); document.querySelector('[data-testid="upload-zone-attachments"]')?.click(); }
+    // Ctrl+J — download attachment (nếu có file được chọn)
+    if (e.ctrlKey && e.key === 'j') { e.preventDefault(); alert('Prototype: Tải xuống file đính kèm đã chọn (Ctrl+J)'); }
+    // Shift+Delete — remove attachment
+    if (e.shiftKey && e.key === 'Delete') { e.preventDefault(); alert('Prototype: Xoá file đính kèm đã chọn (Shift+Delete)'); }
+    // Ctrl+P — in phiếu
+    if (e.ctrlKey && e.key === 'p') { e.preventDefault(); openPrintPreview(); }
+    // Ctrl+Shift+C — sao chép hồ sơ
+    if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+      e.preventDefault();
+      if (record) alert(`Prototype: Sao chép hồ sơ ${record.DOSSIER_CODE}\n→ Mở form Thêm mới với dữ liệu được pre-fill từ hồ sơ gốc (Ctrl+Shift+C)`);
+    }
   });
+}
+
+// ─── Lookup Popup ────────────────────────────────────────
+let _lookupTarget = 'project'; // 'project' | 'board'
+
+function openLookup(target) {
+  _lookupTarget = target || 'project';
+  document.getElementById('lov-project-code').value = '';
+  document.getElementById('lov-project-name').value = '';
+  document.getElementById('lov-project-type').value = '';
+  document.getElementById('lov-segment6').value = '';
+  filterLOV();
+  document.getElementById('dialog-lookup-project').hidden = false;
+  document.getElementById('lov-project-code').focus();
+}
+
+function closeLookup() {
+  document.getElementById('dialog-lookup-project').hidden = true;
+}
+
+function filterLOV() {
+  const code = document.getElementById('lov-project-code').value.toLowerCase();
+  const name = document.getElementById('lov-project-name').value.toLowerCase();
+  const type = document.getElementById('lov-project-type').value;
+  const seg6 = document.getElementById('lov-segment6').value.toLowerCase();
+  const results = LOV01.filter(p =>
+    (!code || p.PROJECT_CODE.toLowerCase().includes(code)) &&
+    (!name || p.PROJECT_NAME.toLowerCase().includes(name)) &&
+    (!type || p.PROJECT_TYPE === type) &&
+    (!seg6 || p.GL_SEGMENT6_CODE.toLowerCase().includes(seg6))
+  );
+  const tbody = document.getElementById('lov-tbody');
+  document.getElementById('lov-count').textContent = `${results.length} kết quả`;
+  if (!results.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="grid-empty">Không có kết quả</td></tr>';
+    return;
+  }
+  tbody.innerHTML = results.map(p => `
+    <tr style="cursor:pointer;" onclick="selectLOV(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+      <td style="color:var(--primary); font-weight:600;">${p.PROJECT_CODE}</td>
+      <td>${p.PROJECT_NAME}</td>
+      <td><span class="status-badge" style="background:${p.PROJECT_TYPE==='Military'?'#cce5ff':'#d4edda'};color:${p.PROJECT_TYPE==='Military'?'#004085':'#155724'};font-size:11px;">${p.PROJECT_TYPE}</span></td>
+      <td>${p.GL_SEGMENT6_CODE}</td>
+      <td>${p.GL_SEGMENT6_NAME}</td>
+    </tr>`).join('');
+}
+
+function selectLOV(p) {
+  if (_lookupTarget === 'board') {
+    const el = document.querySelector('[name="PROJECT_MANAGEMENT_CODE"]');
+    if (el) { el.value = p.GL_SEGMENT6_CODE; onBoardIdChange(p.GL_SEGMENT6_CODE); }
+  } else {
+    const el = document.querySelector('[name="PROJECT_CODE"]');
+    if (el) { el.value = p.PROJECT_CODE; onProjectIdChange(p.PROJECT_CODE); }
+  }
+  closeLookup();
+}
+
+// wire F4 buttons to openLookup
+function wireF4Buttons() {
+  const projectLookupBtn = document.querySelector('[data-testid="btn-lookup-project"]');
+  if (projectLookupBtn) projectLookupBtn.onclick = () => openLookup('project');
+  const boardLookupBtn = document.querySelector('[data-testid="btn-lookup-board"]');
+  if (boardLookupBtn) boardLookupBtn.onclick = () => openLookup('board');
+  const specLookupBtn = document.querySelector('[data-testid="btn-lookup-spec"]');
+  if (specLookupBtn) specLookupBtn.onclick = () => openLookup('project');
+}
+
+// ─── VAL-18 Duplicate Check ──────────────────────────────
+function checkDuplicate(projectCode, boardCode) {
+  // Prototype: treat records within same project + board within last 30 min as duplicate
+  const recent = (window.ALL_RECORDS_GLOBAL || []).filter(r =>
+    r.PROJECT_CODE === projectCode &&
+    r.PROJECT_MANAGEMENT_CODE === boardCode &&
+    r.STATE_CODE === 'DRAFT' &&
+    r.id !== (record?.id)
+  );
+  if (recent.length > 0) {
+    document.getElementById('dup-project-info').textContent = `Mã dự án: ${projectCode}`;
+    document.getElementById('dup-board-info').textContent = `Mã ĐVQHNS: ${boardCode}`;
+    document.getElementById('dialog-duplicate-warning').hidden = false;
+    return true;
+  }
+  return false;
+}
+
+// ─── History Render ──────────────────────────────────────
+function renderHistory(r) {
+  const tbody = document.getElementById('history-tbody');
+  if (!r) return;
+  const entries = [
+    { seq: 1, user: r.CREATED_BY, date: r.CREATED_DATE, action: 'TẠO MỚI', detail: `DOSSIER_CODE: (new) → ${r.DOSSIER_CODE || 'HS-CHI-2026-XXXX'} | STATE_CODE: (new) → DRAFT | DATA_SOURCE_CODE: (new) → ${r.DATA_SOURCE_CODE}` },
+    { seq: 2, user: r.LAST_UPDATED_BY || r.CREATED_BY, date: r.LAST_UPDATED_DATE || r.CREATED_DATE, action: 'CẬP NHẬT', detail: `SEND_DATE: (old) → ${r.SEND_DATE}` }
+  ];
+  if (r.CHECKED_BY) entries.push({ seq: 3, user: r.CHECKED_BY, date: r.CHECKED_DATE || '', action: 'KIỂM SOÁT', detail: `STATE_CODE: PENDING_CHECK → ${r.STATE_CODE}` });
+  if (r.APPROVED_BY) entries.push({ seq: 4, user: r.APPROVED_BY, date: r.APPROVED_DATE || '', action: 'PHÊ DUYỆT', detail: `STATE_CODE: PENDING_APPROVE → APPROVED` });
+  tbody.innerHTML = entries.map(e => `
+    <tr>
+      <td>${e.seq}</td>
+      <td>${e.user}</td>
+      <td>${e.date}</td>
+      <td><span style="font-size:11px; font-weight:600; color:var(--primary);">${e.action}</span></td>
+      <td style="font-family:monospace; font-size:11px; color:#495057;">${e.detail}</td>
+    </tr>`).join('');
+}
+
+// ─── Print Preview ───────────────────────────────────────
+function openPrintPreview() {
+  const r = record;
+  if (!r && mode !== 'view') { alert('Chỉ in được khi đang xem hồ sơ'); return; }
+  // Fill print template
+  const dc = document.querySelector('[name="DOSSIER_CODE"]')?.value || '—';
+  document.getElementById('print-dossier-code').textContent = 'Mã hồ sơ: ' + dc;
+  document.getElementById('p-dossier-code').textContent = dc;
+  document.getElementById('p-send-date').textContent = document.querySelector('[name="SEND_DATE"]')?.value || '—';
+  document.getElementById('p-project').textContent = (document.querySelector('[name="PROJECT_CODE"]')?.value || '') + ' — ' + (document.querySelector('[name="PROJECT_NAME"]')?.value || '');
+  document.getElementById('p-board').textContent = (document.querySelector('[name="PROJECT_MANAGEMENT_CODE"]')?.value || '') + ' — ' + (document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]')?.value || '');
+  document.getElementById('p-state').textContent = document.querySelector('[name="STATE_CODE"]')?.value || '—';
+  document.getElementById('p-source').textContent = document.querySelector('[name="DATA_SOURCE_CODE"]')?.value || '—';
+  document.getElementById('p-created-by').textContent = r?.CREATED_BY || '—';
+  document.getElementById('p-created-date').textContent = r?.CREATED_DATE || '—';
+  // Fill docs
+  const docs = r?.documents || [];
+  const ptbody = document.getElementById('p-doc-tbody');
+  let total = 0;
+  ptbody.innerHTML = docs.length ? docs.map((d,i) => {
+    total += d.PAYMENT_REQUEST_AMOUNT_VND || 0;
+    return `<tr><td style="padding:3px 6px;border:1px solid #ccc;">${i+1}</td><td style="padding:3px 6px;border:1px solid #ccc;">${d.DOCUMENT_NUMBER}</td><td style="padding:3px 6px;border:1px solid #ccc;">${d.DOCUMENT_DATE}</td><td style="padding:3px 6px;border:1px solid #ccc;text-align:right;">${d.PAYMENT_REQUEST_AMOUNT_VND?.toLocaleString('vi-VN')||'0'}</td></tr>`;
+  }).join('') : '<tr><td colspan="4" style="text-align:center;padding:8px;color:#999;">Chưa có chứng từ</td></tr>';
+  document.getElementById('p-doc-total').textContent = total.toLocaleString('vi-VN');
+  document.getElementById('dialog-print-preview').hidden = false;
 }
 
 init();
 </script>
+
+<!-- Print Preview Modal (EXP.CAPEX_DOSSIER.PRINT) -->
+<div id="dialog-print-preview" class="modal-overlay" hidden style="align-items:flex-start;padding-top:40px;">
+  <div class="modal" style="min-width:720px;max-width:860px;max-height:85vh;display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <span style="font-size:16px;">🖨</span>
+      <span class="modal-title">Preview in phiếu — Hồ sơ Chi đầu tư</span>
+      <button style="margin-left:auto;background:none;border:none;font-size:18px;cursor:pointer;" onclick="document.getElementById('dialog-print-preview').hidden=true">×</button>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:24px;background:#f0f0f0;">
+      <!-- Print template -->
+      <div id="print-content" style="background:#fff;padding:32px;max-width:640px;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,.15);font-family:serif;">
+        <div style="text-align:center;margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:bold;">NGÂN HÀNG PHÁT TRIỂN VIỆT NAM</div>
+          <div style="font-size:11px;">VDBAS — Hệ thống quản lý chi đầu tư</div>
+          <div style="font-size:16px;font-weight:bold;margin-top:12px;text-transform:uppercase;">Phiếu hồ sơ Chi đầu tư</div>
+          <div style="font-size:11px;margin-top:4px;" id="print-dossier-code">Mã hồ sơ: —</div>
+        </div>
+        <hr style="border:1px solid #ccc;margin:16px 0;">
+        <table style="width:100%;font-size:12px;border-collapse:collapse;">
+          <tr><td style="padding:4px 8px;width:40%;color:#555;font-weight:bold;">Mã hồ sơ</td><td id="p-dossier-code" style="padding:4px 8px;">—</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:4px 8px;font-weight:bold;">Ngày gửi</td><td id="p-send-date" style="padding:4px 8px;">—</td></tr>
+          <tr><td style="padding:4px 8px;font-weight:bold;">Dự án/Công trình</td><td id="p-project" style="padding:4px 8px;">—</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:4px 8px;font-weight:bold;">Đơn vị QHNS</td><td id="p-board" style="padding:4px 8px;">—</td></tr>
+          <tr><td style="padding:4px 8px;font-weight:bold;">Trạng thái</td><td id="p-state" style="padding:4px 8px;">—</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:4px 8px;font-weight:bold;">Nguồn</td><td id="p-source" style="padding:4px 8px;">—</td></tr>
+          <tr><td style="padding:4px 8px;font-weight:bold;">Người lập</td><td id="p-created-by" style="padding:4px 8px;">—</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:4px 8px;font-weight:bold;">Ngày lập</td><td id="p-created-date" style="padding:4px 8px;">—</td></tr>
+        </table>
+        <hr style="border:1px solid #ccc;margin:16px 0;">
+        <div style="font-size:12px;font-weight:bold;margin-bottom:8px;">Danh sách chứng từ</div>
+        <table style="width:100%;font-size:11px;border-collapse:collapse;border:1px solid #ccc;">
+          <thead><tr style="background:#f0f0f0;"><th style="padding:4px 6px;border:1px solid #ccc;text-align:left;">STT</th><th style="padding:4px 6px;border:1px solid #ccc;">Số chứng từ</th><th style="padding:4px 6px;border:1px solid #ccc;">Ngày CT</th><th style="padding:4px 6px;border:1px solid #ccc;text-align:right;">Số tiền VND</th></tr></thead>
+          <tbody id="p-doc-tbody"><tr><td colspan="4" style="text-align:center;padding:8px;color:#999;">Chưa có chứng từ</td></tr></tbody>
+          <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="padding:4px 6px;border:1px solid #ccc;text-align:right;">Tổng cộng:</td><td id="p-doc-total" style="padding:4px 6px;border:1px solid #ccc;text-align:right;">0</td></tr></tfoot>
+        </table>
+        <div style="display:flex;justify-content:space-between;margin-top:40px;font-size:12px;">
+          <div style="text-align:center;width:30%;"><div style="border-top:1px solid #333;padding-top:4px;margin-top:40px;">Người lập</div></div>
+          <div style="text-align:center;width:30%;"><div style="border-top:1px solid #333;padding-top:4px;margin-top:40px;">Người kiểm soát</div></div>
+          <div style="text-align:center;width:30%;"><div style="border-top:1px solid #333;padding-top:4px;margin-top:40px;">Người phê duyệt</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="document.getElementById('dialog-print-preview').hidden=true">Đóng</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 In (Ctrl+P browser)</button>
+    </div>
+  </div>
+</div>
+
+<!-- MSG-ERR-CONCURRENT Dialog -->
+<div id="dialog-concurrent" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-header">
+      <span class="icon-warn">⚠</span>
+      <span class="modal-title">Hồ sơ đang được chỉnh sửa</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;" id="concurrent-msg">Hồ sơ đang được <strong>—</strong> chỉnh sửa, vui lòng thử lại sau.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Mã lỗi: MSG-ERR-CONCURRENT</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="window.location.href='form_list.html'">← Quay lại danh sách</button>
+      <button class="btn btn-primary" onclick="document.getElementById('dialog-concurrent').hidden=true">Thử lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- MSG-WRN-OUTSIDE-HOUR Dialog -->
+<div id="dialog-outside-hour" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <span style="color:var(--warning);font-size:20px;">⏰</span>
+      <span class="modal-title">Ngoài giờ giao dịch</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;">Hiện tại ngoài giờ giao dịch (08:00 – 17:00). Hồ sơ sẽ được xử lý vào ngày làm việc tiếp theo.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Mã: MSG-WRN-OUTSIDE-HOUR</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="document.getElementById('dialog-outside-hour').hidden=true">Đã hiểu, tiếp tục</button>
+    </div>
+  </div>
+</div>
+
+<!-- MSG-ERR-SESSION Dialog -->
+<div id="dialog-session-expired" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-header">
+      <span class="icon-warn">🔒</span>
+      <span class="modal-title">Phiên đăng nhập hết hạn</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;">Phiên làm việc đã hết hạn. Dữ liệu đang nhập sẽ được lưu tạm.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Mã: MSG-ERR-SESSION</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="alert('Prototype: Redirect to login page')">Đăng nhập lại</button>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>

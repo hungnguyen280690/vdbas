@@ -1,10 +1,5 @@
 x-common-env: &common-env
   SERVER_PORT: 8080
-  DB_HOST: ${DB_HOST:-172.16.5.20}
-  DB_PORT: ${DB_PORT:-1521}
-  DB_NAME: ${DB_NAME:-vdbaspdb}
-  DB_USER: ${DB_USER:-vdbas_qtdc}
-  DB_PASSWORD: ${DB_PASSWORD:-qttt@123}
   DB_DDL_AUTO: ${DB_DDL_AUTO:-validate}
   DB_SHOW_SQL: ${DB_SHOW_SQL:-true}
   CACHE_TYPE: ${CACHE_TYPE:-memory}
