@@ -8,11 +8,12 @@
   },
   "scripts": {
     "dev": "dotenv -e .env -- vite",
+    "dev:mock": "vite --mode mock",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "build:test": "vite build --mode test",
     "build:prod": "vite build --mode production",
-    "preview": "vite preview --port 5002",
+    "preview": "vite preview --port 3003",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "type-check": "tsc --noEmit"
   },

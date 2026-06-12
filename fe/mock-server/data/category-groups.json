@@ -1,0 +1,62 @@
+[
+  {
+    "groupCode": "DM_DONVI",
+    "groupName": "Đơn vị",
+    "system": true,
+    "active": true,
+    "deleted": false,
+    "extAttributes": null,
+    "createdBy": "system",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedBy": "system",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "groupCode": "DM_LOAI_KP",
+    "groupName": "Loại kinh phí",
+    "system": true,
+    "active": true,
+    "deleted": false,
+    "extAttributes": null,
+    "createdBy": "system",
+    "createdAt": "2024-01-01T00:00:00.000Z",
+    "updatedBy": "system",
+    "updatedAt": "2024-01-01T00:00:00.000Z"
+  },
+  {
+    "groupCode": "DM_NGUON_VON",
+    "groupName": "Nguồn vốn",
+    "system": false,
+    "active": true,
+    "deleted": false,
+    "extAttributes": null,
+    "createdBy": "mockuser",
+    "createdAt": "2024-03-15T08:30:00.000Z",
+    "updatedBy": "mockuser",
+    "updatedAt": "2024-03-15T08:30:00.000Z"
+  },
+  {
+    "groupCode": "DM_NGAN_SACH",
+    "groupName": "Ngân sách nhà nước",
+    "system": false,
+    "active": false,
+    "deleted": false,
+    "extAttributes": null,
+    "createdBy": "mockuser",
+    "createdAt": "2024-04-10T10:00:00.000Z",
+    "updatedBy": "mockuser",
+    "updatedAt": "2024-05-01T09:00:00.000Z"
+  },
+  {
+    "groupCode": "DM_CU",
+    "groupName": "Danh mục cũ",
+    "system": false,
+    "active": false,
+    "deleted": true,
+    "extAttributes": null,
+    "createdBy": "mockuser",
+    "createdAt": "2023-06-01T00:00:00.000Z",
+    "updatedBy": "mockuser",
+    "updatedAt": "2024-01-20T00:00:00.000Z"
+  }
+]

@@ -29,12 +29,12 @@ export default defineConfig({
     },
   },
   server: {
-    port: 5002,
+    port: 3003,
     open: true,
     cors: true,
   },
   preview: {
-    port: 5002,
+    port: 3003,
     cors: true,
   },
   build: {

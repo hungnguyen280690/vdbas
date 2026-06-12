@@ -378,6 +378,7 @@ const CategoryGroupsPage: React.FC = () => {
               }}
               style={{ width: '100%' }}
               allowClear
+              aria-label="status-filter"
             >
               <Select.Option value="active">{translate('common.active')}</Select.Option>
               <Select.Option value="inactive">{translate('common.inactive')}</Select.Option>

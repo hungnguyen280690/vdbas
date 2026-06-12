@@ -29,11 +29,52 @@ const fetchUserApps = async (token: string): Promise<PermissionApp[] | null> => 
   }
 }
 
+// ── Mock auth (VITE_MOCK_AUTH=true) ──────────────────────────────────────────
+
+const MOCK_AUTH = import.meta.env.VITE_MOCK_AUTH === 'true'
+
+async function initMockAuth(setState: (s: AuthState) => void) {
+  const baseUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080/api'
+  try {
+    const res   = await fetch(`${baseUrl.replace(/\/api.*$/, '')}/api/mock/token`)
+    const { token } = await res.json() as { token: string }
+    const payload   = JSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')))
+
+    localStorage.setItem('kc_token', token)
+    window.dispatchEvent(new Event('auth-change'))
+
+    const apps = await fetchUserApps(token)
+    if (apps) {
+      localStorage.setItem('user_apps', JSON.stringify(apps))
+      apps.forEach((app) => {
+        if (app.appCode && app.appUrl) {
+          localStorage.setItem(`app_url_${app.appCode.toLowerCase()}`, app.appUrl)
+        }
+      })
+    }
+
+    setState({ status: 'authenticated', user: payload as AuthState['user'], token, apps })
+  } catch (err) {
+    console.error('[mock-auth] Failed to get mock token:', err)
+    setState({ status: 'unauthenticated', user: null, token: null, apps: null })
+  }
+}
+
+// ── Provider ──────────────────────────────────────────────────────────────────
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [state, setState] = useState<AuthState>(initialState)
   const initCalledRef = useRef(false)
 
   useEffect(() => {
+    if (MOCK_AUTH) {
+      if (!initCalledRef.current) {
+        initCalledRef.current = true
+        initMockAuth(setState)
+      }
+      return
+    }
+
     // Guard against React StrictMode double-invocation
     if (initCalledRef.current) {
       if (keycloak.authenticated !== undefined) {
@@ -123,7 +164,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, [])
 
-  const login = useCallback(() => keycloak.login(), [])
+  const login = useCallback(() => {
+    if (MOCK_AUTH) { initMockAuth(setState); return }
+    keycloak.login()
+  }, [])
 
   const logout = useCallback(() => {
     const cachedApps = localStorage.getItem('user_apps')
@@ -142,7 +186,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.removeItem('apiPermissions')
     localStorage.removeItem('user_apps')
     window.dispatchEvent(new Event('auth-change'))
-    keycloak.logout()
+    if (!MOCK_AUTH) keycloak.logout()
+    else setState({ status: 'unauthenticated', user: null, token: null, apps: null })
   }, [])
 
   const getToken = useCallback(() => state.token, [state.token])

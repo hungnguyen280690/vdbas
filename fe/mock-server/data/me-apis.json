@@ -1,0 +1,8 @@
+[
+  { "path": "/api/category-groups/search",         "method": "POST" },
+  { "path": "/api/category-groups/{groupCode}",    "method": "GET" },
+  { "path": "/api/category-groups",                "method": "POST" },
+  { "path": "/api/category-groups/{groupCode}",    "method": "PUT" },
+  { "path": "/api/category-groups/{groupCode}/active", "method": "PUT" },
+  { "path": "/api/category-groups/{groupCode}",    "method": "DELETE" }
+]

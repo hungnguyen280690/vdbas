@@ -4,8 +4,10 @@ interface ImportMetaEnv {
   readonly VITE_KEYCLOAK_REALM: string
   readonly VITE_KEYCLOAK_CLIENT_ID: string
   readonly VITE_API_BASE_URL: string
+  readonly VITE_MOCK_AUTH: string
   // Legacy static remote URLs — kept for .env compatibility, URLs now come from /api/me/apps
   readonly VITE_QTDC_REMOTE_URL: string
+  readonly VITE_EXP_REMOTE_URL: string
   readonly VITE_TEMPLATE_REMOTE_URL: string
 }
 
