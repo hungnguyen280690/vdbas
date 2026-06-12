@@ -1,0 +1,1573 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHI.CAPEX_DOSSIER — Chi tiết hồ sơ</title>
+<style>
+  :root {
+    --primary: #0b5394;
+    --primary-hover: #084273;
+    --accent: #dc3545;
+    --success: #28a745;
+    --warning: #ffc107;
+    --info: #17a2b8;
+    --danger: #dc3545;
+    --default: #6c757d;
+    --text-primary: #212529;
+    --text-muted: #6c757d;
+    --bg-light: #f8f9fa;
+    --bg-white: #ffffff;
+    --border: #dee2e6;
+    --border-radius: 4px;
+    --shadow: 0 1px 3px rgba(0,0,0,.12);
+    --red: #dc3545;
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  /* Fix: ensure hidden attribute always overrides display from class rules */
+  [hidden] { display: none !important; }
+  body { font-family: var(--font); font-size: 14px; color: var(--text-primary); background: #eef0f3; }
+
+  /* Layout */
+  .page-wrapper { max-width: 1280px; margin: 0 auto; padding: 16px; }
+  .page-header { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--border-radius); padding: 12px 24px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .page-title { font-size: 18px; font-weight: 600; color: var(--primary); }
+  .header-actions { display: flex; gap: 8px; align-items: center; }
+  .breadcrumb { font-size: 12px; color: var(--text-muted); margin-bottom: 4px; }
+  .breadcrumb span { color: var(--primary); cursor: pointer; }
+
+  /* Status Badge */
+  .status-badge { display: inline-flex; align-items: center; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: 600; }
+  .status-DRAFT { background: #e9ecef; color: #495057; }
+  .status-PENDING_CHECK { background: #cce5ff; color: #004085; }
+  .status-CHECK_REJECTED { background: #f8d7da; color: #721c24; }
+  .status-CHECK_CANCELLED { background: #fff3cd; color: #856404; }
+  .status-PENDING_APPROVE { background: #d1ecf1; color: #0c5460; }
+  .status-APPROVE_REJECTED { background: #f8d7da; color: #721c24; }
+  .status-APPROVE_CANCELLED { background: #fff3cd; color: #856404; }
+  .status-APPROVED { background: #d4edda; color: #155724; }
+  .status-DELETED { background: #343a40; color: #fff; }
+
+  /* Card */
+  .card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--border-radius); margin-bottom: 12px; box-shadow: var(--shadow); }
+  .card-header { padding: 10px 20px; border-bottom: 1px solid var(--border); background: #f0f4f9; font-weight: 600; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 8px; }
+  .card-header::before { content: ''; display: inline-block; width: 4px; height: 16px; background: var(--primary); border-radius: 2px; }
+  .card-body { padding: 16px 20px; }
+
+  /* Form Grid */
+  .form-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px 24px; }
+  .form-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .form-grid-1 { grid-template-columns: 1fr; }
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group.span-2 { grid-column: span 2; }
+  .form-group.span-3 { grid-column: span 3; }
+  label { font-size: 12px; font-weight: 500; color: #495057; }
+  label .req { color: var(--red); margin-left: 2px; }
+  label .cond { color: #fd7e14; margin-left: 2px; }
+
+  /* Form Controls */
+  .form-control {
+    width: 100%; padding: 6px 10px; font-size: 13px; border: 1px solid var(--border);
+    border-radius: var(--border-radius); color: var(--text-primary); background: var(--bg-white);
+    transition: border-color .15s;
+  }
+  .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(11,83,148,.15); }
+  .form-control:disabled, .form-control[readonly] { background: #f5f6f8; color: #6c757d; cursor: not-allowed; }
+  .form-control.error { border-color: var(--red); }
+  .error-msg { font-size: 11px; color: var(--red); margin-top: 2px; display: none; }
+  .form-control.error + .error-msg { display: block; }
+
+  /* Input Group (Lookup) */
+  .input-group { display: flex; }
+  .input-group .form-control { border-radius: var(--border-radius) 0 0 var(--border-radius); flex: 1; }
+  .input-group .btn-lookup { padding: 6px 10px; border: 1px solid var(--border); border-left: none; background: #f0f4f9; cursor: pointer; border-radius: 0 var(--border-radius) var(--border-radius) 0; color: var(--primary); font-size: 12px; }
+  .input-group .btn-lookup:hover { background: #dde4ed; }
+
+  /* Tabs */
+  .tab-nav { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 0; }
+  .tab-btn { padding: 8px 18px; font-size: 13px; cursor: pointer; border: none; background: none; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -2px; transition: all .15s; }
+  .tab-btn.active { color: var(--primary); font-weight: 600; border-bottom-color: var(--primary); }
+  .tab-btn:hover:not(.active) { color: var(--text-primary); background: var(--bg-light); }
+  .tab-pane { display: none; padding: 16px 20px; }
+  .tab-pane.active { display: block; }
+
+  /* Grid Table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { background: #f0f4f9; color: var(--primary); font-weight: 600; padding: 8px 12px; text-align: left; border: 1px solid var(--border); font-size: 12px; }
+  .data-table td { padding: 8px 12px; border: 1px solid var(--border); vertical-align: top; }
+  .data-table tr:hover td { background: #f5f8fc; }
+  .data-table .text-right { text-align: right; font-family: monospace; }
+  .data-table tfoot td { background: #f0f4f9; font-weight: 600; }
+  .grid-empty { text-align: center; padding: 32px; color: var(--text-muted); font-style: italic; }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 4px; padding: 7px 16px; font-size: 13px; font-weight: 500; border-radius: var(--border-radius); cursor: pointer; border: 1px solid transparent; transition: all .15s; white-space: nowrap; }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+  .btn-default { background: #fff; color: #495057; border-color: #ced4da; }
+  .btn-default:hover:not(:disabled) { background: var(--bg-light); }
+  .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-danger:hover:not(:disabled) { background: #b02a37; }
+  .btn-ghost { background: transparent; color: var(--primary); border-color: var(--primary); }
+  .btn-ghost:hover:not(:disabled) { background: #e8f0fb; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; }
+
+  /* Footer Action Bar */
+  .action-bar {
+    background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--border-radius);
+    padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+    position: sticky; bottom: 0; box-shadow: 0 -2px 8px rgba(0,0,0,.08);
+  }
+  .action-bar-left { display: flex; gap: 8px; }
+  .action-bar-right { display: flex; gap: 8px; }
+
+  /* Shortcut hint */
+  .shortcut { font-size: 10px; color: var(--text-muted); margin-left: 4px; }
+
+  /* Dialog / Modal */
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+  .modal { background: var(--bg-white); border-radius: 6px; box-shadow: 0 8px 32px rgba(0,0,0,.2); min-width: 420px; max-width: 560px; overflow: hidden; }
+  .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .modal-header .icon-warn { color: var(--danger); font-size: 20px; }
+  .modal-title { font-weight: 600; font-size: 15px; }
+  .modal-body { padding: 20px; }
+  .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* File Upload Zone */
+  .upload-zone { border: 2px dashed var(--border); border-radius: var(--border-radius); padding: 24px; text-align: center; cursor: pointer; transition: all .15s; }
+  .upload-zone:hover { border-color: var(--primary); background: #f0f4f9; }
+  .upload-zone p { color: var(--text-muted); font-size: 13px; }
+
+  /* Approval workflow */
+  .workflow { display: flex; align-items: center; gap: 0; margin: 12px 0; }
+  .workflow-step { flex: 1; text-align: center; }
+  .workflow-step-circle { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--border); background: var(--bg-white); margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; color: var(--text-muted); }
+  .workflow-step-circle.active { border-color: var(--primary); color: var(--primary); background: #e8f0fb; }
+  .workflow-step-circle.done { border-color: var(--success); color: var(--success); background: #d4edda; }
+  .workflow-step-circle.rejected { border-color: var(--danger); color: var(--danger); background: #f8d7da; }
+  .workflow-step-label { font-size: 11px; color: var(--text-muted); }
+  .workflow-line { flex: 0 0 40px; height: 2px; background: var(--border); }
+  .workflow-line.done { background: var(--success); }
+
+  /* History table */
+  .history-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .history-table th { background: #f0f4f9; padding: 6px 10px; text-align: left; border: 1px solid var(--border); }
+  .history-table td { padding: 6px 10px; border: 1px solid var(--border); }
+
+  /* Info label */
+  .info-label { background: #e8f0fb; border-left: 3px solid var(--primary); padding: 8px 12px; border-radius: 0 4px 4px 0; font-size: 12px; color: var(--primary); margin-bottom: 12px; }
+  .info-warning { background: #fff3cd; border-left-color: var(--warning); color: #856404; }
+
+  /* Checkbox */
+  .form-check { display: flex; align-items: flex-start; gap: 8px; }
+  .form-check input { margin-top: 2px; width: 15px; height: 15px; cursor: pointer; }
+  .form-check label { font-size: 13px; cursor: pointer; font-weight: normal; }
+
+  /* Char counter */
+  .char-counter { font-size: 11px; color: var(--text-muted); text-align: right; }
+  .char-counter.warn { color: var(--danger); }
+
+  /* Tooltip on disabled buttons */
+  button[disabled] { position: relative; }
+  button[disabled]:hover::after {
+    content: attr(data-disabled-reason);
+    position: absolute; bottom: calc(100% + 6px); left: 50%; transform: translateX(-50%);
+    background: #333; color: #fff; font-size: 11px; padding: 4px 8px; border-radius: 4px;
+    white-space: nowrap; z-index: 999; pointer-events: none; font-weight: normal;
+  }
+  button[disabled]:hover::before {
+    content: ''; position: absolute; bottom: calc(100% + 2px); left: 50%; transform: translateX(-50%);
+    border: 4px solid transparent; border-top-color: #333; z-index: 999; pointer-events: none;
+  }
+</style>
+</head>
+<body>
+
+<!-- Inline Sample Data -->
+<script type="application/json" id="sample-data">
+{
+  "records": [
+    {"id":"REC-001","DOSSIER_CODE":"HS-CHI-2026-0001","SEND_DATE":"15/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"DRAFT","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"nguyen.van.a","CREATED_DATE":"15/05/2026 09:12:00","LAST_UPDATED_BY":"nguyen.van.a","LAST_UPDATED_DATE":"15/05/2026 09:12:00","TOTAL_VND":1500000000,"DOCUMENT_COUNT":2,"documents":[{"DOCUMENT_NUMBER":"CT-2026-001","DOCUMENT_DATE":"10/05/2026","ACCOUNTING_DATE":"15/05/2026","DOC_NAME":"Chứng từ thanh toán công trình hạng mục A","PAYMENT_REQUEST_AMOUNT":null,"PAYMENT_REQUEST_AMOUNT_VND":800000000},{"DOCUMENT_NUMBER":"CT-2026-002","DOCUMENT_DATE":"12/05/2026","ACCOUNTING_DATE":"15/05/2026","DOC_NAME":"Chứng từ thanh toán thiết bị y tế","PAYMENT_REQUEST_AMOUNT":null,"PAYMENT_REQUEST_AMOUNT_VND":700000000}]},
+    {"id":"REC-002","DOSSIER_CODE":"HS-CHI-2026-0002","SEND_DATE":"10/05/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_SPECIFIC_CODE":"001200037","PROJECT_SPECIFIC_NAME":"Dự án TM02","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"PENDING_CHECK","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"tran.thi.b","CREATED_DATE":"08/05/2026 14:30:00","LAST_UPDATED_BY":"tran.thi.b","LAST_UPDATED_DATE":"10/05/2026 11:00:00","TOTAL_VND":3200000000,"DOCUMENT_COUNT":1,"documents":[{"DOCUMENT_NUMBER":"CT-2026-003","DOCUMENT_DATE":"08/05/2026","ACCOUNTING_DATE":"10/05/2026","DOC_NAME":"Giấy đề nghị thanh toán dự án TM02 giai đoạn 1","PAYMENT_REQUEST_AMOUNT":null,"PAYMENT_REQUEST_AMOUNT_VND":3200000000}]},
+    {"id":"REC-003","DOSSIER_CODE":"HS-CHI-2026-0003","SEND_DATE":"05/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"PENDING_APPROVE","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"le.van.c","CREATED_DATE":"03/05/2026 10:00:00","LAST_UPDATED_BY":"nguyen.checker","LAST_UPDATED_DATE":"05/05/2026 16:00:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"05/05/2026 16:00:00","TOTAL_VND":950000000,"DOCUMENT_COUNT":1,"documents":[{"DOCUMENT_NUMBER":"CT-2026-004","DOCUMENT_DATE":"03/05/2026","ACCOUNTING_DATE":"05/05/2026","DOC_NAME":"Thanh toán khối lượng xây dựng hạng mục phòng mổ","PAYMENT_REQUEST_AMOUNT":null,"PAYMENT_REQUEST_AMOUNT_VND":950000000}]},
+    {"id":"REC-004","DOSSIER_CODE":"HS-CHI-2026-0004","SEND_DATE":"28/04/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_SPECIFIC_CODE":"001200038","PROJECT_SPECIFIC_NAME":"Dự án TM03","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"APPROVED","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"pham.thi.d","CREATED_DATE":"25/04/2026 08:00:00","LAST_UPDATED_BY":"tran.approver","LAST_UPDATED_DATE":"28/04/2026 14:30:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"27/04/2026 09:00:00","APPROVED_BY":"tran.approver","APPROVED_DATE":"28/04/2026 14:30:00","TOTAL_VND":5600000000,"DOCUMENT_COUNT":3,"documents":[]},
+    {"id":"REC-005","DOSSIER_CODE":"HS-CHI-2026-0005","SEND_DATE":"20/04/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"CHECK_REJECTED","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"hoang.van.e","CREATED_DATE":"18/04/2026 11:00:00","LAST_UPDATED_BY":"nguyen.checker","LAST_UPDATED_DATE":"20/04/2026 15:30:00","CHECKED_BY":"nguyen.checker","CHECK_REJECTION_REASON":"Chứng từ chưa đủ hạng mục theo hợp đồng","TOTAL_VND":420000000,"DOCUMENT_COUNT":1,"documents":[]},
+    {"id":"REC-006","DOSSIER_CODE":"HS-CHI-2026-0006","SEND_DATE":"15/04/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_SPECIFIC_CODE":"001200037","PROJECT_SPECIFIC_NAME":"Dự án TM02","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"APPROVE_REJECTED","DATA_SOURCE_CODE":"DVC","CREATED_BY":"vu.thi.f","CREATED_DATE":"10/04/2026 09:30:00","LAST_UPDATED_BY":"tran.approver","LAST_UPDATED_DATE":"15/04/2026 16:00:00","CHECKED_BY":"nguyen.checker","APPROVED_BY":"tran.approver","APPROVAL_REJECTION_REASON":"Vượt hạn mức phân bổ ngân sách quý 2/2026","TOTAL_VND":8900000000,"DOCUMENT_COUNT":2,"documents":[]},
+    {"id":"REC-007","DOSSIER_CODE":"HS-CHI-2026-0007","SEND_DATE":"28/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"DRAFT","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"nguyen.van.a","CREATED_DATE":"28/05/2026 08:00:00","LAST_UPDATED_BY":"nguyen.van.a","LAST_UPDATED_DATE":"28/05/2026 08:00:00","TOTAL_VND":0,"DOCUMENT_COUNT":0,"documents":[]}
+  ]
+}
+</script>
+
+<div class="page-wrapper">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">
+        <span onclick="window.location.href='form_list.html'">Danh sách hồ sơ Chi đầu tư</span>
+        &nbsp;/&nbsp;
+        <span data-page-title>Chi tiết hồ sơ</span>
+      </div>
+      <h1 class="page-title" data-page-title>CHI.CAPEX_DOSSIER — Chi tiết hồ sơ</h1>
+    </div>
+    <div class="header-actions">
+      <!-- In phiếu — only VIEW -->
+      <button class="btn btn-default btn-sm" data-show-mode="view" data-testid="btn-print" title="In phiếu (Ctrl+P)" onclick="openPrintPreview()">
+        🖨 In phiếu <span class="shortcut">Ctrl+P</span>
+      </button>
+      <!-- Sửa — top right on VIEW -->
+      <button class="btn btn-default btn-sm" data-show-mode="view" data-testid="btn-edit" onclick="switchToEdit()" title="Sửa (F2)">
+        ✏ Sửa <span class="shortcut">F2</span>
+      </button>
+      <!-- Status badge -->
+      <span class="status-badge" id="status-badge">Đang hoàn thiện</span>
+    </div>
+  </div>
+
+  <!-- Tab Navigation -->
+  <div class="card" style="margin-bottom:0; border-bottom:none; border-radius:4px 4px 0 0;">
+    <div class="tab-nav" id="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-general', this)">📋 Thông tin chung</button>
+      <button class="tab-btn" onclick="switchTab('tab-documents', this)" data-tab-documents>📄 Danh sách chứng từ</button>
+      <button class="tab-btn" onclick="switchTab('tab-attach', this)">📎 Đính kèm tài liệu</button>
+      <button class="tab-btn" onclick="switchTab('tab-history', this)" title="Alt+H">🕐 Lịch sử <span class="shortcut">Alt+H</span></button>
+      <button class="tab-btn" onclick="switchTab('tab-approval', this)" title="Alt+P">✅ Trạng thái phê duyệt <span class="shortcut">Alt+P</span></button>
+    </div>
+  </div>
+
+  <!-- TAB: Thông tin chung (B1.1) -->
+  <div class="card" style="border-radius:0; border-top:none;">
+    <div class="tab-pane active" id="tab-general">
+
+      <!-- Info label for NEW mode -->
+      <div class="info-label" data-show-mode="new" style="display:none;">
+        💡 Điền đầy đủ thông tin và bấm <strong>Lưu</strong> để tạo hồ sơ. Mã hồ sơ sẽ được tự động sinh sau khi lưu lần đầu.
+      </div>
+
+      <div class="form-grid">
+        <!-- DOSSIER_CODE -->
+        <div class="form-group"
+             data-field-code="DOSSIER_CODE"
+             data-field-type="String"
+             data-component="TextBox"
+             data-required="Y"
+             data-max-length="30"
+             data-spec-ref="B1.1.row1"
+             data-validation="VAL-11,VAL-17"
+             data-show-when=""
+             data-lov="">
+          <label>Mã hồ sơ <span class="req">*</span></label>
+          <input name="DOSSIER_CODE" type="text"
+                 class="form-control" readonly
+                 placeholder="(Tự động sinh sau khi Lưu)"
+                 data-api-field="header.paymentDossierId"
+                 data-testid="input-dossier-code" />
+        </div>
+
+        <!-- SEND_DATE -->
+        <div class="form-group"
+             data-field-code="SEND_DATE"
+             data-field-type="Date"
+             data-component="DatePicker"
+             data-required="Y"
+             data-spec-ref="B1.1.row2"
+             data-validation="VAL-02,VAL-04,VAL-08"
+             data-show-when=""
+             data-lov="">
+          <label>Ngày gửi hồ sơ <span class="req">*</span></label>
+          <input name="SEND_DATE" type="text"
+                 class="form-control" placeholder="dd/mm/yyyy"
+                 data-api-field="header.sendDate"
+                 data-testid="input-send-date" />
+        </div>
+
+        <!-- PROJECT_CODE -->
+        <div class="form-group span-2"
+             data-field-code="PROJECT_CODE"
+             data-field-type="String"
+             data-component="DropdownLookup"
+             data-required="Y"
+             data-max-length="20"
+             data-spec-ref="B1.1.row3"
+             data-validation="VAL-01,VAL-03,VAL-06"
+             data-show-when=""
+             data-lov="LOV.01">
+          <label>Mã dự án/công trình <span class="req">*</span></label>
+          <div class="input-group">
+            <input name="PROJECT_CODE" type="text"
+                   class="form-control" placeholder="Nhập hoặc F4 để tra cứu"
+                   data-api-field="header.projectId"
+                   data-testid="input-project-code"
+                   oninput="onProjectIdChange(this.value)" />
+            <button type="button" class="btn-lookup" title="F4 — Tra cứu dự án" data-testid="btn-lookup-project">🔍</button>
+          </div>
+          <span class="error-msg" id="err-PROJECT_CODE"></span>
+        </div>
+
+        <!-- PROJECT_NAME -->
+        <div class="form-group"
+             data-field-code="PROJECT_NAME"
+             data-field-type="String"
+             data-component="TextBox"
+             data-required="C"
+             data-max-length="255"
+             data-spec-ref="B1.1.row4"
+             data-validation="VAL-06"
+             data-show-when=""
+             data-lov="LOV.01">
+          <label>Tên dự án/công trình <span class="cond">(*)</span></label>
+          <input name="PROJECT_NAME" type="text"
+                 class="form-control" readonly
+                 placeholder="(Tự động fill theo Mã dự án)"
+                 data-api-field="header.projectName"
+                 data-testid="input-project-name" />
+        </div>
+
+        <!-- PROJECT_SPECIFIC_CODE — only Military -->
+        <div class="form-group" id="group-PROJECT_SPECIFIC_CODE"
+             data-field-code="PROJECT_SPECIFIC_CODE"
+             data-field-type="String"
+             data-component="DropdownLookup"
+             data-required="N"
+             data-max-length="20"
+             data-spec-ref="B1.1.row5"
+             data-validation="VAL-03,VAL-06"
+             data-show-when="PROJECT_TYPE === 'Military'"
+             data-lov="LOV.01"
+             style="display:none;">
+          <label>Mã dự án đặc thù</label>
+          <div class="input-group">
+            <input name="PROJECT_SPECIFIC_CODE" type="text"
+                   class="form-control" placeholder="F4 — Chỉ dành cho Military"
+                   data-api-field="header.projectSpecId"
+                   data-testid="input-project-specific-code" />
+            <button type="button" class="btn-lookup" title="F4" data-testid="btn-lookup-spec">🔍</button>
+          </div>
+        </div>
+
+        <!-- PROJECT_SPECIFIC_NAME — only Military -->
+        <div class="form-group" id="group-PROJECT_SPECIFIC_NAME"
+             data-field-code="PROJECT_SPECIFIC_NAME"
+             data-field-type="String"
+             data-component="TextBox"
+             data-required="C"
+             data-max-length="255"
+             data-spec-ref="B1.1.row6"
+             data-validation="VAL-06"
+             data-show-when="PROJECT_TYPE === 'Military'"
+             data-lov="LOV.01"
+             style="display:none;">
+          <label>Tên dự án đặc thù <span class="cond">(*)</span></label>
+          <input name="PROJECT_SPECIFIC_NAME" type="text"
+                 class="form-control" readonly
+                 placeholder="(Tự động fill)"
+                 data-api-field="header.projectSpecName"
+                 data-testid="input-project-specific-name" />
+        </div>
+
+        <!-- PROJECT_MANAGEMENT_CODE -->
+        <div class="form-group span-2"
+             data-field-code="PROJECT_MANAGEMENT_CODE"
+             data-field-type="String"
+             data-component="DropdownLookup"
+             data-required="Y"
+             data-max-length="20"
+             data-spec-ref="B1.1.row7"
+             data-validation="VAL-01,VAL-03,VAL-06"
+             data-show-when=""
+             data-lov="LOV.05">
+          <label>Mã ĐVQHNS <span class="req">*</span></label>
+          <div class="input-group">
+            <input name="PROJECT_MANAGEMENT_CODE" type="text"
+                   class="form-control" placeholder="Nhập hoặc F4 để tra cứu"
+                   data-api-field="header.projectManagementBoardId"
+                   data-testid="input-project-management-code"
+                   oninput="onBoardIdChange(this.value)" />
+            <button type="button" class="btn-lookup" title="F4 — Tra cứu ĐVQHNS" data-testid="btn-lookup-board">🔍</button>
+          </div>
+        </div>
+
+        <!-- PROJECT_MANAGEMENT_NAME -->
+        <div class="form-group"
+             data-field-code="PROJECT_MANAGEMENT_NAME"
+             data-field-type="String"
+             data-component="TextBox"
+             data-required="C"
+             data-max-length="255"
+             data-spec-ref="B1.1.row8"
+             data-validation="VAL-06"
+             data-show-when=""
+             data-lov="LOV.05">
+          <label>Tên ĐVQHNS <span class="cond">(*)</span></label>
+          <input name="PROJECT_MANAGEMENT_NAME" type="text"
+                 class="form-control" readonly
+                 placeholder="(Tự động fill theo Mã ĐVQHNS)"
+                 data-api-field="header.projectManagementBoardName"
+                 data-testid="input-project-management-name" />
+        </div>
+
+        <!-- STATE_CODE -->
+        <div class="form-group"
+             data-field-code="STATE_CODE"
+             data-field-type="String"
+             data-component="Label"
+             data-required="Y"
+             data-spec-ref="B1.1.row9"
+             data-validation="VAL-13"
+             data-show-when=""
+             data-lov="LOV.STATUS">
+          <label>Trạng thái hồ sơ <span class="req">*</span></label>
+          <span name="STATE_CODE"
+                 data-api-field="header.paymentDossierStatus"
+                 data-testid="input-state-code">DRAFT</span>
+        </div>
+
+        <!-- DATA_SOURCE_CODE -->
+        <div class="form-group"
+             data-field-code="DATA_SOURCE_CODE"
+             data-field-type="String"
+             data-component="Dropdown"
+             data-required="Y"
+             data-spec-ref="B1.1.row10"
+             data-validation="VAL-03"
+             data-show-when=""
+             data-lov="LOV.03">
+          <label>Nguồn <span class="req">*</span></label>
+          <select name="DATA_SOURCE_CODE" class="form-control"
+                  data-api-field="header.source"
+                  data-testid="input-data-source-code">
+            <option value="Thủ công">Thủ công</option>
+            <option value="DVC">DVC</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Danh sách chứng từ (B1.2) -->
+    <div class="tab-pane" id="tab-documents">
+      <!-- Not shown in NEW mode -->
+      <div id="doc-new-notice" class="info-label" style="display:none;">
+        💡 Lưu hồ sơ trước để có thể thêm chứng từ.
+      </div>
+      <div id="doc-grid-area">
+        <!-- CURRENCY field for documents grid -->
+        <input type="hidden" name="CURRENCY_TYPE_CODE" id="doc-currency"
+               data-field-code="CURRENCY_TYPE_CODE" data-api-field="documents[].currencyTypeCode"
+               value="VND" />
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+          <span style="font-size:13px; font-weight:600; color:var(--primary);">Danh sách chứng từ</span>
+          <button class="btn btn-default btn-sm" data-show-mode="edit" data-testid="btn-add-doc" title="Thêm mới chứng từ (Ctrl+Shift+N). Số chứng từ được tự động sinh khi thêm mới từ chức năng EXP.CAPEX_DOSSIER.3.3.1" style="display:none;">
+            + Thêm mới chứng từ <span class="shortcut">Ctrl+Shift+N</span>
+          </button>
+        </div>
+        <div style="overflow-x:auto;">
+          <table class="data-table" id="doc-table">
+            <thead>
+              <tr>
+                <th style="width:50px;" data-field-code="DOC_SEQ_NO">STT</th>
+                <th data-field-code="DOCUMENT_NUMBER">Số chứng từ</th>
+                <th data-field-code="DOCUMENT_DATE">Ngày chứng từ</th>
+                <th data-field-code="ACCOUNTING_DATE">Ngày hạch toán</th>
+                <th data-field-code="CURRENCY_TYPE_CODE" data-api-field="documents[].currencyTypeCode">Loại tiền</th>
+                <th class="text-right" data-field-code="PAYMENT_REQUEST_AMOUNT">Số tiền nguyên tệ</th>
+                <th class="text-right" data-field-code="PAYMENT_REQUEST_AMOUNT_VND">Số tiền VND</th>
+              </tr>
+            </thead>
+            <tbody id="doc-tbody">
+              <tr><td colspan="7" class="grid-empty">Chưa có chứng từ nào</td></tr>
+            </tbody>
+            <tfoot>
+              <tr>
+                <td colspan="5" style="text-align:right; font-weight:600;">Tổng cộng:</td>
+                <td class="text-right" id="doc-total-fx">—</td>
+                <td class="text-right" id="doc-total">0</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB: Đính kèm (B3.3) -->
+    <div class="tab-pane" id="tab-attach">
+      <!-- Upload zone + inline form — only new/edit -->
+      <div data-show-mode="new,edit" style="display:none;">
+        <div class="upload-zone" data-testid="upload-zone-attachments"
+             data-field-code="FILE_BLOB" data-spec-ref="B3.3.row4"
+             onclick="alert('Prototype: Chọn file để upload (≤10MB, định dạng pdf/jpg/png/docx)')">
+          <p>📎 Kéo thả file vào đây hoặc click để chọn</p>
+          <p style="margin-top:4px; font-size:11px;">Hỗ trợ: PDF, JPG, PNG, DOCX — Tối đa 10MB/file</p>
+          <button class="btn btn-default btn-sm" style="margin-top:8px;" data-testid="btn-upload">Chọn file</button>
+        </div>
+        <!-- Upload metadata fields -->
+        <div style="display:flex; gap:16px; margin-top:12px; flex-wrap:wrap;">
+          <div class="form-group" style="min-width:200px;"
+               data-field-code="DOC_TYPE" data-component="Dropdown"
+               data-required="Y" data-spec-ref="B3.3.row2"
+               data-lov="LOV.DOC_TYPE">
+            <label>Loại tài liệu <span class="req">*</span></label>
+            <select name="DOC_TYPE" class="form-control" data-testid="select-doc-type"
+                    data-api-field="attachments[].docType">
+              <option value="">-- Chọn loại --</option>
+              <option value="ORIGINAL">Chứng từ gốc</option>
+              <option value="CONTRACT">Hợp đồng</option>
+              <option value="INVOICE">Hoá đơn</option>
+              <option value="STATEMENT">Bảng kê</option>
+              <option value="OTHER">Văn bản khác</option>
+            </select>
+          </div>
+          <div class="form-group" style="flex:1; min-width:240px;"
+               data-field-code="NOTE" data-component="TextArea"
+               data-required="N" data-spec-ref="B3.3.row3"
+               data-max-length="250">
+            <label>Mô tả</label>
+            <textarea name="NOTE" class="form-control" maxlength="250" rows="2"
+                      placeholder="Mô tả file đính kèm (tuỳ chọn)"
+                      data-testid="input-note"
+                      data-api-field="attachments[].note"></textarea>
+          </div>
+        </div>
+      </div>
+      <!-- Attachment list table -->
+      <table class="data-table" style="margin-top:12px;">
+        <thead>
+          <tr>
+            <th data-field-code="FILE_NAME">Tên file</th>
+            <th data-field-code="DOC_TYPE">Loại tài liệu</th>
+            <th data-field-code="FILE_SIZE">Kích thước</th>
+            <th data-field-code="UPLOADED_BY">Người upload</th>
+            <th data-field-code="UPLOADED_DATE">Ngày upload</th>
+            <th class="no-sort">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="6" class="grid-empty">Chưa có file đính kèm</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TAB: Lịch sử giao dịch (B3.2) -->
+    <div class="tab-pane" id="tab-history">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th style="width:40px;">STT</th>
+            <th data-field-code="CREATED_BY">Người thực hiện</th>
+            <th data-field-code="ACTION_DATE" data-api-field="history[].actionDate">Thời gian thực hiện</th>
+            <th>Loại thao tác</th>
+            <th>Chi tiết thay đổi (oldValue → newValue)</th>
+          </tr>
+        </thead>
+        <tbody id="history-tbody">
+          <tr><td colspan="5" class="grid-empty">Chưa có lịch sử</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- TAB: Trạng thái phê duyệt (A11) -->
+    <div class="tab-pane" id="tab-approval">
+      <div class="workflow" id="approval-workflow">
+        <div class="workflow-step">
+          <div class="workflow-step-circle active" id="step-maker">M</div>
+          <div class="workflow-step-label">Người lập<br><small id="step-maker-name">—</small></div>
+        </div>
+        <div class="workflow-line" id="line-1"></div>
+        <div class="workflow-step">
+          <div class="workflow-step-circle" id="step-checker">C</div>
+          <div class="workflow-step-label">Người kiểm soát<br><small id="step-checker-name">—</small></div>
+        </div>
+        <div class="workflow-line" id="line-2"></div>
+        <div class="workflow-step">
+          <div class="workflow-step-circle" id="step-approver">A</div>
+          <div class="workflow-step-label">Người phê duyệt<br><small id="step-approver-name">—</small></div>
+        </div>
+      </div>
+      <div id="approval-detail" style="font-size:13px; color:var(--text-muted); text-align:center; margin-top:12px;"></div>
+    </div>
+  </div><!-- /card body tabs -->
+
+  <!-- Action Bar (sticky bottom) -->
+  <!-- Follows VDBAS_Event_Button_Status_Rule: Danger LEFT, Primary far RIGHT, spacing 8px/24px -->
+  <div class="action-bar">
+    <!-- LEFT: Danger actions -->
+    <div class="action-bar-left">
+      <!-- Xoá — only VIEW/EDIT when DRAFT + maker owner -->
+      <button class="btn btn-danger" data-show-mode="view" data-testid="btn-delete" title="Xoá (Delete)"
+              data-action="delete" style="display:none;">
+        🗑 Xoá <span class="shortcut">Del</span>
+      </button>
+    </div>
+
+    <!-- RIGHT: Default/Primary actions -->
+    <div class="action-bar-right">
+      <!-- Cancel — all modes except pure view readonly -->
+      <button class="btn btn-default" data-show-mode="new,edit" data-testid="btn-cancel" onclick="onCancel()" title="Huỷ (Esc)">
+        Huỷ <span class="shortcut">Esc</span>
+      </button>
+      <!-- Quay lại — view mode -->
+      <button class="btn btn-default" data-show-mode="view" data-testid="btn-back" onclick="window.location.href='form_list.html'" title="Quay lại danh sách" style="display:none;">
+        ← Quay lại
+      </button>
+      <!-- Lưu nháp -->
+      <button class="btn btn-default" data-show-mode="new,edit" data-testid="btn-save-draft" onclick="onSaveDraft()" title="Lưu nháp (Ctrl+Shift+S)">
+        💾 Lưu nháp <span class="shortcut">Ctrl+Shift+S</span>
+      </button>
+      <!-- Lưu — Primary (NEW mode only) -->
+      <button class="btn btn-primary" data-show-mode="new" data-testid="btn-save" onclick="onSave()" title="Lưu (Ctrl+S)" data-event="EXP.CAPEX_DOSSIER.NEW.SAVE">
+        ✔ Lưu <span class="shortcut">Ctrl+S</span>
+      </button>
+      <!-- Lưu — Primary (EDIT mode only) -->
+      <button class="btn btn-primary" data-show-mode="edit" id="btn-save-edit" data-testid="btn-save-edit" onclick="onSaveEdit()" title="Lưu (Ctrl+S)" data-event="EXP.CAPEX_DOSSIER.EDIT.SAVE">
+        ✔ Lưu <span class="shortcut">Ctrl+S</span>
+      </button>
+      <!-- Gửi kiểm soát — Primary on NEW/EDIT when has docs -->
+      <button class="btn btn-primary" data-show-mode="new,edit" id="btn-submit" data-testid="btn-submit"
+              onclick="onSubmit()" title="Gửi kiểm soát (F9)" disabled>
+        🚀 Gửi kiểm soát <span class="shortcut">F9</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Delete Confirmation Dialog (B3.1) -->
+<div id="dialog-delete-confirm" class="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title">
+    <div class="modal-header">
+      <span class="icon-warn">⚠</span>
+      <span class="modal-title" id="delete-dialog-title">Xác nhận xoá hồ sơ</span>
+    </div>
+    <div class="modal-body">
+      <p style="margin-bottom:12px; font-size:13px;">
+        Bạn đang thực hiện xoá hồ sơ <strong id="delete-record-id"></strong>. Hành động này không thể hoàn tác.
+      </p>
+      <!-- STATE_CODE (B3.1.row2) -->
+      <div class="form-group" data-field-code="STATE_CODE" data-component="Label" data-spec-ref="B3.1.row2" style="margin-bottom:12px;">
+        <label>Trạng thái hiện tại</label>
+        <span id="delete-record-state"></span>
+      </div>
+      <!-- DELETE_REASON -->
+      <div class="form-group" style="margin-bottom:12px;"
+           data-field-code="DELETE_REASON"
+           data-field-type="String"
+           data-component="TextArea"
+           data-required="Y"
+           data-spec-ref="B3.1.row3"
+           data-validation="VAL-16"
+           data-max-length="500">
+        <label>Lý do xoá <span class="req">*</span> <small style="font-weight:normal;">(tối thiểu 10 ký tự)</small></label>
+        <textarea id="delete-reason" name="DELETE_REASON" class="form-control" rows="3"
+                  maxlength="500" placeholder="Nhập lý do xoá hồ sơ..."
+                  data-api-field="deleteReason"
+                  data-testid="input-delete-reason"
+                  oninput="checkDeleteForm()"></textarea>
+        <div class="char-counter" id="delete-reason-counter">0 / 500</div>
+      </div>
+      <!-- CONFIRM_REVIEWED -->
+      <div class="form-check"
+           data-field-code="CONFIRM_REVIEWED"
+           data-field-type="Boolean"
+           data-component="Checkbox"
+           data-required="Y"
+           data-spec-ref="B3.1.row4"
+           data-validation="VAL-16">
+        <input type="checkbox" id="confirm-reviewed"
+               data-api-field="confirmReviewed"
+               data-testid="input-confirm-reviewed"
+               onchange="checkDeleteForm()" />
+        <label for="confirm-reviewed">Tôi đã rà soát và xác nhận xoá hồ sơ này</label>
+      </div>
+      <!-- DELETED_BY + DELETED_DATE (B3.1 read-only Labels) -->
+      <div style="display:flex; gap:16px; margin-top:12px; flex-wrap:wrap;">
+        <div class="form-group" style="flex:1;"
+             data-field-code="DELETED_BY"
+             data-field-type="String"
+             data-component="Label"
+             data-spec-ref="B3.1.row5">
+          <label>Người xoá</label>
+          <input type="text" class="form-control" readonly
+                 id="delete-deleted-by"
+                 data-api-field="deletedBy"
+                 data-testid="input-deleted-by"
+                 value="" placeholder="(User hiện tại)" />
+        </div>
+        <div class="form-group" style="flex:1;"
+             data-field-code="DELETED_DATE"
+             data-field-type="DateTime"
+             data-component="Label"
+             data-spec-ref="B3.1.row6">
+          <label>Thời gian xoá</label>
+          <input type="text" class="form-control" readonly
+                 id="delete-deleted-date"
+                 data-api-field="deletedDate"
+                 data-testid="input-deleted-date"
+                 value="" placeholder="(Thời gian hệ thống)" />
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <!-- Hủy — Default, LEFT of Confirm -->
+      <button class="btn btn-default" data-testid="btn-cancel-delete"
+              onclick="document.getElementById('dialog-delete-confirm').hidden=true">
+        Huỷ
+      </button>
+      <!-- Xác nhận xoá — Danger, far RIGHT -->
+      <button class="btn btn-danger" id="btn-confirm-delete" disabled
+              data-action="confirm-delete"
+              data-testid="btn-confirm-delete"
+              onclick="onConfirmDelete()">
+        Xác nhận xoá <span class="shortcut">Enter</span>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- Cancel Confirm Dialog -->
+<div id="dialog-cancel-confirm" class="modal-overlay" hidden>
+  <div class="modal">
+    <div class="modal-header">
+      <span class="icon-warn">❓</span>
+      <span class="modal-title">Xác nhận huỷ</span>
+    </div>
+    <div class="modal-body">
+      <p>Dữ liệu chưa được lưu. Bạn có chắc muốn huỷ?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="document.getElementById('dialog-cancel-confirm').hidden=true">Tiếp tục chỉnh sửa</button>
+      <button class="btn btn-primary" onclick="window.location.href='form_list.html'">Xác nhận huỷ</button>
+    </div>
+  </div>
+</div>
+
+<!-- Lookup Popup B3.4: EXP.CAPEX_DOSSIER.LOOKUP.PROJECT -->
+<div id="dialog-lookup-project" class="modal-overlay" hidden style="align-items:flex-start; padding-top:60px;">
+  <div class="modal" style="min-width:700px; max-width:860px; max-height:80vh; display:flex; flex-direction:column;">
+    <div class="modal-header">
+      <span style="font-size:16px;">🔍</span>
+      <span class="modal-title">Tra cứu Dự án / Công trình (LOV.01)</span>
+      <button style="margin-left:auto; background:none; border:none; font-size:18px; cursor:pointer;" onclick="closeLookup()">×</button>
+    </div>
+    <div class="modal-body" style="border-bottom:1px solid var(--border); flex-shrink:0;">
+      <div style="display:flex; gap:12px; flex-wrap:wrap;">
+        <div class="form-group" style="min-width:150px;">
+          <label>Mã dự án</label>
+          <input type="text" class="form-control" id="lov-project-code" placeholder="Tìm chính xác / chứa" oninput="filterLOV()">
+        </div>
+        <div class="form-group" style="flex:1; min-width:180px;">
+          <label>Tên dự án</label>
+          <input type="text" class="form-control" id="lov-project-name" placeholder="Tìm chứa, không phân biệt hoa thường" oninput="filterLOV()">
+        </div>
+        <div class="form-group" style="min-width:130px;">
+          <label>Loại dự án</label>
+          <select class="form-control" id="lov-project-type" onchange="filterLOV()">
+            <option value="">Tất cả</option>
+            <option value="Military">Military</option>
+            <option value="Citizen">Citizen</option>
+          </select>
+        </div>
+        <div class="form-group" style="min-width:140px;">
+          <label>Mã ĐVQHNS</label>
+          <input type="text" class="form-control" id="lov-segment6" placeholder="Lọc theo BQL" oninput="filterLOV()">
+        </div>
+      </div>
+    </div>
+    <div style="overflow-y:auto; flex:1;">
+      <table class="data-table" style="font-size:12px;">
+        <thead style="position:sticky; top:0; z-index:1;">
+          <tr>
+            <th>Mã dự án</th>
+            <th>Tên dự án</th>
+            <th>Loại</th>
+            <th>Mã ĐVQHNS</th>
+            <th>Tên ĐVQHNS</th>
+          </tr>
+        </thead>
+        <tbody id="lov-tbody"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <span style="font-size:12px; color:var(--text-muted);" id="lov-count">0 kết quả</span>
+      <button class="btn btn-default" onclick="closeLookup()">Đóng (Esc)</button>
+    </div>
+  </div>
+</div>
+
+<!-- VAL-18 Duplicate Warning Dialog -->
+<div id="dialog-duplicate-warning" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:480px;">
+    <div class="modal-header">
+      <span class="icon-warn" style="color:var(--warning);">⚠</span>
+      <span class="modal-title">Phát hiện hồ sơ tương tự</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px; margin-bottom:8px;">Đã có hồ sơ được lập gần đây với cùng:</p>
+      <ul style="font-size:13px; padding-left:20px; margin-bottom:12px; color:var(--primary);">
+        <li id="dup-project-info">Mã dự án: —</li>
+        <li id="dup-board-info">Mã ĐVQHNS: —</li>
+      </ul>
+      <p style="font-size:13px; color:var(--text-muted);">Bạn có muốn tiếp tục tạo hồ sơ mới?</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="document.getElementById('dialog-duplicate-warning').hidden=true; window.location.href='form_list.html'">Huỷ</button>
+      <button class="btn btn-primary" onclick="document.getElementById('dialog-duplicate-warning').hidden=true">Tiếp tục</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── LOV Data ───────────────────────────────────────────
+const LOV01 = [
+  { PROJECT_CODE:'7004686', PROJECT_NAME:'Các dự án thuộc dự án bộ quốc phòng', PROJECT_TYPE:'Military', PROJECT_SPECIFIC_CODE:'001200037', PROJECT_SPECIFIC_NAME:'Dự án TM02', GL_SEGMENT6_CODE:'1059227', GL_SEGMENT6_NAME:'BQL Cục thông tin BQP' },
+  { PROJECT_CODE:'7004686', PROJECT_NAME:'Các dự án thuộc dự án bộ quốc phòng', PROJECT_TYPE:'Military', PROJECT_SPECIFIC_CODE:'001200038', PROJECT_SPECIFIC_NAME:'Dự án TM03', GL_SEGMENT6_CODE:'1059227', GL_SEGMENT6_NAME:'BQL Cục thông tin BQP' },
+  { PROJECT_CODE:'7122155', PROJECT_NAME:'Dự án nâng cấp bệnh viện Bạch Mai', PROJECT_TYPE:'Citizen', PROJECT_SPECIFIC_CODE:null, PROJECT_SPECIFIC_NAME:null, GL_SEGMENT6_CODE:'3029123', GL_SEGMENT6_NAME:'BQLDA bệnh viện Bạch Mai' }
+];
+const STATUS_LABELS = {
+  DRAFT:'Đang hoàn thiện', PENDING_CHECK:'Chờ kiểm soát', CHECK_REJECTED:'Từ chối kiểm soát',
+  CHECK_CANCELLED:'Hủy kiểm soát', PENDING_APPROVE:'Chờ phê duyệt', APPROVE_REJECTED:'Từ chối phê duyệt',
+  APPROVE_CANCELLED:'Hủy phê duyệt', APPROVED:'Đã phê duyệt', DELETED:'Đã xóa'
+};
+
+// ─── Init ────────────────────────────────────────────────
+const SAMPLE = JSON.parse(document.getElementById('sample-data').textContent);
+const params = new URLSearchParams(location.search);
+const mode = params.get('mode') || 'new';
+const recordId = params.get('id');
+const record = recordId ? SAMPLE.records.find(r => r.id === recordId) : null;
+let isDirty = false;
+
+function init() {
+  applyMode();
+  if (record) loadRecord(record);
+  else setNewModeDefaults();
+  updateDocGrid();
+  toggleForeignCurrencyCol();
+  updateApprovalWorkflow();
+  bindKeyboard();
+  // Track dirty
+  document.querySelectorAll('.form-control').forEach(el => {
+    el.addEventListener('input', () => { isDirty = true; });
+  });
+  wireF4Buttons();
+  renderHistory(record);
+  // Expose global for duplicate check
+  window.ALL_RECORDS_GLOBAL = SAMPLE.records;
+  // Auto-open delete dialog when navigated from list with action=delete
+  if (params.get('action') === 'delete' && record) {
+    const canDelete = record.STATE_CODE === 'DRAFT';
+    if (canDelete) {
+      setTimeout(() => { document.getElementById('dialog-delete-confirm').hidden = false; }, 300);
+    }
+  }
+  // MSG-WRN-OUTSIDE-HOUR: cảnh báo ngoài giờ giao dịch khi mở NEW/EDIT
+  if (mode === 'new' || mode === 'edit') {
+    const h = new Date().getHours();
+    if (h < 8 || h >= 17) {
+      setTimeout(() => document.getElementById('dialog-outside-hour').hidden = false, 1200);
+    }
+  }
+}
+
+// ─── Mode Application ────────────────────────────────────
+function applyMode() {
+  const title = mode === 'new' ? 'Tạo mới — Hồ sơ Chi đầu tư'
+    : mode === 'edit' ? `Chỉnh sửa — ${record?.DOSSIER_CODE || ''}`
+    : `${record?.DOSSIER_CODE || ''} — Chi tiết`;
+
+  document.querySelectorAll('[data-page-title]').forEach(el => el.textContent = title);
+  document.title = title;
+
+  // Fields readonly in view
+  document.querySelectorAll('[data-field-code]').forEach(group => {
+    const inputs = group.querySelectorAll('input, select, textarea');
+    inputs.forEach(inp => {
+      if (mode === 'view') {
+        if (!inp.hasAttribute('readonly')) inp.disabled = true;
+      }
+    });
+    const lookupBtns = group.querySelectorAll('.btn-lookup');
+    if (mode === 'view') lookupBtns.forEach(b => b.disabled = true);
+  });
+
+  // Show/hide elements by mode
+  document.querySelectorAll('[data-show-mode]').forEach(el => {
+    const modes = el.dataset.showMode.split(',').map(m => m.trim());
+    const visible = modes.includes(mode);
+    el.style.display = visible ? '' : 'none';
+    el.hidden = !visible;
+  });
+
+  // Document grid tab: hide "Thêm mới chứng từ" btn in view
+  const addDocBtn = document.querySelector('[data-testid="btn-add-doc"]');
+  if (addDocBtn) addDocBtn.style.display = mode === 'edit' ? '' : 'none';
+
+  // tab-documents: hide tab button + content in new mode (spec: showWhen "mode !== 'new'")
+  const tabDocBtn = document.querySelector('[data-tab-documents]');
+  if (mode === 'new') {
+    if (tabDocBtn) tabDocBtn.style.display = 'none';
+    document.getElementById('tab-documents').setAttribute('hidden', '');
+    document.getElementById('doc-new-notice').style.display = '';
+    document.getElementById('doc-grid-area').style.display = 'none';
+  } else {
+    if (tabDocBtn) tabDocBtn.style.display = '';
+    document.getElementById('tab-documents').removeAttribute('hidden');
+  }
+
+  // btn-edit: only enable for DRAFT / CHECK_CANCELLED (spec stateMachine canEdit states)
+  const editBtn = document.querySelector('[data-testid="btn-edit"]');
+  if (editBtn && mode === 'view' && record) {
+    const canEdit = ['DRAFT', 'CHECK_CANCELLED'].includes(record.STATE_CODE);
+    editBtn.disabled = !canEdit;
+    editBtn.title = canEdit ? 'Sửa (F2)' : 'Không thể sửa ở trạng thái ' + (record.STATE_CODE || '');
+  }
+
+  // btn-delete: only for DRAFT (canDelete state in spec)
+  const deleteBtn = document.querySelector('[data-testid="btn-delete"]');
+  if (deleteBtn && record) {
+    const canDelete = record.STATE_CODE === 'DRAFT';
+    deleteBtn.disabled = !canDelete;
+  }
+
+  // DATA_SOURCE_CODE: read-only in edit/view (if already saved)
+  if (mode === 'edit' || mode === 'view') {
+    const sourceEl = document.querySelector('[name="DATA_SOURCE_CODE"]');
+    if (sourceEl) {
+      if (sourceEl.tagName === 'SELECT') {
+        sourceEl.disabled = true;
+        // Add hidden backup input to preserve value on form submit
+        if (!document.getElementById('DATA_SOURCE_CODE_hidden')) {
+          const hidden = document.createElement('input');
+          hidden.type = 'hidden';
+          hidden.id = 'DATA_SOURCE_CODE_hidden';
+          hidden.name = 'DATA_SOURCE_CODE';
+          hidden.value = sourceEl.value;
+          sourceEl.parentNode.appendChild(hidden);
+        }
+      } else {
+        sourceEl.readOnly = true;
+      }
+    }
+  }
+
+  // DOSSIER_CODE: always readonly
+  const fileIdEl = document.querySelector('[name="DOSSIER_CODE"]');
+  if (fileIdEl) fileIdEl.readOnly = true;
+
+  // ARIA labels
+  document.querySelectorAll('button[data-testid]').forEach(btn => {
+    if (!btn.getAttribute('aria-label') && btn.title) btn.setAttribute('aria-label', btn.title);
+  });
+  // data-disabled-reason on specific buttons
+  const submitBtn = document.getElementById('btn-submit');
+  if (submitBtn) submitBtn.setAttribute('data-disabled-reason', 'Cần có ít nhất 1 chứng từ hợp lệ trước khi gửi kiểm soát');
+  const deleteBtnReason = document.querySelector('[data-testid="btn-delete"]');
+  if (deleteBtnReason) deleteBtnReason.setAttribute('data-disabled-reason', 'Chỉ xóa được khi hồ sơ ở trạng thái Đang hoàn thiện và là Maker gốc');
+
+  // VAL-15 / E11: Simulate concurrent edit check (prototype: Military records show warning for demo)
+  if (mode === 'edit' && record && record.PROJECT_TYPE === 'Military' && record.STATE_CODE === 'DRAFT') {
+    // Demo: 30% chance of concurrent edit warning for Military records
+    if (Math.random() < 0.3) {
+      setTimeout(() => {
+        document.getElementById('concurrent-msg').innerHTML = `Hồ sơ đang được <strong>nguyen.van.other</strong> chỉnh sửa, vui lòng thử lại sau.`;
+        document.getElementById('dialog-concurrent').hidden = false;
+      }, 800);
+    }
+  }
+}
+
+function loadRecord(r) {
+  const fieldMap = {
+    DOSSIER_CODE: r.DOSSIER_CODE,
+    SEND_DATE: r.SEND_DATE,
+    PROJECT_CODE: r.PROJECT_CODE,
+    PROJECT_NAME: r.PROJECT_NAME,
+    PROJECT_SPECIFIC_CODE: r.PROJECT_SPECIFIC_CODE || '',
+    PROJECT_SPECIFIC_NAME: r.PROJECT_SPECIFIC_NAME || '',
+    PROJECT_MANAGEMENT_CODE: r.PROJECT_MANAGEMENT_CODE,
+    PROJECT_MANAGEMENT_NAME: r.PROJECT_MANAGEMENT_NAME,
+    STATE_CODE: null, // handled separately below
+    DATA_SOURCE_CODE: r.DATA_SOURCE_CODE
+  };
+  Object.entries(fieldMap).forEach(([code, val]) => {
+    if (val === null) return; // skip nulls (handled separately)
+    const group = document.querySelector(`[data-field-code="${code}"]`);
+    if (!group) return;
+    const input = group.querySelector('input, select, textarea');
+    if (input && val !== undefined && val !== null) input.value = val;
+    if (input && input.tagName === 'SELECT') {
+      Array.from(input.options).forEach(opt => { opt.selected = opt.value === val; });
+    }
+  });
+  // STATE_CODE is now a span (Label component)
+  const stateSpan = document.querySelector('[data-field-code="STATE_CODE"] span');
+  if (stateSpan) {
+    stateSpan.setAttribute('data-value', r.STATE_CODE);
+    stateSpan.textContent = STATUS_LABELS[r.STATE_CODE] || r.STATE_CODE;
+  }
+  // Status badge
+  const badge = document.getElementById('status-badge');
+  badge.textContent = STATUS_LABELS[r.STATE_CODE] || r.STATE_CODE;
+  badge.className = 'status-badge status-' + r.STATE_CODE;
+
+  // Show Military fields
+  if (r.PROJECT_TYPE === 'Military') showMilitaryFields(true);
+
+  // Delete dialog record id
+  document.getElementById('delete-record-id').textContent = r.DOSSIER_CODE;
+  const deleteStateEl = document.getElementById('delete-record-state');
+  if (deleteStateEl) deleteStateEl.textContent = STATUS_LABELS[r.STATE_CODE] || r.STATE_CODE;
+
+  // Enable/disable submit based on docs
+  const submitBtn = document.getElementById('btn-submit');
+  if (submitBtn) submitBtn.disabled = !(r.documents && r.documents.length > 0);
+}
+
+function setNewModeDefaults() {
+  const today = new Date();
+  const dd = String(today.getDate()).padStart(2,'0');
+  const mm = String(today.getMonth()+1).padStart(2,'0');
+  const yyyy = today.getFullYear();
+  const sendDateEl = document.querySelector('[name="SEND_DATE"]');
+  if (sendDateEl) sendDateEl.value = `${dd}/${mm}/${yyyy}`;
+
+  const statusEl = document.querySelector('[data-field-code="STATE_CODE"] span');
+  if (statusEl) statusEl.textContent = 'DRAFT';
+
+  const badge = document.getElementById('status-badge');
+  badge.textContent = 'Đang hoàn thiện';
+  badge.className = 'status-badge status-DRAFT';
+}
+
+// ─── Cascading LOV ───────────────────────────────────────
+function onProjectIdChange(val) {
+  const proj = LOV01.find(p => p.PROJECT_CODE === val);
+  const nameEl = document.querySelector('[name="PROJECT_NAME"]');
+  const boardIdEl = document.querySelector('[name="PROJECT_MANAGEMENT_CODE"]');
+  const boardNameEl = document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]');
+  if (proj) {
+    if (nameEl) {
+      nameEl.value = proj.PROJECT_NAME;
+      nameEl.classList.remove('error');
+    }
+    if (boardIdEl) { boardIdEl.value = proj.GL_SEGMENT6_CODE; }
+    if (boardNameEl) {
+      boardNameEl.value = proj.GL_SEGMENT6_NAME;
+      boardNameEl.classList.remove('error');
+    }
+    showMilitaryFields(proj.PROJECT_TYPE === 'Military');
+  } else {
+    if (nameEl) nameEl.value = '';
+    showMilitaryFields(false);
+  }
+  isDirty = true;
+}
+
+function onBoardIdChange(val) {
+  const proj = LOV01.find(p => p.GL_SEGMENT6_CODE === val);
+  const nameEl = document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]');
+  if (nameEl) {
+    nameEl.value = proj ? proj.GL_SEGMENT6_NAME : '';
+    if (proj) nameEl.classList.remove('error');
+  }
+  isDirty = true;
+  // VAL-18: check duplicate khi đã có cả project + board
+  if (mode === 'new') {
+    const projCode = document.querySelector('[name="PROJECT_CODE"]')?.value;
+    if (projCode && val) checkDuplicate(projCode, val);
+  }
+}
+
+function showMilitaryFields(show) {
+  const g1 = document.getElementById('group-PROJECT_SPECIFIC_CODE');
+  const g2 = document.getElementById('group-PROJECT_SPECIFIC_NAME');
+  if (g1) g1.style.display = show ? '' : 'none';
+  if (g2) g2.style.display = show ? '' : 'none';
+}
+
+// ─── Document Grid ───────────────────────────────────────
+function updateDocGrid() {
+  const tbody = document.getElementById('doc-tbody');
+  const docs = record?.documents || [];
+  if (!docs.length) {
+    tbody.innerHTML = '<tr><td colspan="7" class="grid-empty">Chưa có chứng từ nào</td></tr>';
+    document.getElementById('doc-total').textContent = '0';
+    document.getElementById('doc-total-fx').textContent = '—';
+    return;
+  }
+  let total = 0;
+  let sumFx = 0;
+  tbody.innerHTML = docs.map((d, i) => {
+    total += d.PAYMENT_REQUEST_AMOUNT_VND || 0;
+    sumFx += d.PAYMENT_REQUEST_AMOUNT || 0;
+    return `<tr>
+      <td>${i+1}</td>
+      <td><a href="#" onclick="alert('Prototype: Mở EXP.CAPEX_DOSSIER.3.3.1 — ${d.DOCUMENT_NUMBER}')">${d.DOCUMENT_NUMBER}</a></td>
+      <td>${d.DOCUMENT_DATE}</td>
+      <td>${d.ACCOUNTING_DATE}</td>
+      <td>${d.currencyTypeCode || d.currency || 'VND'}</td>
+      <td class="text-right col-fx">${d.PAYMENT_REQUEST_AMOUNT ? d.PAYMENT_REQUEST_AMOUNT.toLocaleString('vi-VN', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'}</td>
+      <td class="text-right">${(d.PAYMENT_REQUEST_AMOUNT_VND||0).toLocaleString('vi-VN', {maximumFractionDigits:0})}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('doc-total').textContent = total.toLocaleString('vi-VN', {maximumFractionDigits:0});
+  document.getElementById('doc-total-fx').textContent = sumFx > 0 ? sumFx.toLocaleString('vi-VN', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—';
+  toggleForeignCurrencyCol();
+}
+
+function formatNum(n) {
+  return n ? n.toLocaleString('vi-VN') : '0';
+}
+
+// ─── Foreign Currency Column Toggle ─────────────────────
+function toggleForeignCurrencyCol() {
+  const currency = (document.getElementById('doc-currency')?.value || 'VND').trim().toUpperCase();
+  const isVND = currency === 'VND';
+  document.querySelectorAll('#doc-table th[data-field-code="PAYMENT_REQUEST_AMOUNT"], #doc-table td.col-fx').forEach(el => {
+    if (isVND) el.setAttribute('hidden', '');
+    else el.removeAttribute('hidden');
+  });
+}
+
+document.getElementById('doc-currency')?.addEventListener('change', function() {
+  updateDocGrid();
+});
+
+// ─── Approval Workflow ───────────────────────────────────
+function updateApprovalWorkflow() {
+  if (!record) return;
+  const status = record.STATE_CODE;
+  const s = document.getElementById('step-maker');
+  const c = document.getElementById('step-checker');
+  const a = document.getElementById('step-approver');
+  const l1 = document.getElementById('line-1');
+  const l2 = document.getElementById('line-2');
+
+  s.className = 'workflow-step-circle done';
+  document.getElementById('step-maker-name').textContent = record.CREATED_BY || '—';
+
+  if (['PENDING_CHECK','CHECK_REJECTED','CHECK_CANCELLED'].includes(status)) {
+    c.className = 'workflow-step-circle active';
+    document.getElementById('step-checker-name').textContent = record.CHECKED_BY || 'Đang chờ';
+    l1.className = 'workflow-line done';
+  } else if (['PENDING_APPROVE','APPROVE_REJECTED','APPROVE_CANCELLED','APPROVED'].includes(status)) {
+    c.className = 'workflow-step-circle done';
+    document.getElementById('step-checker-name').textContent = record.CHECKED_BY || '—';
+    l1.className = 'workflow-line done';
+    a.className = status === 'APPROVED' ? 'workflow-step-circle done' : (status.includes('REJECT') ? 'workflow-step-circle rejected' : 'workflow-step-circle active');
+    document.getElementById('step-approver-name').textContent = record.APPROVED_BY || (status === 'APPROVED' ? '—' : 'Đang chờ');
+    l2.className = 'workflow-line done';
+  }
+
+  const detail = document.getElementById('approval-detail');
+  if (status === 'CHECK_REJECTED') detail.innerHTML = `<span style="color:var(--danger)">Từ chối kiểm soát: ${record.CHECK_REJECTION_REASON || '—'}</span>`;
+  else if (status === 'APPROVE_REJECTED') detail.innerHTML = `<span style="color:var(--danger)">Từ chối phê duyệt: ${record.APPROVAL_REJECTION_REASON || '—'}</span>`;
+  else if (status === 'APPROVED') detail.innerHTML = `<span style="color:var(--success)">✔ Đã phê duyệt lúc ${record.APPROVED_DATE || '—'}</span>`;
+}
+
+// ─── Tab Switching ───────────────────────────────────────
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(tabId).classList.add('active');
+  btn.classList.add('active');
+}
+
+function switchToEdit() {
+  if (record) window.location.href = `form_detail.html?id=${record.id}&mode=edit`;
+}
+
+// ─── Actions ─────────────────────────────────────────────
+function onCancel() {
+  if (isDirty) {
+    document.getElementById('dialog-cancel-confirm').hidden = false;
+  } else {
+    window.location.href = 'form_list.html';
+  }
+}
+
+function onSave(event) {
+  const btn = event?.target;
+  if (btn && !btn.disabled) { btn.disabled = true; setTimeout(() => { if(btn) btn.disabled = false; }, 2000); }
+  // Prototype: validate & show success
+  const projectId = document.querySelector('[name="PROJECT_CODE"]')?.value;
+  const projectName = document.querySelector('[name="PROJECT_NAME"]')?.value;
+  const sendDate = document.querySelector('[name="SEND_DATE"]')?.value;
+  const boardId = document.querySelector('[name="PROJECT_MANAGEMENT_CODE"]')?.value;
+  const boardName = document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]')?.value;
+
+  let hasError = false;
+  if (!projectId) { alert('[MSG-ERR-REQUIRED] ⚠ Vui lòng nhập Mã dự án/công trình'); hasError = true; }
+  else if (!projectName) {
+    document.querySelector('[name="PROJECT_NAME"]').classList.add('error');
+    alert('[MSG-ERR-REQUIRED] ⚠ Tên dự án/công trình không được để trống khi đã chọn Mã dự án');
+    hasError = true;
+  }
+
+  if (!boardId) { alert('[MSG-ERR-REQUIRED] ⚠ Vui lòng nhập Mã ĐVQHNS'); hasError = true; }
+  else if (!boardName) {
+    document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]').classList.add('error');
+    alert('[MSG-ERR-REQUIRED] ⚠ Tên ĐVQHNS không được để trống khi đã chọn Mã ĐVQHNS');
+    hasError = true;
+  }
+
+  if (!sendDate) { alert('[MSG-ERR-REQUIRED] ⚠ Vui lòng nhập Ngày gửi hồ sơ'); hasError = true; }
+
+  if (hasError) return;
+
+  alert('✔ MSG-OK-SAVE: Lưu hồ sơ thành công!\n\nMã hồ sơ: HS-CHI-2026-' + Date.now().toString().slice(-4) + '\nTrạng thái: Đang hoàn thiện');
+  isDirty = false;
+  window.location.href = 'form_list.html';
+}
+
+function onSaveEdit(event) {
+  const btn = document.getElementById('btn-save-edit');
+  if (btn && !btn.disabled) { btn.disabled = true; setTimeout(() => { if(btn) btn.disabled = false; }, 2000); }
+  // Reuse same validation as onSave
+  onSave(event);
+}
+
+function onSaveDraft(event) {
+  const btn = event?.target;
+  if (btn && !btn.disabled) { btn.disabled = true; setTimeout(() => { if(btn) btn.disabled = false; }, 2000); }
+  alert('💾 MSG-OK-SAVE: Lưu nháp thành công!\nTrạng thái: Đang hoàn thiện');
+  isDirty = false;
+}
+
+function onSubmit(event) {
+  const btn = event?.target;
+  if (btn && !btn.disabled) { btn.disabled = true; setTimeout(() => { if(btn) btn.disabled = false; }, 2000); }
+  // Same validation as onSave
+  const projectId = document.querySelector('[name="PROJECT_CODE"]')?.value;
+  const projectName = document.querySelector('[name="PROJECT_NAME"]')?.value;
+  const sendDate = document.querySelector('[name="SEND_DATE"]')?.value;
+  const boardId = document.querySelector('[name="PROJECT_MANAGEMENT_CODE"]')?.value;
+  const boardName = document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]')?.value;
+
+  if (!projectId || !projectName || !sendDate || !boardId || !boardName) {
+    onSave(); // Trigger validation UI
+    return;
+  }
+
+  if (confirm('Bạn có chắc muốn Gửi kiểm soát?\n\nSau khi gửi, hồ sơ sẽ chuyển sang trạng thái Chờ kiểm soát.')) {
+    alert('✔ MSG-OK-SUBMIT: Đã gửi hồ sơ để kiểm soát!\nThông báo đã gửi đến Người kiểm soát.');
+    window.location.href = 'form_list.html';
+  }
+}
+
+function checkDeleteForm() {
+  const reason = document.getElementById('delete-reason').value;
+  const checked = document.getElementById('confirm-reviewed').checked;
+  const btn = document.getElementById('btn-confirm-delete');
+  btn.disabled = !(reason.length >= 10 && checked);
+
+  const counter = document.getElementById('delete-reason-counter');
+  counter.textContent = `${reason.length} / 500`;
+  counter.className = reason.length < 10 ? 'char-counter warn' : 'char-counter';
+}
+
+function onConfirmDelete() {
+  alert('✔ MSG-OK-DELETE: Xoá hồ sơ thành công!\nHồ sơ đã được ẩn khỏi danh sách.');
+  window.location.href = 'form_list.html';
+}
+
+// Delete button trigger
+document.querySelectorAll('[data-action="delete"]').forEach(btn => {
+  btn.addEventListener('click', () => {
+    // B3.1: populate DELETED_BY (current user) and DELETED_DATE (current datetime)
+    const now = new Date();
+    const pad = n => String(n).padStart(2,'0');
+    const dateStr = `${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()} ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+    const deletedByEl = document.getElementById('delete-deleted-by');
+    const deletedDateEl = document.getElementById('delete-deleted-date');
+    if (deletedByEl) deletedByEl.value = record?.CREATED_BY || 'current.user';
+    if (deletedDateEl) deletedDateEl.value = dateStr;
+    // reset form
+    document.getElementById('delete-reason').value = '';
+    document.getElementById('confirm-reviewed').checked = false;
+    document.getElementById('btn-confirm-delete').disabled = true;
+    document.getElementById('dialog-delete-confirm').hidden = false;
+  });
+});
+
+// ─── Keyboard Shortcuts ──────────────────────────────────
+function bindKeyboard() {
+  document.addEventListener('keydown', e => {
+    if (e.ctrlKey && e.key === 's') { e.preventDefault(); onSave(); }
+    if (e.ctrlKey && e.shiftKey && e.key === 'S') { e.preventDefault(); onSaveDraft(); }
+    if (e.key === 'F9') { e.preventDefault(); onSubmit(); }
+    if (e.key === 'Escape') { onCancel(); }
+    if (e.altKey && e.key === 'h') { switchTab('tab-history', document.querySelector('[onclick*="tab-history"]')); }
+    if (e.altKey && e.key === 'p') { switchTab('tab-approval', document.querySelector('[onclick*="tab-approval"]')); }
+    // Enter confirms delete when delete dialog is open and confirm button is enabled (spec: BTN_CONFIRM_DELETE shortcut=Enter)
+    if (e.key === 'Enter' && !document.getElementById('dialog-delete-confirm').hidden) {
+      e.preventDefault();
+      const btn = document.getElementById('btn-confirm-delete');
+      if (btn && !btn.disabled) btn.click();
+    }
+    // F2 — Sửa (khi ở view mode)
+    if (e.key === 'F2' && mode === 'view') { e.preventDefault(); switchToEdit(); }
+    // F4 — mở lookup
+    if (e.key === 'F4') {
+      e.preventDefault();
+      if (mode === 'view') return;
+      const focused = document.activeElement;
+      if (focused && focused.name === 'PROJECT_MANAGEMENT_CODE') {
+        openLookup('board');
+      } else {
+        openLookup('project');
+      }
+    }
+    // Ctrl+Shift+N — thêm chứng từ
+    if (e.ctrlKey && e.shiftKey && e.key === 'N') { e.preventDefault(); alert('Prototype: Mở LOV.Chứng từ để thêm mới chứng từ (Ctrl+Shift+N)'); }
+    // Ctrl+U — upload đính kèm
+    if (e.ctrlKey && e.key === 'u') { e.preventDefault(); document.querySelector('[data-testid="upload-zone-attachments"]')?.click(); }
+    // Ctrl+J — download attachment (nếu có file được chọn)
+    if (e.ctrlKey && e.key === 'j') { e.preventDefault(); alert('Prototype: Tải xuống file đính kèm đã chọn (Ctrl+J)'); }
+    // Shift+Delete — remove attachment
+    if (e.shiftKey && e.key === 'Delete') { e.preventDefault(); alert('Prototype: Xoá file đính kèm đã chọn (Shift+Delete)'); }
+    // Ctrl+P — in phiếu
+    if (e.ctrlKey && e.key === 'p') { e.preventDefault(); openPrintPreview(); }
+    // Ctrl+Shift+C — sao chép hồ sơ
+    if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+      e.preventDefault();
+      if (record) alert(`Prototype: Sao chép hồ sơ ${record.DOSSIER_CODE}\n→ Mở form Thêm mới với dữ liệu được pre-fill từ hồ sơ gốc (Ctrl+Shift+C)`);
+    }
+  });
+}
+
+// ─── Lookup Popup ────────────────────────────────────────
+let _lookupTarget = 'project'; // 'project' | 'board'
+
+function openLookup(target) {
+  _lookupTarget = target || 'project';
+  document.getElementById('lov-project-code').value = '';
+  document.getElementById('lov-project-name').value = '';
+  document.getElementById('lov-project-type').value = '';
+  document.getElementById('lov-segment6').value = '';
+  filterLOV();
+  document.getElementById('dialog-lookup-project').hidden = false;
+  document.getElementById('lov-project-code').focus();
+}
+
+function closeLookup() {
+  document.getElementById('dialog-lookup-project').hidden = true;
+}
+
+function filterLOV() {
+  const code = document.getElementById('lov-project-code').value.toLowerCase();
+  const name = document.getElementById('lov-project-name').value.toLowerCase();
+  const type = document.getElementById('lov-project-type').value;
+  const seg6 = document.getElementById('lov-segment6').value.toLowerCase();
+  const results = LOV01.filter(p =>
+    (!code || p.PROJECT_CODE.toLowerCase().includes(code)) &&
+    (!name || p.PROJECT_NAME.toLowerCase().includes(name)) &&
+    (!type || p.PROJECT_TYPE === type) &&
+    (!seg6 || p.GL_SEGMENT6_CODE.toLowerCase().includes(seg6))
+  );
+  const tbody = document.getElementById('lov-tbody');
+  document.getElementById('lov-count').textContent = `${results.length} kết quả`;
+  if (!results.length) {
+    tbody.innerHTML = '<tr><td colspan="5" class="grid-empty">Không có kết quả</td></tr>';
+    return;
+  }
+  tbody.innerHTML = results.map(p => `
+    <tr style="cursor:pointer;" onclick="selectLOV(${JSON.stringify(p).replace(/"/g,'&quot;')})">
+      <td style="color:var(--primary); font-weight:600;">${p.PROJECT_CODE}</td>
+      <td>${p.PROJECT_NAME}</td>
+      <td><span class="status-badge" style="background:${p.PROJECT_TYPE==='Military'?'#cce5ff':'#d4edda'};color:${p.PROJECT_TYPE==='Military'?'#004085':'#155724'};font-size:11px;">${p.PROJECT_TYPE}</span></td>
+      <td>${p.GL_SEGMENT6_CODE}</td>
+      <td>${p.GL_SEGMENT6_NAME}</td>
+    </tr>`).join('');
+}
+
+function selectLOV(p) {
+  if (_lookupTarget === 'board') {
+    const el = document.querySelector('[name="PROJECT_MANAGEMENT_CODE"]');
+    if (el) { el.value = p.GL_SEGMENT6_CODE; onBoardIdChange(p.GL_SEGMENT6_CODE); }
+  } else {
+    const el = document.querySelector('[name="PROJECT_CODE"]');
+    if (el) { el.value = p.PROJECT_CODE; onProjectIdChange(p.PROJECT_CODE); }
+  }
+  closeLookup();
+}
+
+// wire F4 buttons to openLookup
+function wireF4Buttons() {
+  const projectLookupBtn = document.querySelector('[data-testid="btn-lookup-project"]');
+  if (projectLookupBtn) projectLookupBtn.onclick = () => openLookup('project');
+  const boardLookupBtn = document.querySelector('[data-testid="btn-lookup-board"]');
+  if (boardLookupBtn) boardLookupBtn.onclick = () => openLookup('board');
+  const specLookupBtn = document.querySelector('[data-testid="btn-lookup-spec"]');
+  if (specLookupBtn) specLookupBtn.onclick = () => openLookup('project');
+}
+
+// ─── VAL-18 Duplicate Check ──────────────────────────────
+function checkDuplicate(projectCode, boardCode) {
+  // Prototype: treat records within same project + board within last 30 min as duplicate
+  const recent = (window.ALL_RECORDS_GLOBAL || []).filter(r =>
+    r.PROJECT_CODE === projectCode &&
+    r.PROJECT_MANAGEMENT_CODE === boardCode &&
+    r.STATE_CODE === 'DRAFT' &&
+    r.id !== (record?.id)
+  );
+  if (recent.length > 0) {
+    document.getElementById('dup-project-info').textContent = `Mã dự án: ${projectCode}`;
+    document.getElementById('dup-board-info').textContent = `Mã ĐVQHNS: ${boardCode}`;
+    document.getElementById('dialog-duplicate-warning').hidden = false;
+    return true;
+  }
+  return false;
+}
+
+// ─── History Render ──────────────────────────────────────
+function renderHistory(r) {
+  const tbody = document.getElementById('history-tbody');
+  if (!r) return;
+  const entries = [
+    { seq: 1, user: r.CREATED_BY, date: r.CREATED_DATE, action: 'TẠO MỚI', detail: `DOSSIER_CODE: (new) → ${r.DOSSIER_CODE || 'HS-CHI-2026-XXXX'} | STATE_CODE: (new) → DRAFT | DATA_SOURCE_CODE: (new) → ${r.DATA_SOURCE_CODE}` },
+    { seq: 2, user: r.LAST_UPDATED_BY || r.CREATED_BY, date: r.LAST_UPDATED_DATE || r.CREATED_DATE, action: 'CẬP NHẬT', detail: `SEND_DATE: (old) → ${r.SEND_DATE}` }
+  ];
+  if (r.CHECKED_BY) entries.push({ seq: 3, user: r.CHECKED_BY, date: r.CHECKED_DATE || '', action: 'KIỂM SOÁT', detail: `STATE_CODE: PENDING_CHECK → ${r.STATE_CODE}` });
+  if (r.APPROVED_BY) entries.push({ seq: 4, user: r.APPROVED_BY, date: r.APPROVED_DATE || '', action: 'PHÊ DUYỆT', detail: `STATE_CODE: PENDING_APPROVE → APPROVED` });
+  tbody.innerHTML = entries.map(e => `
+    <tr>
+      <td>${e.seq}</td>
+      <td>${e.user}</td>
+      <td>${e.date}</td>
+      <td><span style="font-size:11px; font-weight:600; color:var(--primary);">${e.action}</span></td>
+      <td style="font-family:monospace; font-size:11px; color:#495057;">${e.detail}</td>
+    </tr>`).join('');
+}
+
+// ─── Print Preview ───────────────────────────────────────
+function openPrintPreview() {
+  const r = record;
+  if (!r && mode !== 'view') { alert('Chỉ in được khi đang xem hồ sơ'); return; }
+  // Fill print template
+  const dc = document.querySelector('[name="DOSSIER_CODE"]')?.value || '—';
+  document.getElementById('print-dossier-code').textContent = 'Mã hồ sơ: ' + dc;
+  document.getElementById('p-dossier-code').textContent = dc;
+  document.getElementById('p-send-date').textContent = document.querySelector('[name="SEND_DATE"]')?.value || '—';
+  document.getElementById('p-project').textContent = (document.querySelector('[name="PROJECT_CODE"]')?.value || '') + ' — ' + (document.querySelector('[name="PROJECT_NAME"]')?.value || '');
+  document.getElementById('p-board').textContent = (document.querySelector('[name="PROJECT_MANAGEMENT_CODE"]')?.value || '') + ' — ' + (document.querySelector('[name="PROJECT_MANAGEMENT_NAME"]')?.value || '');
+  document.getElementById('p-state').textContent = document.querySelector('[name="STATE_CODE"]')?.value || '—';
+  document.getElementById('p-source').textContent = document.querySelector('[name="DATA_SOURCE_CODE"]')?.value || '—';
+  document.getElementById('p-created-by').textContent = r?.CREATED_BY || '—';
+  document.getElementById('p-created-date').textContent = r?.CREATED_DATE || '—';
+  // Fill docs
+  const docs = r?.documents || [];
+  const ptbody = document.getElementById('p-doc-tbody');
+  let total = 0;
+  ptbody.innerHTML = docs.length ? docs.map((d,i) => {
+    total += d.PAYMENT_REQUEST_AMOUNT_VND || 0;
+    return `<tr><td style="padding:3px 6px;border:1px solid #ccc;">${i+1}</td><td style="padding:3px 6px;border:1px solid #ccc;">${d.DOCUMENT_NUMBER}</td><td style="padding:3px 6px;border:1px solid #ccc;">${d.DOCUMENT_DATE}</td><td style="padding:3px 6px;border:1px solid #ccc;text-align:right;">${d.PAYMENT_REQUEST_AMOUNT_VND?.toLocaleString('vi-VN')||'0'}</td></tr>`;
+  }).join('') : '<tr><td colspan="4" style="text-align:center;padding:8px;color:#999;">Chưa có chứng từ</td></tr>';
+  document.getElementById('p-doc-total').textContent = total.toLocaleString('vi-VN');
+  document.getElementById('dialog-print-preview').hidden = false;
+}
+
+init();
+</script>
+
+<!-- Print Preview Modal (EXP.CAPEX_DOSSIER.PRINT) -->
+<div id="dialog-print-preview" class="modal-overlay" hidden style="align-items:flex-start;padding-top:40px;">
+  <div class="modal" style="min-width:720px;max-width:860px;max-height:85vh;display:flex;flex-direction:column;">
+    <div class="modal-header">
+      <span style="font-size:16px;">🖨</span>
+      <span class="modal-title">Preview in phiếu — Hồ sơ Chi đầu tư</span>
+      <button style="margin-left:auto;background:none;border:none;font-size:18px;cursor:pointer;" onclick="document.getElementById('dialog-print-preview').hidden=true">×</button>
+    </div>
+    <div style="overflow-y:auto;flex:1;padding:24px;background:#f0f0f0;">
+      <!-- Print template -->
+      <div id="print-content" style="background:#fff;padding:32px;max-width:640px;margin:0 auto;box-shadow:0 2px 8px rgba(0,0,0,.15);font-family:serif;">
+        <div style="text-align:center;margin-bottom:16px;">
+          <div style="font-size:12px;font-weight:bold;">NGÂN HÀNG PHÁT TRIỂN VIỆT NAM</div>
+          <div style="font-size:11px;">VDBAS — Hệ thống quản lý chi đầu tư</div>
+          <div style="font-size:16px;font-weight:bold;margin-top:12px;text-transform:uppercase;">Phiếu hồ sơ Chi đầu tư</div>
+          <div style="font-size:11px;margin-top:4px;" id="print-dossier-code">Mã hồ sơ: —</div>
+        </div>
+        <hr style="border:1px solid #ccc;margin:16px 0;">
+        <table style="width:100%;font-size:12px;border-collapse:collapse;">
+          <tr><td style="padding:4px 8px;width:40%;color:#555;font-weight:bold;">Mã hồ sơ</td><td id="p-dossier-code" style="padding:4px 8px;">—</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:4px 8px;font-weight:bold;">Ngày gửi</td><td id="p-send-date" style="padding:4px 8px;">—</td></tr>
+          <tr><td style="padding:4px 8px;font-weight:bold;">Dự án/Công trình</td><td id="p-project" style="padding:4px 8px;">—</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:4px 8px;font-weight:bold;">Đơn vị QHNS</td><td id="p-board" style="padding:4px 8px;">—</td></tr>
+          <tr><td style="padding:4px 8px;font-weight:bold;">Trạng thái</td><td id="p-state" style="padding:4px 8px;">—</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:4px 8px;font-weight:bold;">Nguồn</td><td id="p-source" style="padding:4px 8px;">—</td></tr>
+          <tr><td style="padding:4px 8px;font-weight:bold;">Người lập</td><td id="p-created-by" style="padding:4px 8px;">—</td></tr>
+          <tr style="background:#f9f9f9;"><td style="padding:4px 8px;font-weight:bold;">Ngày lập</td><td id="p-created-date" style="padding:4px 8px;">—</td></tr>
+        </table>
+        <hr style="border:1px solid #ccc;margin:16px 0;">
+        <div style="font-size:12px;font-weight:bold;margin-bottom:8px;">Danh sách chứng từ</div>
+        <table style="width:100%;font-size:11px;border-collapse:collapse;border:1px solid #ccc;">
+          <thead><tr style="background:#f0f0f0;"><th style="padding:4px 6px;border:1px solid #ccc;text-align:left;">STT</th><th style="padding:4px 6px;border:1px solid #ccc;">Số chứng từ</th><th style="padding:4px 6px;border:1px solid #ccc;">Ngày CT</th><th style="padding:4px 6px;border:1px solid #ccc;text-align:right;">Số tiền VND</th></tr></thead>
+          <tbody id="p-doc-tbody"><tr><td colspan="4" style="text-align:center;padding:8px;color:#999;">Chưa có chứng từ</td></tr></tbody>
+          <tfoot><tr style="background:#f0f0f0;font-weight:bold;"><td colspan="3" style="padding:4px 6px;border:1px solid #ccc;text-align:right;">Tổng cộng:</td><td id="p-doc-total" style="padding:4px 6px;border:1px solid #ccc;text-align:right;">0</td></tr></tfoot>
+        </table>
+        <div style="display:flex;justify-content:space-between;margin-top:40px;font-size:12px;">
+          <div style="text-align:center;width:30%;"><div style="border-top:1px solid #333;padding-top:4px;margin-top:40px;">Người lập</div></div>
+          <div style="text-align:center;width:30%;"><div style="border-top:1px solid #333;padding-top:4px;margin-top:40px;">Người kiểm soát</div></div>
+          <div style="text-align:center;width:30%;"><div style="border-top:1px solid #333;padding-top:4px;margin-top:40px;">Người phê duyệt</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="document.getElementById('dialog-print-preview').hidden=true">Đóng</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 In (Ctrl+P browser)</button>
+    </div>
+  </div>
+</div>
+
+<!-- MSG-ERR-CONCURRENT Dialog -->
+<div id="dialog-concurrent" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:440px;">
+    <div class="modal-header">
+      <span class="icon-warn">⚠</span>
+      <span class="modal-title">Hồ sơ đang được chỉnh sửa</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;" id="concurrent-msg">Hồ sơ đang được <strong>—</strong> chỉnh sửa, vui lòng thử lại sau.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Mã lỗi: MSG-ERR-CONCURRENT</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="window.location.href='form_list.html'">← Quay lại danh sách</button>
+      <button class="btn btn-primary" onclick="document.getElementById('dialog-concurrent').hidden=true">Thử lại</button>
+    </div>
+  </div>
+</div>
+
+<!-- MSG-WRN-OUTSIDE-HOUR Dialog -->
+<div id="dialog-outside-hour" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <span style="color:var(--warning);font-size:20px;">⏰</span>
+      <span class="modal-title">Ngoài giờ giao dịch</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;">Hiện tại ngoài giờ giao dịch (08:00 – 17:00). Hồ sơ sẽ được xử lý vào ngày làm việc tiếp theo.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Mã: MSG-WRN-OUTSIDE-HOUR</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="document.getElementById('dialog-outside-hour').hidden=true">Đã hiểu, tiếp tục</button>
+    </div>
+  </div>
+</div>
+
+<!-- MSG-ERR-SESSION Dialog -->
+<div id="dialog-session-expired" class="modal-overlay" hidden>
+  <div class="modal" style="max-width:380px;">
+    <div class="modal-header">
+      <span class="icon-warn">🔒</span>
+      <span class="modal-title">Phiên đăng nhập hết hạn</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;">Phiên làm việc đã hết hạn. Dữ liệu đang nhập sẽ được lưu tạm.</p>
+      <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Mã: MSG-ERR-SESSION</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-primary" onclick="alert('Prototype: Redirect to login page')">Đăng nhập lại</button>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
