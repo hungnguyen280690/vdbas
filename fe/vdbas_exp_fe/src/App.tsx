@@ -8,6 +8,7 @@ import Sidebar from '@/components/Sidebar'
 import HeaderBreadcrumb from '@/components/common/HeaderBreadcrumb'
 import HomePage from '@/pages/HomePage'
 import CategoryGroupsPage from '@/pages/CategoryGroupsPage'
+import FormList from '@/pages/FormList'
 import type { ReactElement } from 'react'
 
 const { Header, Content } = Layout
@@ -22,7 +23,7 @@ interface RouteDefinition {
 const ROUTES: RouteDefinition[] = [
   { path: '/',                 component: <HomePage />           },
   { path: '/category-groups', component: <CategoryGroupsPage /> },
-  // TODO: add feature pages here
+  { path: '/capex-dossier',   component: <FormList />           },
 ]
 
 const renderContent = (currentPath: string): ReactElement => {

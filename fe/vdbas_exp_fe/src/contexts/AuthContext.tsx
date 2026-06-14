@@ -3,10 +3,25 @@ import type { AuthContextValue, JwtUser } from '@/types/index'
 
 const AuthContext = createContext<AuthContextValue | null>(null)
 
+const MOCK_AUTH    = import.meta.env.VITE_MOCK_AUTH === 'true'
+const MOCK_API_URL = (import.meta.env.VITE_ACL_API_BASE_URL as string | undefined)?.replace(/\/api.*$/, '') ?? 'http://localhost:9090'
+
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [token,   setToken]   = useState<string | null>(() => localStorage.getItem('kc_token'))
   const [user,    setUser]    = useState<JwtUser | null>(null)
   const [loading, setLoading] = useState(true)
+
+  // In mock mode, auto-fetch a fake token if none is present
+  useEffect(() => {
+    if (!MOCK_AUTH || localStorage.getItem('kc_token')) return
+    fetch(`${MOCK_API_URL}/api/mock/token`)
+      .then((r) => r.json())
+      .then(({ token: t }: { token: string }) => {
+        localStorage.setItem('kc_token', t)
+        setToken(t)
+      })
+      .catch(console.error)
+  }, [])
 
   useEffect(() => {
     const sync = () => setToken(localStorage.getItem('kc_token'))

@@ -3,5 +3,10 @@
     "code": "category-groups",
     "name": "Nhóm danh mục",
     "path": "/category-groups"
+  },
+  {
+    "code": "capex-dossier",
+    "name": "Danh sách hồ sơ Chi đầu tư",
+    "path": "/capex-dossier"
   }
 ]
