@@ -189,13 +189,13 @@
         <div class="search-group">
           <label>Mã hồ sơ</label>
           <div class="input-group">
-            <input type="text" class="form-control" id="filter-dossier-code" data-spec-ref="B2.1" placeholder="Nhập hoặc F4" style="min-width:140px;" oninput="onFilter()">
-            <button class="btn-lookup" title="F4" onclick="openDossierLookup()">🔍</button>
+            <input type="text" class="form-control" id="filter-dossier-code" data-spec-ref="B2.1" placeholder="Nhập hoặc F4" style="min-width:140px;" oninput="onFilter()" data-testid="filter-dossier-code">
+            <button class="btn-lookup" title="F4" onclick="openDossierLookup()" data-testid="btn-lookup-dossier-code">🔍</button>
           </div>
         </div>
         <div class="search-group">
           <label>Nguồn</label>
-          <select class="form-control" id="filter-data-source-code" data-spec-ref="B2.1" onchange="onFilter()">
+          <select class="form-control" id="filter-data-source-code" data-spec-ref="B2.1" onchange="onFilter()" data-testid="filter-data-source-code">
             <option value="">Tất cả</option>
             <option value="Thủ công">Thủ công</option>
             <option value="DVC">DVC</option>
@@ -204,7 +204,7 @@
         <!-- Tìm kiếm nâng cao toggle -->
         <div class="search-group">
           <label>&nbsp;</label>
-          <button class="btn btn-default" id="btn-adv-toggle" onclick="toggleAdvSearch()">
+          <button class="btn btn-default" id="btn-adv-toggle" onclick="toggleAdvSearch()" data-testid="btn-adv-toggle">
             Nâng cao ▼ <span id="adv-filter-count" style="display:none; background:var(--primary);color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;"></span>
           </button>
         </div>
@@ -220,21 +220,21 @@
         </div>
         <div class="search-group">
           <label>&nbsp;</label>
-          <button class="btn btn-default" onclick="saveFilter()" title="Lưu bộ lọc hiện tại">💾 Lưu bộ lọc</button>
+          <button class="btn btn-default" onclick="saveFilter()" title="Lưu bộ lọc hiện tại" data-testid="btn-save-filter">💾 Lưu bộ lọc</button>
         </div>
         <div class="search-group" id="saved-filter-group" style="display:none;">
           <label>&nbsp;</label>
-          <button class="btn btn-default" onclick="loadFilter()" title="Áp dụng bộ lọc đã lưu" id="btn-load-filter">📂 Áp dụng lọc đã lưu</button>
+          <button class="btn btn-default" onclick="loadFilter()" title="Áp dụng bộ lọc đã lưu" id="btn-load-filter" data-testid="btn-load-filter">📂 Áp dụng lọc đã lưu</button>
         </div>
       </div>
     </div>
 
     <!-- Advanced Filter -->
-    <div class="adv-filter-area" id="adv-filter-area">
+    <div class="adv-filter-area" id="adv-filter-area" data-testid="adv-filter-area">
       <div class="search-row" style="margin-bottom:10px;">
         <div class="search-group">
           <label>Loại ngày</label>
-          <select class="form-control" id="filter-date-type" data-spec-ref="B2.1">
+          <select class="form-control" id="filter-date-type" data-spec-ref="B2.1" data-testid="filter-date-type">
             <option value="SEND_DATE">Ngày gửi</option>
             <option value="CREATED_DATE">Ngày lập</option>
             <option value="CHECKED_DATE">Ngày kiểm soát</option>
@@ -243,67 +243,67 @@
         </div>
         <div class="search-group">
           <label>Từ ngày</label>
-          <input type="text" class="form-control" id="filter-from-date" data-spec-ref="B2.1" placeholder="dd/mm/yyyy" oninput="onFilter()">
+          <input type="text" class="form-control" id="filter-from-date" data-spec-ref="B2.1" placeholder="dd/mm/yyyy" oninput="onFilter()" data-testid="filter-from-date">
         </div>
         <div class="search-group">
           <label>Đến ngày</label>
-          <input type="text" class="form-control" id="filter-to-date" data-spec-ref="B2.1" placeholder="dd/mm/yyyy" oninput="onFilter()">
+          <input type="text" class="form-control" id="filter-to-date" data-spec-ref="B2.1" placeholder="dd/mm/yyyy" oninput="onFilter()" data-testid="filter-to-date">
         </div>
         <div class="search-group">
           <label>Mã dự án</label>
           <div class="input-group">
-            <input type="text" class="form-control" id="filter-project-code" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()">
-            <button class="btn-lookup" title="F4">🔍</button>
+            <input type="text" class="form-control" id="filter-project-code" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()" data-testid="filter-project-code">
+            <button class="btn-lookup" title="F4" data-testid="btn-lookup-project-code">🔍</button>
           </div>
         </div>
         <div class="search-group">
           <label>Người lập</label>
           <div class="input-group">
-            <input type="text" class="form-control" id="filter-created-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()">
-            <button class="btn-lookup" title="F4 — Tra cứu người lập" onclick="openUserLookup('filter-created-by','Tra cứu Người lập')">🔍</button>
+            <input type="text" class="form-control" id="filter-created-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()" data-testid="filter-created-by">
+            <button class="btn-lookup" title="F4 — Tra cứu người lập" onclick="openUserLookup('filter-created-by','Tra cứu Người lập')" data-testid="btn-lookup-created-by">🔍</button>
           </div>
         </div>
         <div class="search-group">
           <label>Người kiểm soát</label>
           <div class="input-group">
-            <input type="text" class="form-control" id="filter-checked-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()">
-            <button class="btn-lookup" title="F4 — Tra cứu người kiểm soát" onclick="openUserLookup('filter-checked-by','Tra cứu Người kiểm soát')">🔍</button>
+            <input type="text" class="form-control" id="filter-checked-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()" data-testid="filter-checked-by">
+            <button class="btn-lookup" title="F4 — Tra cứu người kiểm soát" onclick="openUserLookup('filter-checked-by','Tra cứu Người kiểm soát')" data-testid="btn-lookup-checked-by">🔍</button>
           </div>
         </div>
         <div class="search-group">
           <label>Người phê duyệt</label>
           <div class="input-group">
-            <input type="text" class="form-control" id="filter-approved-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()">
-            <button class="btn-lookup" title="F4 — Tra cứu người phê duyệt" onclick="openUserLookup('filter-approved-by','Tra cứu Người phê duyệt')">🔍</button>
+            <input type="text" class="form-control" id="filter-approved-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()" data-testid="filter-approved-by">
+            <button class="btn-lookup" title="F4 — Tra cứu người phê duyệt" onclick="openUserLookup('filter-approved-by','Tra cứu Người phê duyệt')" data-testid="btn-lookup-approved-by">🔍</button>
           </div>
         </div>
         <div class="search-group" style="align-self:flex-end; gap:4px; flex-direction:row;">
-          <button class="btn btn-default btn-sm" onclick="resetAdvFilter()">Xóa bộ lọc</button>
-          <button class="btn btn-primary btn-sm" onclick="onFilter()">🔍 Tìm kiếm</button>
+          <button class="btn btn-default btn-sm" onclick="resetAdvFilter()" data-testid="btn-reset-adv-filter">Xóa bộ lọc</button>
+          <button class="btn btn-primary btn-sm" onclick="onFilter()" data-testid="btn-search-adv">🔍 Tìm kiếm</button>
         </div>
       </div>
       <!-- Filter tags -->
-      <div class="filter-tags" id="filter-tags"></div>
+      <div class="filter-tags" id="filter-tags" data-testid="filter-tags"></div>
     </div>
   </div>
 
   <!-- Stats Bar -->
   <div class="card">
     <div class="card-body" style="padding:12px 20px;">
-      <div class="stats-bar" id="stats-bar">
+      <div class="stats-bar" id="stats-bar" data-testid="stats-bar">
         <div class="stat-item">
-          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-value" id="stat-total" data-testid="stat-total">0</span>
           <span class="stat-label">Tổng hồ sơ</span>
         </div>
         <div style="width:1px; background:var(--border); align-self:stretch;"></div>
-        <div class="stat-item"><span class="stat-dot" style="background:#6c757d;"></span><span id="stat-draft">0</span> Đang hoàn thiện</div>
-        <div class="stat-item"><span class="stat-dot" style="background:#004085;"></span><span id="stat-pending-check">0</span> Chờ kiểm soát</div>
-        <div class="stat-item"><span class="stat-dot" style="background:#0c5460;"></span><span id="stat-pending-approve">0</span> Chờ phê duyệt</div>
-        <div class="stat-item"><span class="stat-dot" style="background:#28a745;"></span><span id="stat-approved">0</span> Đã phê duyệt</div>
-        <div class="stat-item"><span class="stat-dot" style="background:#dc3545;"></span><span id="stat-rejected">0</span> Từ chối</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#6c757d;"></span><span id="stat-draft" data-testid="stat-draft">0</span> Đang hoàn thiện</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#004085;"></span><span id="stat-pending-check" data-testid="stat-pending-check">0</span> Chờ kiểm soát</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#0c5460;"></span><span id="stat-pending-approve" data-testid="stat-pending-approve">0</span> Chờ phê duyệt</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#28a745;"></span><span id="stat-approved" data-testid="stat-approved">0</span> Đã phê duyệt</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#dc3545;"></span><span id="stat-rejected" data-testid="stat-rejected">0</span> Từ chối</div>
         <div style="width:1px; background:var(--border); align-self:stretch;"></div>
         <div class="stat-item">
-          <span style="font-weight:700; color:var(--primary);" id="stat-total-vnd">0 VND</span>
+          <span style="font-weight:700; color:var(--primary);" id="stat-total-vnd" data-testid="stat-total-vnd">0 VND</span>
           <span class="stat-label">Tổng tiền VND</span>
         </div>
       </div>
@@ -314,7 +314,7 @@
   <div class="card" style="margin-bottom:0; border-bottom:none; border-radius:4px 4px 0 0;">
     <div class="card-header">
       <span>Kết quả tìm kiếm</span>
-      <select class="page-size-select" id="page-size-select" onchange="onPageSizeChange()" title="Số bản ghi/trang">
+      <select class="page-size-select" id="page-size-select" onchange="onPageSizeChange()" title="Số bản ghi/trang" data-testid="page-size-select">
         <option value="20" selected>20/trang</option>
         <option value="50">50/trang</option>
         <option value="100">100/trang</option>
@@ -322,7 +322,7 @@
       </select>
     </div>
     <div style="overflow-x:auto;">
-      <table class="data-table" id="list-table">
+      <table class="data-table" id="list-table" data-testid="list-table">
         <thead>
           <tr>
             <th data-api-field="list[].paymentDossierId" data-spec-ref="B2.2.row1" onclick="sortBy('DOSSIER_CODE')" title="Click để sắp xếp">Mã hồ sơ ↕</th>
@@ -346,9 +346,9 @@
         <tbody id="list-tbody" data-testid="list-tbody"></tbody>
         <tfoot>
           <tr>
-            <td colspan="13" style="text-align:right;">Tổng cộng (<span id="footer-count">0</span> hồ sơ):</td>
-            <td style="text-align:center;" id="footer-doc-total">—</td>
-            <td style="text-align:right; font-family:monospace;" id="footer-vnd-total">0</td>
+            <td colspan="13" style="text-align:right;">Tổng cộng (<span id="footer-count" data-testid="footer-count">0</span> hồ sơ):</td>
+            <td style="text-align:center;" id="footer-doc-total" data-testid="footer-doc-total">—</td>
+            <td style="text-align:right; font-family:monospace;" id="footer-vnd-total" data-testid="footer-vnd-total">0</td>
             <td></td>
           </tr>
         </tfoot>
@@ -370,7 +370,7 @@
 </div>
 
 <!-- User Lookup Popup: EXP.CAPEX_DOSSIER.LOOKUP.USER -->
-<div id="dialog-lookup-user" class="modal-overlay" hidden style="align-items:flex-start; padding-top:80px; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex;">
+<div id="dialog-lookup-user" class="modal-overlay" hidden style="align-items:flex-start; padding-top:80px; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex;" data-testid="modal-lookup-user">
   <div class="modal" style="min-width:520px; max-width:640px; max-height:70vh; display:flex; flex-direction:column;">
     <div class="modal-header">
       <span style="font-size:16px;">👤</span>
@@ -381,11 +381,11 @@
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
         <div class="search-group" style="flex:1;min-width:160px;">
           <label>Tên / Username</label>
-          <input type="text" class="form-control" id="lov-user-name" placeholder="Tìm chứa" oninput="filterUserLOV()">
+          <input type="text" class="form-control" id="lov-user-name" placeholder="Tìm chứa" oninput="filterUserLOV()" data-testid="lov-user-name">
         </div>
         <div class="search-group" style="min-width:130px;">
           <label>Vai trò</label>
-          <select class="form-control" id="lov-user-role" onchange="filterUserLOV()">
+          <select class="form-control" id="lov-user-role" onchange="filterUserLOV()" data-testid="lov-user-role">
             <option value="">Tất cả</option>
             <option value="Maker">Maker</option>
             <option value="Checker">Checker</option>
@@ -404,18 +404,18 @@
             <th>Đơn vị</th>
           </tr>
         </thead>
-        <tbody id="lov-user-tbody"></tbody>
+        <tbody id="lov-user-tbody" data-testid="lov-user-tbody"></tbody>
       </table>
     </div>
     <div class="modal-footer">
-      <span style="font-size:12px;color:var(--text-muted);" id="lov-user-count">0 kết quả</span>
-      <button class="btn btn-default" onclick="closeUserLookup()">Đóng (Esc)</button>
+      <span style="font-size:12px;color:var(--text-muted);" id="lov-user-count" data-testid="lov-user-count">0 kết quả</span>
+      <button class="btn btn-default" onclick="closeUserLookup()" data-testid="btn-close-lookup-user">Đóng (Esc)</button>
     </div>
   </div>
 </div>
 
 <!-- Dossier Lookup Popup: F4 -->
-<div id="dialog-lookup-dossier" class="modal-overlay" hidden style="align-items:flex-start; padding-top:80px; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex;">
+<div id="dialog-lookup-dossier" class="modal-overlay" hidden style="align-items:flex-start; padding-top:80px; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex;" data-testid="modal-lookup-dossier">
   <div class="modal" style="min-width:640px; max-width:800px; max-height:70vh; display:flex; flex-direction:column;">
     <div class="modal-header">
       <span style="font-size:16px;">📁</span>
@@ -426,15 +426,15 @@
       <div style="display:flex;gap:12px;flex-wrap:wrap;">
         <div class="search-group" style="flex:1;min-width:160px;">
           <label>Mã hồ sơ</label>
-          <input type="text" class="form-control" id="lov-dossier-code" placeholder="Tìm chứa" oninput="filterDossierLOV()">
+          <input type="text" class="form-control" id="lov-dossier-code" placeholder="Tìm chứa" oninput="filterDossierLOV()" data-testid="lov-dossier-code">
         </div>
         <div class="search-group" style="flex:2;min-width:200px;">
           <label>Tên dự án</label>
-          <input type="text" class="form-control" id="lov-dossier-project" placeholder="Tìm chứa" oninput="filterDossierLOV()">
+          <input type="text" class="form-control" id="lov-dossier-project" placeholder="Tìm chứa" oninput="filterDossierLOV()" data-testid="lov-dossier-project">
         </div>
         <div class="search-group" style="min-width:150px;">
           <label>Trạng thái</label>
-          <select class="form-control" id="lov-dossier-state" onchange="filterDossierLOV()">
+          <select class="form-control" id="lov-dossier-state" onchange="filterDossierLOV()" data-testid="lov-dossier-state">
             <option value="">Tất cả</option>
             <option value="DRAFT">Đang hoàn thiện</option>
             <option value="PENDING_CHECK">Chờ kiểm soát</option>
@@ -456,18 +456,18 @@
             <th>Người lập</th>
           </tr>
         </thead>
-        <tbody id="lov-dossier-tbody"></tbody>
+        <tbody id="lov-dossier-tbody" data-testid="lov-dossier-tbody"></tbody>
       </table>
     </div>
     <div class="modal-footer">
-      <span style="font-size:12px;color:var(--text-muted);" id="lov-dossier-count">0 kết quả</span>
-      <button class="btn btn-default" onclick="closeDossierLookup()">Đóng (Esc)</button>
+      <span style="font-size:12px;color:var(--text-muted);" id="lov-dossier-count" data-testid="lov-dossier-count">0 kết quả</span>
+      <button class="btn btn-default" onclick="closeDossierLookup()" data-testid="btn-close-lookup-dossier">Đóng (Esc)</button>
     </div>
   </div>
 </div>
 
 <!-- Export Dialog -->
-<div id="dialog-export" class="modal-overlay" hidden style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex; align-items:center; justify-content:center;">
+<div id="dialog-export" class="modal-overlay" hidden style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex; align-items:center; justify-content:center;" data-testid="modal-export">
   <div class="modal" style="max-width:400px;">
     <div class="modal-header">
       <span style="font-size:16px;">📥</span>
@@ -476,15 +476,15 @@
     <div class="modal-body">
       <p style="font-size:13px;margin-bottom:12px;">Chọn định dạng xuất (<span id="export-count">0</span> hồ sơ khớp bộ lọc):</p>
       <div style="display:flex;flex-direction:column;gap:8px;">
-        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('excel')">
+        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('excel')" data-testid="btn-export-excel">
           <span style="font-size:18px;">📊</span>
           <div style="text-align:left;"><div style="font-weight:600;">Excel (.xlsx)</div><div style="font-size:11px;color:var(--text-muted);">Phù hợp để chỉnh sửa và tổng hợp</div></div>
         </button>
-        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('pdf')">
+        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('pdf')" data-testid="btn-export-pdf">
           <span style="font-size:18px;">📄</span>
           <div style="text-align:left;"><div style="font-weight:600;">PDF</div><div style="font-size:11px;color:var(--text-muted);">In ấn và lưu trữ chính thức</div></div>
         </button>
-        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('csv')">
+        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('csv')" data-testid="btn-export-csv">
           <span style="font-size:18px;">📋</span>
           <div style="text-align:left;"><div style="font-weight:600;">CSV</div><div style="font-size:11px;color:var(--text-muted);">Tích hợp với các hệ thống khác</div></div>
         </button>
@@ -492,7 +492,7 @@
       <p style="font-size:11px;color:var(--text-muted);margin-top:12px;">* Nếu > 50.000 bản ghi: xuất bất đồng bộ, thông báo qua email khi hoàn thành</p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-default" onclick="document.getElementById('dialog-export').hidden=true">Đóng</button>
+      <button class="btn btn-default" onclick="document.getElementById('dialog-export').hidden=true" data-testid="btn-close-export">Đóng</button>
     </div>
   </div>
 </div>

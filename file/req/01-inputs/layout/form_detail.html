@@ -205,7 +205,7 @@
   <div class="page-header">
     <div>
       <div class="breadcrumb">
-        <span onclick="window.location.href='form_list.html'">Danh sách hồ sơ Chi đầu tư</span>
+        <span onclick="window.location.href='form_list.html'" data-testid="breadcrumb-link-list">Danh sách hồ sơ Chi đầu tư</span>
         &nbsp;/&nbsp;
         <span data-page-title>Chi tiết hồ sơ</span>
       </div>
@@ -221,24 +221,24 @@
         ✏ Sửa <span class="shortcut">F2</span>
       </button>
       <!-- Status badge -->
-      <span class="status-badge" id="status-badge">Đang hoàn thiện</span>
+      <span class="status-badge" id="status-badge" data-testid="status-badge">Đang hoàn thiện</span>
     </div>
   </div>
 
   <!-- Tab Navigation -->
   <div class="card" style="margin-bottom:0; border-bottom:none; border-radius:4px 4px 0 0;">
-    <div class="tab-nav" id="tab-nav">
-      <button class="tab-btn active" onclick="switchTab('tab-general', this)">📋 Thông tin chung</button>
-      <button class="tab-btn" onclick="switchTab('tab-documents', this)" data-tab-documents>📄 Danh sách chứng từ</button>
-      <button class="tab-btn" onclick="switchTab('tab-attach', this)">📎 Đính kèm tài liệu</button>
-      <button class="tab-btn" onclick="switchTab('tab-history', this)" title="Alt+H">🕐 Lịch sử <span class="shortcut">Alt+H</span></button>
-      <button class="tab-btn" onclick="switchTab('tab-approval', this)" title="Alt+P">✅ Trạng thái phê duyệt <span class="shortcut">Alt+P</span></button>
+    <div class="tab-nav" id="tab-nav" data-testid="tab-nav">
+      <button class="tab-btn active" onclick="switchTab('tab-general', this)" data-testid="tab-general">📋 Thông tin chung</button>
+      <button class="tab-btn" onclick="switchTab('tab-documents', this)" data-tab-documents data-testid="tab-documents">📄 Danh sách chứng từ</button>
+      <button class="tab-btn" onclick="switchTab('tab-attach', this)" data-testid="tab-attach">📎 Đính kèm tài liệu</button>
+      <button class="tab-btn" onclick="switchTab('tab-history', this)" title="Alt+H" data-testid="tab-history">🕐 Lịch sử <span class="shortcut">Alt+H</span></button>
+      <button class="tab-btn" onclick="switchTab('tab-approval', this)" title="Alt+P" data-testid="tab-approval">✅ Trạng thái phê duyệt <span class="shortcut">Alt+P</span></button>
     </div>
   </div>
 
   <!-- TAB: Thông tin chung (B1.1) -->
   <div class="card" style="border-radius:0; border-top:none;">
-    <div class="tab-pane active" id="tab-general">
+    <div class="tab-pane active" id="tab-general" data-testid="pane-general">
 
       <!-- Info label for NEW mode -->
       <div class="info-label" data-show-mode="new" style="display:none;">
@@ -302,7 +302,7 @@
                    oninput="onProjectIdChange(this.value)" />
             <button type="button" class="btn-lookup" title="F4 — Tra cứu dự án" data-testid="btn-lookup-project">🔍</button>
           </div>
-          <span class="error-msg" id="err-PROJECT_CODE"></span>
+          <span class="error-msg" id="err-PROJECT_CODE" data-testid="error-PROJECT_CODE"></span>
         </div>
 
         <!-- PROJECT_NAME -->
@@ -445,7 +445,7 @@
     </div>
 
     <!-- TAB: Danh sách chứng từ (B1.2) -->
-    <div class="tab-pane" id="tab-documents">
+    <div class="tab-pane" id="tab-documents" data-testid="pane-documents">
       <!-- Not shown in NEW mode -->
       <div id="doc-new-notice" class="info-label" style="display:none;">
         💡 Lưu hồ sơ trước để có thể thêm chứng từ.
@@ -454,7 +454,7 @@
         <!-- CURRENCY field for documents grid -->
         <input type="hidden" name="CURRENCY_TYPE_CODE" id="doc-currency"
                data-field-code="CURRENCY_TYPE_CODE" data-api-field="documents[].currencyTypeCode"
-               value="VND" />
+               value="VND" data-testid="doc-currency" />
         <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
           <span style="font-size:13px; font-weight:600; color:var(--primary);">Danh sách chứng từ</span>
           <button class="btn btn-default btn-sm" data-show-mode="edit" data-testid="btn-add-doc" title="Thêm mới chứng từ (Ctrl+Shift+N). Số chứng từ được tự động sinh khi thêm mới từ chức năng EXP.CAPEX_DOSSIER.3.3.1" style="display:none;">
@@ -462,7 +462,7 @@
           </button>
         </div>
         <div style="overflow-x:auto;">
-          <table class="data-table" id="doc-table">
+          <table class="data-table" id="doc-table" data-testid="doc-table">
             <thead>
               <tr>
                 <th style="width:50px;" data-field-code="DOC_SEQ_NO">STT</th>
@@ -474,14 +474,14 @@
                 <th class="text-right" data-field-code="PAYMENT_REQUEST_AMOUNT_VND">Số tiền VND</th>
               </tr>
             </thead>
-            <tbody id="doc-tbody">
+            <tbody id="doc-tbody" data-testid="doc-tbody">
               <tr><td colspan="7" class="grid-empty">Chưa có chứng từ nào</td></tr>
             </tbody>
             <tfoot>
               <tr>
                 <td colspan="5" style="text-align:right; font-weight:600;">Tổng cộng:</td>
-                <td class="text-right" id="doc-total-fx">—</td>
-                <td class="text-right" id="doc-total">0</td>
+                <td class="text-right" id="doc-total-fx" data-testid="doc-total-fx">—</td>
+                <td class="text-right" id="doc-total" data-testid="doc-total">0</td>
               </tr>
             </tfoot>
           </table>
@@ -490,7 +490,7 @@
     </div>
 
     <!-- TAB: Đính kèm (B3.3) -->
-    <div class="tab-pane" id="tab-attach">
+    <div class="tab-pane" id="tab-attach" data-testid="pane-attach">
       <!-- Upload zone + inline form — only new/edit -->
       <div data-show-mode="new,edit" style="display:none;">
         <div class="upload-zone" data-testid="upload-zone-attachments"
@@ -548,7 +548,7 @@
     </div>
 
     <!-- TAB: Lịch sử giao dịch (B3.2) -->
-    <div class="tab-pane" id="tab-history">
+    <div class="tab-pane" id="tab-history" data-testid="pane-history">
       <table class="history-table">
         <thead>
           <tr>
@@ -559,27 +559,27 @@
             <th>Chi tiết thay đổi (oldValue → newValue)</th>
           </tr>
         </thead>
-        <tbody id="history-tbody">
+        <tbody id="history-tbody" data-testid="history-tbody">
           <tr><td colspan="5" class="grid-empty">Chưa có lịch sử</td></tr>
         </tbody>
       </table>
     </div>
 
     <!-- TAB: Trạng thái phê duyệt (A11) -->
-    <div class="tab-pane" id="tab-approval">
-      <div class="workflow" id="approval-workflow">
+    <div class="tab-pane" id="tab-approval" data-testid="pane-approval">
+      <div class="workflow" id="approval-workflow" data-testid="approval-workflow">
         <div class="workflow-step">
-          <div class="workflow-step-circle active" id="step-maker">M</div>
+          <div class="workflow-step-circle active" id="step-maker" data-testid="step-maker">M</div>
           <div class="workflow-step-label">Người lập<br><small id="step-maker-name">—</small></div>
         </div>
         <div class="workflow-line" id="line-1"></div>
         <div class="workflow-step">
-          <div class="workflow-step-circle" id="step-checker">C</div>
+          <div class="workflow-step-circle" id="step-checker" data-testid="step-checker">C</div>
           <div class="workflow-step-label">Người kiểm soát<br><small id="step-checker-name">—</small></div>
         </div>
         <div class="workflow-line" id="line-2"></div>
         <div class="workflow-step">
-          <div class="workflow-step-circle" id="step-approver">A</div>
+          <div class="workflow-step-circle" id="step-approver" data-testid="step-approver">A</div>
           <div class="workflow-step-label">Người phê duyệt<br><small id="step-approver-name">—</small></div>
         </div>
       </div>
@@ -631,7 +631,7 @@
 </div>
 
 <!-- Delete Confirmation Dialog (B3.1) -->
-<div id="dialog-delete-confirm" class="modal-overlay" hidden>
+<div id="dialog-delete-confirm" class="modal-overlay" hidden data-testid="modal-delete-confirm">
   <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-dialog-title">
     <div class="modal-header">
       <span class="icon-warn">⚠</span>
@@ -661,7 +661,7 @@
                   data-api-field="deleteReason"
                   data-testid="input-delete-reason"
                   oninput="checkDeleteForm()"></textarea>
-        <div class="char-counter" id="delete-reason-counter">0 / 500</div>
+        <div class="char-counter" id="delete-reason-counter" data-testid="delete-reason-counter">0 / 500</div>
       </div>
       <!-- CONFIRM_REVIEWED -->
       <div class="form-check"
@@ -723,7 +723,7 @@
 </div>
 
 <!-- Cancel Confirm Dialog -->
-<div id="dialog-cancel-confirm" class="modal-overlay" hidden>
+<div id="dialog-cancel-confirm" class="modal-overlay" hidden data-testid="modal-cancel-confirm">
   <div class="modal">
     <div class="modal-header">
       <span class="icon-warn">❓</span>
@@ -733,14 +733,14 @@
       <p>Dữ liệu chưa được lưu. Bạn có chắc muốn huỷ?</p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-default" onclick="document.getElementById('dialog-cancel-confirm').hidden=true">Tiếp tục chỉnh sửa</button>
-      <button class="btn btn-primary" onclick="window.location.href='form_list.html'">Xác nhận huỷ</button>
+      <button class="btn btn-default" onclick="document.getElementById('dialog-cancel-confirm').hidden=true" data-testid="btn-continue-edit">Tiếp tục chỉnh sửa</button>
+      <button class="btn btn-primary" onclick="window.location.href='form_list.html'" data-testid="btn-confirm-cancel">Xác nhận huỷ</button>
     </div>
   </div>
 </div>
 
 <!-- Lookup Popup B3.4: EXP.CAPEX_DOSSIER.LOOKUP.PROJECT -->
-<div id="dialog-lookup-project" class="modal-overlay" hidden style="align-items:flex-start; padding-top:60px;">
+<div id="dialog-lookup-project" class="modal-overlay" hidden style="align-items:flex-start; padding-top:60px;" data-testid="modal-lookup-project">
   <div class="modal" style="min-width:700px; max-width:860px; max-height:80vh; display:flex; flex-direction:column;">
     <div class="modal-header">
       <span style="font-size:16px;">🔍</span>
@@ -751,15 +751,15 @@
       <div style="display:flex; gap:12px; flex-wrap:wrap;">
         <div class="form-group" style="min-width:150px;">
           <label>Mã dự án</label>
-          <input type="text" class="form-control" id="lov-project-code" placeholder="Tìm chính xác / chứa" oninput="filterLOV()">
+          <input type="text" class="form-control" id="lov-project-code" placeholder="Tìm chính xác / chứa" oninput="filterLOV()" data-testid="lov-project-code">
         </div>
         <div class="form-group" style="flex:1; min-width:180px;">
           <label>Tên dự án</label>
-          <input type="text" class="form-control" id="lov-project-name" placeholder="Tìm chứa, không phân biệt hoa thường" oninput="filterLOV()">
+          <input type="text" class="form-control" id="lov-project-name" placeholder="Tìm chứa, không phân biệt hoa thường" oninput="filterLOV()" data-testid="lov-project-name">
         </div>
         <div class="form-group" style="min-width:130px;">
           <label>Loại dự án</label>
-          <select class="form-control" id="lov-project-type" onchange="filterLOV()">
+          <select class="form-control" id="lov-project-type" onchange="filterLOV()" data-testid="lov-project-type">
             <option value="">Tất cả</option>
             <option value="Military">Military</option>
             <option value="Citizen">Citizen</option>
@@ -767,7 +767,7 @@
         </div>
         <div class="form-group" style="min-width:140px;">
           <label>Mã ĐVQHNS</label>
-          <input type="text" class="form-control" id="lov-segment6" placeholder="Lọc theo BQL" oninput="filterLOV()">
+          <input type="text" class="form-control" id="lov-segment6" placeholder="Lọc theo BQL" oninput="filterLOV()" data-testid="lov-segment6">
         </div>
       </div>
     </div>
@@ -782,18 +782,18 @@
             <th>Tên ĐVQHNS</th>
           </tr>
         </thead>
-        <tbody id="lov-tbody"></tbody>
+        <tbody id="lov-tbody" data-testid="lov-tbody"></tbody>
       </table>
     </div>
     <div class="modal-footer">
-      <span style="font-size:12px; color:var(--text-muted);" id="lov-count">0 kết quả</span>
-      <button class="btn btn-default" onclick="closeLookup()">Đóng (Esc)</button>
+      <span style="font-size:12px; color:var(--text-muted);" id="lov-count" data-testid="lov-count">0 kết quả</span>
+      <button class="btn btn-default" onclick="closeLookup()" data-testid="btn-close-lookup-project">Đóng (Esc)</button>
     </div>
   </div>
 </div>
 
 <!-- VAL-18 Duplicate Warning Dialog -->
-<div id="dialog-duplicate-warning" class="modal-overlay" hidden>
+<div id="dialog-duplicate-warning" class="modal-overlay" hidden data-testid="modal-duplicate-warning">
   <div class="modal" style="max-width:480px;">
     <div class="modal-header">
       <span class="icon-warn" style="color:var(--warning);">⚠</span>
@@ -808,8 +808,8 @@
       <p style="font-size:13px; color:var(--text-muted);">Bạn có muốn tiếp tục tạo hồ sơ mới?</p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-default" onclick="document.getElementById('dialog-duplicate-warning').hidden=true; window.location.href='form_list.html'">Huỷ</button>
-      <button class="btn btn-primary" onclick="document.getElementById('dialog-duplicate-warning').hidden=true">Tiếp tục</button>
+      <button class="btn btn-default" onclick="document.getElementById('dialog-duplicate-warning').hidden=true; window.location.href='form_list.html'" data-testid="btn-cancel-duplicate">Huỷ</button>
+      <button class="btn btn-primary" onclick="document.getElementById('dialog-duplicate-warning').hidden=true" data-testid="btn-continue-duplicate">Tiếp tục</button>
     </div>
   </div>
 </div>
@@ -1468,12 +1468,12 @@ init();
 </script>
 
 <!-- Print Preview Modal (EXP.CAPEX_DOSSIER.PRINT) -->
-<div id="dialog-print-preview" class="modal-overlay" hidden style="align-items:flex-start;padding-top:40px;">
+<div id="dialog-print-preview" class="modal-overlay" hidden style="align-items:flex-start;padding-top:40px;" data-testid="modal-print-preview">
   <div class="modal" style="min-width:720px;max-width:860px;max-height:85vh;display:flex;flex-direction:column;">
     <div class="modal-header">
       <span style="font-size:16px;">🖨</span>
       <span class="modal-title">Preview in phiếu — Hồ sơ Chi đầu tư</span>
-      <button style="margin-left:auto;background:none;border:none;font-size:18px;cursor:pointer;" onclick="document.getElementById('dialog-print-preview').hidden=true">×</button>
+      <button style="margin-left:auto;background:none;border:none;font-size:18px;cursor:pointer;" onclick="document.getElementById('dialog-print-preview').hidden=true" data-testid="btn-close-print-preview">×</button>
     </div>
     <div style="overflow-y:auto;flex:1;padding:24px;background:#f0f0f0;">
       <!-- Print template -->
@@ -1511,13 +1511,13 @@ init();
     </div>
     <div class="modal-footer">
       <button class="btn btn-default" onclick="document.getElementById('dialog-print-preview').hidden=true">Đóng</button>
-      <button class="btn btn-primary" onclick="window.print()">🖨 In (Ctrl+P browser)</button>
+      <button class="btn btn-primary" onclick="window.print()" data-testid="btn-print-browser">🖨 In (Ctrl+P browser)</button>
     </div>
   </div>
 </div>
 
 <!-- MSG-ERR-CONCURRENT Dialog -->
-<div id="dialog-concurrent" class="modal-overlay" hidden>
+<div id="dialog-concurrent" class="modal-overlay" hidden data-testid="modal-concurrent">
   <div class="modal" style="max-width:440px;">
     <div class="modal-header">
       <span class="icon-warn">⚠</span>
@@ -1528,14 +1528,14 @@ init();
       <p style="font-size:12px;color:var(--text-muted);margin-top:8px;">Mã lỗi: MSG-ERR-CONCURRENT</p>
     </div>
     <div class="modal-footer">
-      <button class="btn btn-default" onclick="window.location.href='form_list.html'">← Quay lại danh sách</button>
-      <button class="btn btn-primary" onclick="document.getElementById('dialog-concurrent').hidden=true">Thử lại</button>
+      <button class="btn btn-default" onclick="window.location.href='form_list.html'" data-testid="btn-back-concurrent">← Quay lại danh sách</button>
+      <button class="btn btn-primary" onclick="document.getElementById('dialog-concurrent').hidden=true" data-testid="btn-retry-concurrent">Thử lại</button>
     </div>
   </div>
 </div>
 
 <!-- MSG-WRN-OUTSIDE-HOUR Dialog -->
-<div id="dialog-outside-hour" class="modal-overlay" hidden>
+<div id="dialog-outside-hour" class="modal-overlay" hidden data-testid="modal-outside-hour">
   <div class="modal" style="max-width:400px;">
     <div class="modal-header">
       <span style="color:var(--warning);font-size:20px;">⏰</span>
