@@ -414,6 +414,58 @@
   </div>
 </div>
 
+<!-- Dossier Lookup Popup: F4 -->
+<div id="dialog-lookup-dossier" class="modal-overlay" hidden style="align-items:flex-start; padding-top:80px; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex;">
+  <div class="modal" style="min-width:640px; max-width:800px; max-height:70vh; display:flex; flex-direction:column;">
+    <div class="modal-header">
+      <span style="font-size:16px;">📁</span>
+      <span class="modal-title">Tra cứu Hồ sơ <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(F4)</span></span>
+      <button style="margin-left:auto;background:none;border:none;font-size:18px;cursor:pointer;" onclick="closeDossierLookup()">×</button>
+    </div>
+    <div class="modal-body" style="border-bottom:1px solid var(--border);flex-shrink:0;padding:12px 20px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="search-group" style="flex:1;min-width:160px;">
+          <label>Mã hồ sơ</label>
+          <input type="text" class="form-control" id="lov-dossier-code" placeholder="Tìm chứa" oninput="filterDossierLOV()">
+        </div>
+        <div class="search-group" style="flex:2;min-width:200px;">
+          <label>Tên dự án</label>
+          <input type="text" class="form-control" id="lov-dossier-project" placeholder="Tìm chứa" oninput="filterDossierLOV()">
+        </div>
+        <div class="search-group" style="min-width:150px;">
+          <label>Trạng thái</label>
+          <select class="form-control" id="lov-dossier-state" onchange="filterDossierLOV()">
+            <option value="">Tất cả</option>
+            <option value="DRAFT">Đang hoàn thiện</option>
+            <option value="PENDING_CHECK">Chờ kiểm soát</option>
+            <option value="PENDING_APPROVE">Chờ phê duyệt</option>
+            <option value="APPROVED">Đã phê duyệt</option>
+            <option value="CHECK_REJECTED">KS từ chối</option>
+            <option value="APPROVE_REJECTED">PD từ chối</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div style="overflow-y:auto;flex:1;">
+      <table class="data-table" style="font-size:12px;">
+        <thead style="position:sticky;top:0;z-index:1;">
+          <tr>
+            <th>Mã hồ sơ</th>
+            <th>Dự án</th>
+            <th>Trạng thái</th>
+            <th>Người lập</th>
+          </tr>
+        </thead>
+        <tbody id="lov-dossier-tbody"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <span style="font-size:12px;color:var(--text-muted);" id="lov-dossier-count">0 kết quả</span>
+      <button class="btn btn-default" onclick="closeDossierLookup()">Đóng (Esc)</button>
+    </div>
+  </div>
+</div>
+
 <!-- Export Dialog -->
 <div id="dialog-export" class="modal-overlay" hidden style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex; align-items:center; justify-content:center;">
   <div class="modal" style="max-width:400px;">
@@ -757,6 +809,10 @@ function getSelectedRecord() {
 
 // ─── Keyboard ─────────────────────────────────────────────
 document.addEventListener('keydown', e => {
+  // Esc đóng dossier lookup nếu đang mở
+  if (e.key === 'Escape' && !document.getElementById('dialog-lookup-dossier').hidden) {
+    closeDossierLookup(); return;
+  }
   if (e.ctrlKey && e.key === 'n') { e.preventDefault(); window.location.href = 'form_detail.html?mode=new'; }
   if (e.key === 'F5') { e.preventDefault(); resetFilter(); }
   // F2 — edit selected row
@@ -867,8 +923,51 @@ function doExport(fmt) {
 }
 
 function openDossierLookup() {
-  const val = prompt('Nhập mã hồ sơ cần tra cứu (F4 Lookup prototype):');
-  if (val) { document.getElementById('filter-dossier-code').value = val; onFilter(); }
+  document.getElementById('lov-dossier-code').value = '';
+  document.getElementById('lov-dossier-project').value = '';
+  document.getElementById('lov-dossier-state').value = '';
+  filterDossierLOV();
+  document.getElementById('dialog-lookup-dossier').hidden = false;
+  document.getElementById('lov-dossier-code').focus();
+}
+
+function closeDossierLookup() {
+  document.getElementById('dialog-lookup-dossier').hidden = true;
+}
+
+function filterDossierLOV() {
+  const code = document.getElementById('lov-dossier-code').value.toLowerCase();
+  const proj = document.getElementById('lov-dossier-project').value.toLowerCase();
+  const state = document.getElementById('lov-dossier-state').value;
+  const results = ALL_RECORDS.filter(r =>
+    (!code || r.DOSSIER_CODE.toLowerCase().includes(code)) &&
+    (!proj || r.PROJECT_NAME.toLowerCase().includes(proj)) &&
+    (!state || r.STATE_CODE === state)
+  );
+  const BADGE_LABEL = {
+    DRAFT: 'Đang hoàn thiện', PENDING_CHECK: 'Chờ KS', CHECK_REJECTED: 'KS từ chối',
+    CHECK_CANCELLED: 'KS huỷ', PENDING_APPROVE: 'Chờ PD', APPROVE_REJECTED: 'PD từ chối',
+    APPROVE_CANCELLED: 'PD huỷ', APPROVED: 'Đã phê duyệt', DELETED: 'Đã xoá'
+  };
+  const tbody = document.getElementById('lov-dossier-tbody');
+  document.getElementById('lov-dossier-count').textContent = `${results.length} kết quả`;
+  if (!results.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);">Không có kết quả</td></tr>';
+    return;
+  }
+  tbody.innerHTML = results.map(r => `
+    <tr style="cursor:pointer;" onclick="selectDossier(${JSON.stringify(r.DOSSIER_CODE).replace(/"/g,'&quot;')})">
+      <td style="color:var(--primary);font-weight:600;">${r.DOSSIER_CODE}</td>
+      <td>${r.PROJECT_NAME}</td>
+      <td><span class="badge badge-${r.STATE_CODE}">${BADGE_LABEL[r.STATE_CODE] || r.STATE_CODE}</span></td>
+      <td>${r.CREATED_BY}</td>
+    </tr>`).join('');
+}
+
+function selectDossier(dossierCode) {
+  document.getElementById('filter-dossier-code').value = dossierCode;
+  onFilter();
+  closeDossierLookup();
 }
 
 function saveFilter() {

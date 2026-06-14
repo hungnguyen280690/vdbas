@@ -1,0 +1,1037 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CHI.CAPEX_DOSSIER — Danh sách hồ sơ Chi đầu tư</title>
+<style>
+  :root {
+    --primary: #0b5394; --primary-hover: #084273; --accent: #dc3545;
+    --success: #28a745; --warning: #ffc107; --danger: #dc3545;
+    --text-primary: #212529; --text-muted: #6c757d;
+    --bg-light: #f8f9fa; --bg-white: #ffffff; --border: #dee2e6;
+    --border-radius: 4px; --shadow: 0 1px 3px rgba(0,0,0,.12);
+    --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); font-size: 14px; color: var(--text-primary); background: #eef0f3; }
+  .page-wrapper { max-width: 1440px; margin: 0 auto; padding: 16px; }
+
+  /* Page Header */
+  .page-header { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--border-radius); padding: 12px 24px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; }
+  .page-title { font-size: 18px; font-weight: 600; color: var(--primary); }
+  .breadcrumb { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+
+  /* Cards */
+  .card { background: var(--bg-white); border: 1px solid var(--border); border-radius: var(--border-radius); margin-bottom: 12px; box-shadow: var(--shadow); }
+  .card-body { padding: 16px 20px; }
+  .card-header { padding: 10px 20px; border-bottom: 1px solid var(--border); background: #f0f4f9; font-weight: 600; font-size: 13px; color: var(--primary); display: flex; align-items: center; justify-content: space-between; }
+
+  /* Search / Filter Area */
+  .search-row { display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap; }
+  .search-group { display: flex; flex-direction: column; gap: 4px; }
+  .search-group label { font-size: 12px; color: #495057; font-weight: 500; }
+  .form-control { padding: 6px 10px; font-size: 13px; border: 1px solid var(--border); border-radius: var(--border-radius); color: var(--text-primary); background: var(--bg-white); height: 33px; }
+  .form-control:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(11,83,148,.15); }
+  input[type="text"].form-control { min-width: 180px; }
+  select.form-control { min-width: 150px; }
+  .search-group-date { display: flex; gap: 6px; align-items: flex-end; }
+  .input-group { display: flex; }
+  .input-group .form-control { border-radius: var(--border-radius) 0 0 var(--border-radius); }
+  .btn-lookup { padding: 6px 10px; border: 1px solid var(--border); border-left: none; background: #f0f4f9; cursor: pointer; border-radius: 0 var(--border-radius) var(--border-radius) 0; font-size: 12px; color: var(--primary); }
+
+  /* Buttons */
+  .btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 14px; font-size: 13px; font-weight: 500; border-radius: var(--border-radius); cursor: pointer; border: 1px solid transparent; transition: all .15s; white-space: nowrap; height: 33px; }
+  .btn:disabled { opacity: .55; cursor: not-allowed; }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover:not(:disabled) { background: var(--primary-hover); }
+  .btn-default { background: #fff; color: #495057; border-color: #ced4da; }
+  .btn-default:hover:not(:disabled) { background: var(--bg-light); }
+  .btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+  .btn-danger:hover:not(:disabled) { background: #b02a37; }
+  .btn-ghost { background: transparent; color: var(--primary); border-color: transparent; padding: 3px 6px; height: auto; font-size: 12px; }
+  .btn-ghost:hover { background: #e8f0fb; border-radius: 3px; }
+  .btn-ghost-danger { background: transparent; color: var(--danger); border-color: transparent; padding: 3px 6px; height: auto; font-size: 12px; }
+  .btn-ghost-danger:hover { background: #fde8ea; border-radius: 3px; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; height: 28px; }
+
+  /* Advanced filter toggle */
+  .adv-filter-area { border-top: 1px solid var(--border); padding: 12px 20px; display: none; background: #fafbfd; }
+  .adv-filter-area.open { display: block; }
+  .filter-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .filter-tag { background: #e8f0fb; color: var(--primary); padding: 3px 10px; border-radius: 12px; font-size: 12px; display: flex; align-items: center; gap: 4px; }
+  .filter-tag button { background: none; border: none; cursor: pointer; color: var(--primary); font-size: 14px; line-height: 1; padding: 0 2px; }
+
+  /* Stats Bar */
+  .stats-bar { display: flex; gap: 16px; flex-wrap: wrap; font-size: 12px; }
+  .stat-item { display: flex; align-items: center; gap: 6px; }
+  .stat-dot { width: 10px; height: 10px; border-radius: 50%; }
+  .stat-value { font-weight: 700; font-size: 16px; }
+  .stat-label { color: var(--text-muted); }
+
+  /* Table */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .data-table th { background: #f0f4f9; color: var(--primary); font-weight: 600; padding: 9px 12px; text-align: left; border: 1px solid var(--border); font-size: 12px; white-space: nowrap; cursor: pointer; user-select: none; }
+  .data-table th.no-sort { cursor: default; }
+  .data-table th:hover:not(.no-sort) { background: #dde4ed; }
+  .data-table td { padding: 9px 12px; border: 1px solid var(--border); vertical-align: middle; }
+  .data-table tbody tr { cursor: pointer; transition: background .1s; }
+  .data-table tbody tr:hover td { background: #f0f5fc; }
+  .data-table .text-right { text-align: right; font-family: monospace; }
+  .data-table tfoot td { background: #f0f4f9; font-weight: 600; padding: 8px 12px; border: 1px solid var(--border); }
+  .actions-col { display: flex; gap: 2px; align-items: center; white-space: nowrap; }
+  .table-link { color: var(--primary); text-decoration: none; font-weight: 600; }
+  .table-link:hover { text-decoration: underline; }
+
+  /* Status Badges */
+  .badge { display: inline-flex; padding: 2px 9px; border-radius: 10px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+  .badge-DRAFT { background: #e9ecef; color: #495057; }
+  .badge-PENDING_CHECK { background: #cce5ff; color: #004085; }
+  .badge-CHECK_REJECTED { background: #f8d7da; color: #721c24; }
+  .badge-CHECK_CANCELLED { background: #fff3cd; color: #856404; }
+  .badge-PENDING_APPROVE { background: #d1ecf1; color: #0c5460; }
+  .badge-APPROVE_REJECTED { background: #f8d7da; color: #721c24; }
+  .badge-APPROVE_CANCELLED { background: #fff3cd; color: #856404; }
+  .badge-APPROVED { background: #d4edda; color: #155724; }
+  .badge-DELETED { background: #343a40; color: #fff; }
+
+  /* Pagination */
+  .pagination-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 20px; border-top: 1px solid var(--border); background: var(--bg-white); }
+  .pagination-info { font-size: 12px; color: var(--text-muted); }
+  .pagination-controls { display: flex; gap: 4px; align-items: center; }
+  .page-btn { padding: 4px 10px; font-size: 12px; border: 1px solid var(--border); background: var(--bg-white); cursor: pointer; border-radius: var(--border-radius); }
+  .page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .page-btn:disabled { opacity: .5; cursor: not-allowed; }
+  .page-size-select { font-size: 12px; padding: 3px 6px; border: 1px solid var(--border); border-radius: var(--border-radius); }
+
+  /* Empty state */
+  .empty-state { text-align: center; padding: 48px 24px; color: var(--text-muted); }
+  .empty-state-icon { font-size: 40px; margin-bottom: 12px; }
+
+  /* Modal */
+  .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+  [hidden] { display: none !important; }
+  .modal { background: #fff; border-radius: 6px; box-shadow: 0 8px 32px rgba(0,0,0,.2); min-width: 420px; max-width: 560px; overflow: hidden; }
+  .modal-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+  .modal-title { font-weight: 600; font-size: 15px; }
+  .modal-body { padding: 20px; }
+  .modal-footer { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; justify-content: flex-end; gap: 8px; }
+
+  /* Tooltip */
+  [title] { position: relative; }
+  .row-selected td { background: #dbeafe !important; outline: 2px solid var(--primary); outline-offset: -1px; }
+  .btn-loading { opacity: 0.7; cursor: not-allowed; }
+</style>
+</head>
+<body>
+
+<!-- Inline Sample Data -->
+<script type="application/json" id="sample-data">
+{
+  "records": [
+    {"id":"REC-001","DOSSIER_CODE":"HS-CHI-2026-0001","SEND_DATE":"15/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"DRAFT","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"nguyen.van.a","CREATED_DATE":"15/05/2026 09:12:00","LAST_UPDATED_DATE":"15/05/2026 09:12:00","TOTAL_VND":1500000000,"DOCUMENT_COUNT":2},
+    {"id":"REC-002","DOSSIER_CODE":"HS-CHI-2026-0002","SEND_DATE":"10/05/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"PENDING_CHECK","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"tran.thi.b","CREATED_DATE":"08/05/2026 14:30:00","LAST_UPDATED_DATE":"10/05/2026 11:00:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"10/05/2026 11:00:00","TOTAL_VND":3200000000,"DOCUMENT_COUNT":1},
+    {"id":"REC-003","DOSSIER_CODE":"HS-CHI-2026-0003","SEND_DATE":"05/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"PENDING_APPROVE","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"le.van.c","CREATED_DATE":"03/05/2026 10:00:00","LAST_UPDATED_DATE":"05/05/2026 16:00:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"05/05/2026 16:00:00","TOTAL_VND":950000000,"DOCUMENT_COUNT":1},
+    {"id":"REC-004","DOSSIER_CODE":"HS-CHI-2026-0004","SEND_DATE":"28/04/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"APPROVED","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"pham.thi.d","CREATED_DATE":"25/04/2026 08:00:00","LAST_UPDATED_DATE":"28/04/2026 14:30:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"27/04/2026 09:00:00","APPROVED_BY":"tran.approver","APPROVED_DATE":"28/04/2026 14:30:00","TOTAL_VND":5600000000,"DOCUMENT_COUNT":3},
+    {"id":"REC-005","DOSSIER_CODE":"HS-CHI-2026-0005","SEND_DATE":"20/04/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"CHECK_REJECTED","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"hoang.van.e","CREATED_DATE":"18/04/2026 11:00:00","LAST_UPDATED_DATE":"20/04/2026 15:30:00","CHECKED_BY":"nguyen.checker","CHECK_REJECTION_REASON":"Chứng từ chưa đủ hạng mục theo hợp đồng","TOTAL_VND":420000000,"DOCUMENT_COUNT":1},
+    {"id":"REC-006","DOSSIER_CODE":"HS-CHI-2026-0006","SEND_DATE":"15/04/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","STATE_CODE":"APPROVE_REJECTED","DATA_SOURCE_CODE":"DVC","CREATED_BY":"vu.thi.f","CREATED_DATE":"10/04/2026 09:30:00","LAST_UPDATED_DATE":"15/04/2026 16:00:00","CHECKED_BY":"nguyen.checker","APPROVED_BY":"tran.approver","APPROVAL_REJECTION_REASON":"Vượt hạn mức phân bổ ngân sách quý 2/2026","TOTAL_VND":8900000000,"DOCUMENT_COUNT":2},
+    {"id":"REC-007","DOSSIER_CODE":"HS-CHI-2026-0007","SEND_DATE":"28/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","STATE_CODE":"DRAFT","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"nguyen.van.a","CREATED_DATE":"28/05/2026 08:00:00","LAST_UPDATED_DATE":"28/05/2026 08:00:00","TOTAL_VND":0,"DOCUMENT_COUNT":0}
+  ]
+}
+</script>
+
+<div class="page-wrapper">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div>
+      <div class="breadcrumb">Quản lý Chi đầu tư / <strong>Danh sách hồ sơ</strong></div>
+      <h1 class="page-title">📁 Danh sách hồ sơ Chi đầu tư</h1>
+    </div>
+    <div style="display:flex; gap:8px;">
+      <!-- Xuất — Default, left of Tạo mới -->
+      <button class="btn btn-default" data-testid="btn-export" title="Xuất Excel/PDF/CSV (Ctrl+Shift+E)" onclick="openExportDialog()">
+        📥 Xuất <span style="font-size:10px; color:#999; margin-left:2px;">Ctrl+Shift+E</span>
+      </button>
+      <!-- Tạo mới — Primary, top right -->
+      <button class="btn btn-primary" data-testid="btn-new" data-permission="Maker" title="Tạo mới (Ctrl+N)"
+              onclick="window.location.href='form_detail.html?mode=new'">
+        + Tạo mới <span style="font-size:10px; opacity:.75; margin-left:2px;">Ctrl+N</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Search / Filter Card -->
+  <div class="card">
+    <div class="card-body">
+      <!-- Quick search row -->
+      <div class="search-row">
+        <div class="search-group" style="flex:1; min-width:200px;">
+          <label>Tìm nhanh</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="search-input" data-testid="search-input" data-spec-ref="B2.1"
+                   placeholder="🔍 Mã hồ sơ, người lập..." oninput="onSearch()" style="border-radius:4px 0 0 4px;" />
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Trạng thái</label>
+          <select class="form-control" id="filter-state-code" data-testid="filter-state-code" data-spec-ref="B2.1" onchange="onFilter()">
+            <option value="">Tất cả</option>
+            <option value="DRAFT">Đang hoàn thiện</option>
+            <option value="PENDING_CHECK">Chờ kiểm soát</option>
+            <option value="CHECK_REJECTED">Từ chối kiểm soát</option>
+            <option value="CHECK_CANCELLED">Hủy kiểm soát</option>
+            <option value="PENDING_APPROVE">Chờ phê duyệt</option>
+            <option value="APPROVE_REJECTED">Từ chối phê duyệt</option>
+            <option value="APPROVE_CANCELLED">Hủy phê duyệt</option>
+            <option value="APPROVED">Đã phê duyệt</option>
+          </select>
+        </div>
+        <div class="search-group">
+          <label>Mã hồ sơ</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-dossier-code" data-spec-ref="B2.1" placeholder="Nhập hoặc F4" style="min-width:140px;" oninput="onFilter()">
+            <button class="btn-lookup" title="F4" onclick="openDossierLookup()">🔍</button>
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Nguồn</label>
+          <select class="form-control" id="filter-data-source-code" data-spec-ref="B2.1" onchange="onFilter()">
+            <option value="">Tất cả</option>
+            <option value="Thủ công">Thủ công</option>
+            <option value="DVC">DVC</option>
+          </select>
+        </div>
+        <!-- Tìm kiếm nâng cao toggle -->
+        <div class="search-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-default" id="btn-adv-toggle" onclick="toggleAdvSearch()">
+            Nâng cao ▼ <span id="adv-filter-count" style="display:none; background:var(--primary);color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;"></span>
+          </button>
+        </div>
+        <!-- Tìm kiếm — Primary, right -->
+        <div class="search-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary" onclick="onFilter()" data-testid="btn-search">🔍 Tìm kiếm</button>
+        </div>
+        <!-- Đặt lại -->
+        <div class="search-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-default" onclick="resetFilter()" data-testid="btn-reset-filter" title="Đặt lại (F5 / Ctrl+R)">↺ Đặt lại</button>
+        </div>
+        <div class="search-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-default" onclick="saveFilter()" title="Lưu bộ lọc hiện tại">💾 Lưu bộ lọc</button>
+        </div>
+        <div class="search-group" id="saved-filter-group" style="display:none;">
+          <label>&nbsp;</label>
+          <button class="btn btn-default" onclick="loadFilter()" title="Áp dụng bộ lọc đã lưu" id="btn-load-filter">📂 Áp dụng lọc đã lưu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Advanced Filter -->
+    <div class="adv-filter-area" id="adv-filter-area">
+      <div class="search-row" style="margin-bottom:10px;">
+        <div class="search-group">
+          <label>Loại ngày</label>
+          <select class="form-control" id="filter-date-type" data-spec-ref="B2.1">
+            <option value="SEND_DATE">Ngày gửi</option>
+            <option value="CREATED_DATE">Ngày lập</option>
+            <option value="CHECKED_DATE">Ngày kiểm soát</option>
+            <option value="APPROVED_DATE">Ngày phê duyệt</option>
+          </select>
+        </div>
+        <div class="search-group">
+          <label>Từ ngày</label>
+          <input type="text" class="form-control" id="filter-from-date" data-spec-ref="B2.1" placeholder="dd/mm/yyyy" oninput="onFilter()">
+        </div>
+        <div class="search-group">
+          <label>Đến ngày</label>
+          <input type="text" class="form-control" id="filter-to-date" data-spec-ref="B2.1" placeholder="dd/mm/yyyy" oninput="onFilter()">
+        </div>
+        <div class="search-group">
+          <label>Mã dự án</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-project-code" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()">
+            <button class="btn-lookup" title="F4">🔍</button>
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Người lập</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-created-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()">
+            <button class="btn-lookup" title="F4 — Tra cứu người lập" onclick="openUserLookup('filter-created-by','Tra cứu Người lập')">🔍</button>
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Người kiểm soát</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-checked-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()">
+            <button class="btn-lookup" title="F4 — Tra cứu người kiểm soát" onclick="openUserLookup('filter-checked-by','Tra cứu Người kiểm soát')">🔍</button>
+          </div>
+        </div>
+        <div class="search-group">
+          <label>Người phê duyệt</label>
+          <div class="input-group">
+            <input type="text" class="form-control" id="filter-approved-by" data-spec-ref="B2.1" placeholder="F4 tra cứu" oninput="onFilter()">
+            <button class="btn-lookup" title="F4 — Tra cứu người phê duyệt" onclick="openUserLookup('filter-approved-by','Tra cứu Người phê duyệt')">🔍</button>
+          </div>
+        </div>
+        <div class="search-group" style="align-self:flex-end; gap:4px; flex-direction:row;">
+          <button class="btn btn-default btn-sm" onclick="resetAdvFilter()">Xóa bộ lọc</button>
+          <button class="btn btn-primary btn-sm" onclick="onFilter()">🔍 Tìm kiếm</button>
+        </div>
+      </div>
+      <!-- Filter tags -->
+      <div class="filter-tags" id="filter-tags"></div>
+    </div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="card">
+    <div class="card-body" style="padding:12px 20px;">
+      <div class="stats-bar" id="stats-bar">
+        <div class="stat-item">
+          <span class="stat-value" id="stat-total">0</span>
+          <span class="stat-label">Tổng hồ sơ</span>
+        </div>
+        <div style="width:1px; background:var(--border); align-self:stretch;"></div>
+        <div class="stat-item"><span class="stat-dot" style="background:#6c757d;"></span><span id="stat-draft">0</span> Đang hoàn thiện</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#004085;"></span><span id="stat-pending-check">0</span> Chờ kiểm soát</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#0c5460;"></span><span id="stat-pending-approve">0</span> Chờ phê duyệt</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#28a745;"></span><span id="stat-approved">0</span> Đã phê duyệt</div>
+        <div class="stat-item"><span class="stat-dot" style="background:#dc3545;"></span><span id="stat-rejected">0</span> Từ chối</div>
+        <div style="width:1px; background:var(--border); align-self:stretch;"></div>
+        <div class="stat-item">
+          <span style="font-weight:700; color:var(--primary);" id="stat-total-vnd">0 VND</span>
+          <span class="stat-label">Tổng tiền VND</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Data Table -->
+  <div class="card" style="margin-bottom:0; border-bottom:none; border-radius:4px 4px 0 0;">
+    <div class="card-header">
+      <span>Kết quả tìm kiếm</span>
+      <select class="page-size-select" id="page-size-select" onchange="onPageSizeChange()" title="Số bản ghi/trang">
+        <option value="20" selected>20/trang</option>
+        <option value="50">50/trang</option>
+        <option value="100">100/trang</option>
+        <option value="200">200/trang</option>
+      </select>
+    </div>
+    <div style="overflow-x:auto;">
+      <table class="data-table" id="list-table">
+        <thead>
+          <tr>
+            <th data-api-field="list[].paymentDossierId" data-spec-ref="B2.2.row1" onclick="sortBy('DOSSIER_CODE')" title="Click để sắp xếp">Mã hồ sơ ↕</th>
+            <th data-api-field="list[].sendDate" data-spec-ref="B2.2.row2" onclick="sortBy('SEND_DATE')">Ngày gửi ↕</th>
+            <th data-api-field="list[].paymentDossierStatus" data-spec-ref="B2.2.row3" onclick="sortBy('STATE_CODE')">Trạng thái ↕</th>
+            <th data-api-field="list[].createdBy" data-spec-ref="B2.2.row4" onclick="sortBy('CREATED_BY')">Người lập ↕</th>
+            <th data-api-field="list[].createdDate" data-spec-ref="B2.2.row5" onclick="sortBy('CREATED_DATE')">Ngày lập ↕</th>
+            <th data-api-field="list[].returningReason" data-spec-ref="B2.2.row6" data-conditional-show="hasRejectedDoc" hidden onclick="sortBy('RETURNING_REASON')">Lý do từ chối tiếp nhận ↕</th>
+            <th data-api-field="list[].checkedBy" data-spec-ref="B2.2.row7" data-conditional-show="hasCheckedDoc" hidden onclick="sortBy('CHECKED_BY')">Người KS ↕</th>
+            <th data-api-field="list[].checkedDate" data-spec-ref="B2.2.row8" data-conditional-show="hasCheckedDoc" hidden onclick="sortBy('CHECKED_DATE')">Ngày KS ↕</th>
+            <th data-api-field="list[].checkRejectionReason" data-spec-ref="B2.2.row9" class="no-sort">Lý do từ chối/hủy kiểm soát</th>
+            <th data-api-field="list[].approvedBy" data-spec-ref="B2.2.row10" class="no-sort">Người PD</th>
+            <th data-api-field="list[].approvedDate" data-spec-ref="B2.2.row11" onclick="sortBy('APPROVED_DATE')">Ngày PD ↕</th>
+            <th data-api-field="list[].approvalRejectionReason" data-spec-ref="B2.2.row12" class="no-sort">Lý do từ chối/hủy phê duyệt</th>
+            <th data-field-code="PROJECT_NAME" data-api-field="list[].projectName" data-spec-ref="B2.2.row1b" onclick="sortBy('PROJECT_NAME')">Dự án/Công trình ↕</th>
+            <th data-api-field="list[].documentCount" onclick="sortBy('DOCUMENT_COUNT')">Số CT ↕</th>
+            <th data-api-field="list[].totalVnd" onclick="sortBy('TOTAL_VND')">Tổng tiền VND ↕</th>
+            <th class="no-sort" data-spec-ref="B2.2.rowN" style="text-align:center;">Thao tác</th>
+          </tr>
+        </thead>
+        <tbody id="list-tbody" data-testid="list-tbody"></tbody>
+        <tfoot>
+          <tr>
+            <td colspan="13" style="text-align:right;">Tổng cộng (<span id="footer-count">0</span> hồ sơ):</td>
+            <td style="text-align:center;" id="footer-doc-total">—</td>
+            <td style="text-align:right; font-family:monospace;" id="footer-vnd-total">0</td>
+            <td></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  <div class="pagination-row card" style="border-top:none; border-radius:0 0 4px 4px; margin-bottom:0;">
+    <div class="pagination-info" id="pagination-info" data-testid="pagination-info">Hiển thị 0 – 0 trong tổng số 0 bản ghi</div>
+    <div class="pagination-controls">
+      <button class="page-btn" id="btn-first" onclick="goToPage(1)" title="Trang đầu" data-testid="pagination-first">«</button>
+      <button class="page-btn" id="btn-prev" onclick="goToPage(currentPage-1)" data-testid="pagination-prev">‹ Trước</button>
+      <span id="page-buttons" style="display:flex; gap:3px;"></span>
+      <button class="page-btn" id="btn-next" onclick="goToPage(currentPage+1)" data-testid="pagination-next">Sau ›</button>
+      <button class="page-btn" id="btn-last" onclick="goToPage(totalPages)" title="Trang cuối" data-testid="pagination-last">»</button>
+    </div>
+  </div>
+</div>
+
+<!-- User Lookup Popup: EXP.CAPEX_DOSSIER.LOOKUP.USER -->
+<div id="dialog-lookup-user" class="modal-overlay" hidden style="align-items:flex-start; padding-top:80px; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex;">
+  <div class="modal" style="min-width:520px; max-width:640px; max-height:70vh; display:flex; flex-direction:column;">
+    <div class="modal-header">
+      <span style="font-size:16px;">👤</span>
+      <span class="modal-title" id="user-lookup-title">Tra cứu Người dùng</span>
+      <button style="margin-left:auto;background:none;border:none;font-size:18px;cursor:pointer;" onclick="closeUserLookup()">×</button>
+    </div>
+    <div class="modal-body" style="border-bottom:1px solid var(--border);flex-shrink:0;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="search-group" style="flex:1;min-width:160px;">
+          <label>Tên / Username</label>
+          <input type="text" class="form-control" id="lov-user-name" placeholder="Tìm chứa" oninput="filterUserLOV()">
+        </div>
+        <div class="search-group" style="min-width:130px;">
+          <label>Vai trò</label>
+          <select class="form-control" id="lov-user-role" onchange="filterUserLOV()">
+            <option value="">Tất cả</option>
+            <option value="Maker">Maker</option>
+            <option value="Checker">Checker</option>
+            <option value="Approver">Approver</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div style="overflow-y:auto;flex:1;">
+      <table class="data-table" style="font-size:12px;">
+        <thead style="position:sticky;top:0;z-index:1;">
+          <tr>
+            <th>Username</th>
+            <th>Họ tên</th>
+            <th>Vai trò</th>
+            <th>Đơn vị</th>
+          </tr>
+        </thead>
+        <tbody id="lov-user-tbody"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <span style="font-size:12px;color:var(--text-muted);" id="lov-user-count">0 kết quả</span>
+      <button class="btn btn-default" onclick="closeUserLookup()">Đóng (Esc)</button>
+    </div>
+  </div>
+</div>
+
+<!-- Dossier Lookup Popup: F4 -->
+<div id="dialog-lookup-dossier" class="modal-overlay" hidden style="align-items:flex-start; padding-top:80px; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex;">
+  <div class="modal" style="min-width:640px; max-width:800px; max-height:70vh; display:flex; flex-direction:column;">
+    <div class="modal-header">
+      <span style="font-size:16px;">📁</span>
+      <span class="modal-title">Tra cứu Hồ sơ <span style="font-size:11px;color:var(--text-muted);font-weight:400;">(F4)</span></span>
+      <button style="margin-left:auto;background:none;border:none;font-size:18px;cursor:pointer;" onclick="closeDossierLookup()">×</button>
+    </div>
+    <div class="modal-body" style="border-bottom:1px solid var(--border);flex-shrink:0;padding:12px 20px;">
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <div class="search-group" style="flex:1;min-width:160px;">
+          <label>Mã hồ sơ</label>
+          <input type="text" class="form-control" id="lov-dossier-code" placeholder="Tìm chứa" oninput="filterDossierLOV()">
+        </div>
+        <div class="search-group" style="flex:2;min-width:200px;">
+          <label>Tên dự án</label>
+          <input type="text" class="form-control" id="lov-dossier-project" placeholder="Tìm chứa" oninput="filterDossierLOV()">
+        </div>
+        <div class="search-group" style="min-width:150px;">
+          <label>Trạng thái</label>
+          <select class="form-control" id="lov-dossier-state" onchange="filterDossierLOV()">
+            <option value="">Tất cả</option>
+            <option value="DRAFT">Đang hoàn thiện</option>
+            <option value="PENDING_CHECK">Chờ kiểm soát</option>
+            <option value="PENDING_APPROVE">Chờ phê duyệt</option>
+            <option value="APPROVED">Đã phê duyệt</option>
+            <option value="CHECK_REJECTED">KS từ chối</option>
+            <option value="APPROVE_REJECTED">PD từ chối</option>
+          </select>
+        </div>
+      </div>
+    </div>
+    <div style="overflow-y:auto;flex:1;">
+      <table class="data-table" style="font-size:12px;">
+        <thead style="position:sticky;top:0;z-index:1;">
+          <tr>
+            <th>Mã hồ sơ</th>
+            <th>Dự án</th>
+            <th>Trạng thái</th>
+            <th>Người lập</th>
+          </tr>
+        </thead>
+        <tbody id="lov-dossier-tbody"></tbody>
+      </table>
+    </div>
+    <div class="modal-footer">
+      <span style="font-size:12px;color:var(--text-muted);" id="lov-dossier-count">0 kết quả</span>
+      <button class="btn btn-default" onclick="closeDossierLookup()">Đóng (Esc)</button>
+    </div>
+  </div>
+</div>
+
+<!-- Export Dialog -->
+<div id="dialog-export" class="modal-overlay" hidden style="position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,.5); z-index:1000; display:flex; align-items:center; justify-content:center;">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-header">
+      <span style="font-size:16px;">📥</span>
+      <span class="modal-title">Xuất dữ liệu</span>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;margin-bottom:12px;">Chọn định dạng xuất (<span id="export-count">0</span> hồ sơ khớp bộ lọc):</p>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('excel')">
+          <span style="font-size:18px;">📊</span>
+          <div style="text-align:left;"><div style="font-weight:600;">Excel (.xlsx)</div><div style="font-size:11px;color:var(--text-muted);">Phù hợp để chỉnh sửa và tổng hợp</div></div>
+        </button>
+        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('pdf')">
+          <span style="font-size:18px;">📄</span>
+          <div style="text-align:left;"><div style="font-weight:600;">PDF</div><div style="font-size:11px;color:var(--text-muted);">In ấn và lưu trữ chính thức</div></div>
+        </button>
+        <button class="btn btn-default" style="justify-content:flex-start;gap:12px;" onclick="doExport('csv')">
+          <span style="font-size:18px;">📋</span>
+          <div style="text-align:left;"><div style="font-weight:600;">CSV</div><div style="font-size:11px;color:var(--text-muted);">Tích hợp với các hệ thống khác</div></div>
+        </button>
+      </div>
+      <p style="font-size:11px;color:var(--text-muted);margin-top:12px;">* Nếu > 50.000 bản ghi: xuất bất đồng bộ, thông báo qua email khi hoàn thành</p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-default" onclick="document.getElementById('dialog-export').hidden=true">Đóng</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── Data ──────────────────────────────────────────────────
+const SAMPLE = JSON.parse(document.getElementById('sample-data').textContent);
+const ALL_RECORDS = [...SAMPLE.records];
+
+const STATUS_LABELS = {
+  DRAFT:'Đang hoàn thiện', PENDING_CHECK:'Chờ kiểm soát', CHECK_REJECTED:'Từ chối kiểm soát',
+  CHECK_CANCELLED:'Hủy kiểm soát', PENDING_APPROVE:'Chờ phê duyệt', APPROVE_REJECTED:'Từ chối phê duyệt',
+  APPROVE_CANCELLED:'Hủy phê duyệt', APPROVED:'Đã phê duyệt', DELETED:'Đã xóa'
+};
+
+let filtered = [...ALL_RECORDS];
+let currentPage = 1;
+let pageSize = 20;
+let totalPages = 1;
+let sortField = 'CREATED_DATE';
+let sortDir = 'desc';
+let advOpen = false;
+
+// ─── Search & Filter ───────────────────────────────────────
+function onSearch() { currentPage = 1; applyFilters(); }
+function onFilter() { currentPage = 1; applyFilters(); }
+
+function applyFilters() {
+  const q = document.getElementById('search-input').value.toLowerCase().trim();
+  const st = document.getElementById('filter-state-code').value;
+  const src = document.getElementById('filter-data-source-code').value;
+  const creator = (document.getElementById('filter-created-by')?.value || '').toLowerCase().trim();
+  const checker = (document.getElementById('filter-checked-by')?.value || '').toLowerCase().trim();
+  const approver = (document.getElementById('filter-approved-by')?.value || '').toLowerCase().trim();
+  const projectId = (document.getElementById('filter-project-code')?.value || '').toLowerCase().trim();
+  const fromDate = document.getElementById('filter-from-date')?.value || '';
+  const toDate = document.getElementById('filter-to-date')?.value || '';
+  const dossierId = (document.getElementById('filter-dossier-code')?.value || '').toLowerCase().trim();
+
+  const dateType = document.getElementById('filter-date-type')?.value || 'SEND_DATE';
+
+  // Parse dd/mm/yyyy to comparable integer yyyymmdd
+  function parseDMY(s) {
+    if (!s) return null;
+    const [d, m, y] = s.split('/');
+    if (!d || !m || !y) return null;
+    return parseInt(y + m.padStart(2,'0') + d.padStart(2,'0'), 10);
+  }
+  const fromNum = parseDMY(fromDate);
+  const toNum   = parseDMY(toDate);
+
+  filtered = ALL_RECORDS.filter(r => {
+    const matchQ = !q || Object.values(r).join(' ').toLowerCase().includes(q);
+    const matchSt = !st || r.STATE_CODE === st;
+    const matchSrc = !src || r.DATA_SOURCE_CODE === src;
+    const matchCreator = !creator || (r.CREATED_BY || '').toLowerCase().includes(creator);
+    const matchChecker = !checker || (r.CHECKED_BY || '').toLowerCase().includes(checker);
+    const matchApprover = !approver || (r.APPROVED_BY || '').toLowerCase().includes(approver);
+    const matchProjectId = !projectId || (r.PROJECT_CODE || '').toLowerCase().includes(projectId);
+    const matchDossier = !dossierId || (r.DOSSIER_CODE || '').toLowerCase().includes(dossierId);
+    let matchDate = true;
+    if (fromNum || toNum) {
+      const raw = (r[dateType] || '').substring(0, 10); // take dd/mm/yyyy part
+      const rNum = parseDMY(raw);
+      if (rNum === null) {
+        matchDate = false;
+      } else {
+        if (fromNum && rNum < fromNum) matchDate = false;
+        if (toNum   && rNum > toNum)   matchDate = false;
+      }
+    }
+    return matchQ && matchSt && matchSrc && matchCreator && matchChecker && matchApprover && matchProjectId && matchDossier && matchDate;
+  });
+
+  // Sort
+  filtered.sort((a, b) => {
+    const va = a[sortField] ?? '';
+    const vb = b[sortField] ?? '';
+    const cmp = String(va).localeCompare(String(vb), 'vi');
+    return sortDir === 'asc' ? cmp : -cmp;
+  });
+
+  updateStats();
+  totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  if (currentPage > totalPages) currentPage = 1;
+  renderTable();
+  renderPagination();
+  renderFilterTags(st, src, creator, checker, approver, projectId, dossierId, fromDate, toDate);
+}
+
+function sortBy(field) {
+  if (sortField === field) sortDir = sortDir === 'asc' ? 'desc' : 'asc';
+  else { sortField = field; sortDir = 'asc'; }
+  applyFilters();
+}
+
+function resetFilter() {
+  document.getElementById('search-input').value = '';
+  document.getElementById('filter-state-code').value = '';
+  document.getElementById('filter-data-source-code').value = '';
+  if (document.getElementById('filter-created-by')) document.getElementById('filter-created-by').value = '';
+  if (document.getElementById('filter-checked-by')) document.getElementById('filter-checked-by').value = '';
+  if (document.getElementById('filter-approved-by')) document.getElementById('filter-approved-by').value = '';
+  if (document.getElementById('filter-project-code')) document.getElementById('filter-project-code').value = '';
+  if (document.getElementById('filter-from-date')) document.getElementById('filter-from-date').value = '';
+  if (document.getElementById('filter-to-date')) document.getElementById('filter-to-date').value = '';
+  currentPage = 1;
+  applyFilters();
+}
+
+function resetAdvFilter() {
+  if (document.getElementById('filter-created-by')) document.getElementById('filter-created-by').value = '';
+  if (document.getElementById('filter-checked-by')) document.getElementById('filter-checked-by').value = '';
+  if (document.getElementById('filter-approved-by')) document.getElementById('filter-approved-by').value = '';
+  if (document.getElementById('filter-project-code')) document.getElementById('filter-project-code').value = '';
+  if (document.getElementById('filter-from-date')) document.getElementById('filter-from-date').value = '';
+  if (document.getElementById('filter-to-date')) document.getElementById('filter-to-date').value = '';
+  applyFilters();
+}
+
+function toggleAdvSearch() {
+  advOpen = !advOpen;
+  document.getElementById('adv-filter-area').classList.toggle('open', advOpen);
+  document.getElementById('btn-adv-toggle').innerHTML = `Nâng cao ${advOpen ? '▲' : '▼'} <span id="adv-filter-count" style="display:none; background:var(--primary);color:#fff;border-radius:10px;padding:1px 6px;font-size:11px;"></span>`;
+}
+
+function renderFilterTags(st, src, creator, checker, approver, projectId, dossierId, fromDate, toDate) {
+  const tags = [];
+  if (st) tags.push({ label: `Trạng thái: ${STATUS_LABELS[st]}`, field: 'status' });
+  if (src) tags.push({ label: `Nguồn: ${src}`, field: 'source' });
+  if (dossierId) tags.push({ label: `Hồ sơ: ${dossierId}`, field: 'dossier' });
+  if (creator) tags.push({ label: `Người lập: ${creator}`, field: 'creator' });
+  if (checker) tags.push({ label: `Người KS: ${checker}`, field: 'checker' });
+  if (approver) tags.push({ label: `Người PD: ${approver}`, field: 'approver' });
+  if (projectId) tags.push({ label: `Dự án: ${projectId}`, field: 'projectId' });
+  if (fromDate || toDate) {
+    const dateTypeEl = document.getElementById('filter-date-type');
+    const dtLabel = dateTypeEl ? dateTypeEl.options[dateTypeEl.selectedIndex].text : 'Ngày';
+    const range = [fromDate, toDate].filter(Boolean).join(' → ');
+    tags.push({ label: `${dtLabel}: ${range}`, field: 'dateRange' });
+  }
+  const container = document.getElementById('filter-tags');
+  container.innerHTML = tags.map(t => `<div class="filter-tag">${t.label} <button onclick="clearTag('${t.field}')" title="Xóa bộ lọc">×</button></div>`).join('');
+
+  // Update advanced filter badge count
+  const advCount = [creator, checker, approver, projectId, fromDate, toDate].filter(Boolean).length;
+  const badge = document.getElementById('adv-filter-count');
+  if (badge) {
+    badge.textContent = advCount;
+    badge.style.display = advCount > 0 ? 'inline-block' : 'none';
+  }
+}
+
+function clearTag(field) {
+  if (field === 'status') document.getElementById('filter-state-code').value = '';
+  else if (field === 'source') document.getElementById('filter-data-source-code').value = '';
+  else if (field === 'dossier' && document.getElementById('filter-dossier-code')) document.getElementById('filter-dossier-code').value = '';
+  else if (field === 'creator' && document.getElementById('filter-created-by')) document.getElementById('filter-created-by').value = '';
+  else if (field === 'checker' && document.getElementById('filter-checked-by')) document.getElementById('filter-checked-by').value = '';
+  else if (field === 'approver' && document.getElementById('filter-approved-by')) document.getElementById('filter-approved-by').value = '';
+  else if (field === 'projectId' && document.getElementById('filter-project-code')) document.getElementById('filter-project-code').value = '';
+  else if (field === 'dateRange') {
+    if (document.getElementById('filter-from-date')) document.getElementById('filter-from-date').value = '';
+    if (document.getElementById('filter-to-date')) document.getElementById('filter-to-date').value = '';
+  }
+  applyFilters();
+}
+
+// ─── Render Table ──────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById('list-tbody');
+  const start = (currentPage - 1) * pageSize;
+  const end = Math.min(start + pageSize, filtered.length);
+  const page = filtered.slice(start, end);
+
+  if (!page.length) {
+    tbody.innerHTML = `<tr><td colspan="16" style="text-align:center;padding:40px;color:var(--text-muted);">
+      <div style="font-size:32px;margin-bottom:8px;">📭</div>
+      Không có hồ sơ nào khớp với điều kiện tìm kiếm
+    </td></tr>`;
+    updateFooter([]);
+    return;
+  }
+
+  tbody.innerHTML = page.map(r => {
+    const canEdit = r.STATE_CODE === 'DRAFT' || r.STATE_CODE === 'CHECK_CANCELLED';
+    const canDelete = r.STATE_CODE === 'DRAFT';
+    const canSubmit = r.STATE_CODE === 'DRAFT' && r.DOCUMENT_COUNT > 0;
+    return `<tr data-record-id="${r.id}" data-testid="row-${r.id}"
+          onclick="selectRow(event, '${r.id}')"
+          ondblclick="viewRecord('${r.id}')">
+      <td><a href="form_detail.html?id=${r.id}&mode=view" class="table-link" onclick="event.stopPropagation()">${r.DOSSIER_CODE}</a></td>
+      <td>${r.SEND_DATE}</td>
+      <td><span class="badge badge-${r.STATE_CODE}">${STATUS_LABELS[r.STATE_CODE]}</span></td>
+      <td>${r.CREATED_BY}</td>
+      <td>${r.CREATED_DATE}</td>
+      <td hidden data-conditional-show="hasRejectedDoc">${r.RETURNING_REASON || ''}</td>
+      <td hidden data-conditional-show="hasCheckedDoc">${r.CHECKED_BY || ''}</td>
+      <td hidden data-conditional-show="hasCheckedDoc">${r.CHECKED_DATE || ''}</td>
+      <td>${r.CHECK_REJECTION_REASON || ''}</td>
+      <td>${r.APPROVED_BY || ''}</td>
+      <td>${r.APPROVED_DATE || ''}</td>
+      <td>${r.APPROVAL_REJECTION_REASON || ''}</td>
+      <td style="max-width:220px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${r.PROJECT_NAME}">${r.PROJECT_NAME}</td>
+      <td style="text-align:center;">${r.DOCUMENT_COUNT}</td>
+      <td class="text-right">${formatNum(r.TOTAL_VND)}</td>
+      <td onclick="event.stopPropagation()">
+        <div class="actions-col">
+          <!-- Xem — Ghost, leftmost -->
+          <button class="btn btn-ghost btn-sm" title="Xem (F3)" data-testid="btn-view-${r.id}"
+                  onclick="viewRecord('${r.id}')">👁 Xem</button>
+          <!-- Sửa — Ghost, middle -->
+          <button class="btn btn-ghost btn-sm" title="${canEdit ? 'Sửa (F2)' : 'Chỉ sửa khi Đang hoàn thiện'}"
+                  ${canEdit ? '' : 'disabled'} data-testid="btn-edit-${r.id}"
+                  onclick="editRecord('${r.id}')">✏ Sửa</button>
+          <!-- Xoá — Ghost Danger, rightmost -->
+          <button class="btn btn-ghost-danger btn-sm" title="${canDelete ? 'Xoá' : 'Chỉ xoá khi Đang hoàn thiện'}"
+                  ${canDelete ? '' : 'disabled'} data-testid="btn-delete-${r.id}"
+                  onclick="deleteRecord('${r.id}', '${r.DOSSIER_CODE}')">🗑</button>
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+
+  updateFooter(page);
+}
+
+function viewRecord(id) { window.location.href = `form_detail.html?id=${id}&mode=view`; }
+function editRecord(id) { window.location.href = `form_detail.html?id=${id}&mode=edit`; }
+function deleteRecord(id, fileId) {
+  window.location.href = `form_detail.html?id=${id}&mode=view&action=delete`;
+}
+
+function updateFooter(page) {
+  document.getElementById('footer-count').textContent = filtered.length;
+  const totalVnd = filtered.reduce((s, r) => s + (r.TOTAL_VND || 0), 0);
+  const totalDocs = filtered.reduce((s, r) => s + (r.DOCUMENT_COUNT || 0), 0);
+  document.getElementById('footer-vnd-total').textContent = formatNum(totalVnd);
+  document.getElementById('footer-doc-total').textContent = totalDocs;
+}
+
+// ─── Stats ────────────────────────────────────────────────
+function updateStats() {
+  const total = filtered.length;
+  document.getElementById('stat-total').textContent = total;
+  document.getElementById('stat-draft').textContent = filtered.filter(r => r.STATE_CODE === 'DRAFT').length;
+  document.getElementById('stat-pending-check').textContent = filtered.filter(r => r.STATE_CODE === 'PENDING_CHECK').length;
+  document.getElementById('stat-pending-approve').textContent = filtered.filter(r => r.STATE_CODE === 'PENDING_APPROVE').length;
+  document.getElementById('stat-approved').textContent = filtered.filter(r => r.STATE_CODE === 'APPROVED').length;
+  document.getElementById('stat-rejected').textContent = filtered.filter(r => ['CHECK_REJECTED','APPROVE_REJECTED'].includes(r.STATE_CODE)).length;
+  const totalVnd = filtered.reduce((s, r) => s + (r.TOTAL_VND || 0), 0);
+  document.getElementById('stat-total-vnd').textContent = formatNum(totalVnd) + ' VND';
+}
+
+// ─── Pagination ───────────────────────────────────────────
+function renderPagination() {
+  const start = (currentPage - 1) * pageSize + 1;
+  const end = Math.min(currentPage * pageSize, filtered.length);
+  document.getElementById('pagination-info').textContent =
+    filtered.length === 0 ? 'Không có kết quả' :
+    `Hiển thị ${start} – ${end} trong tổng số ${filtered.length} bản ghi`;
+
+  document.getElementById('btn-prev').disabled = currentPage <= 1;
+  document.getElementById('btn-next').disabled = currentPage >= totalPages;
+  document.getElementById('btn-first').disabled = currentPage <= 1;
+  document.getElementById('btn-last').disabled = currentPage >= totalPages;
+
+  // Page number buttons
+  const pagesEl = document.getElementById('page-buttons');
+  const pages = [];
+  const delta = 2;
+  for (let i = Math.max(1, currentPage - delta); i <= Math.min(totalPages, currentPage + delta); i++) pages.push(i);
+  pagesEl.innerHTML = pages.map(p =>
+    `<button class="page-btn ${p === currentPage ? 'active' : ''}" onclick="goToPage(${p})">${p}</button>`
+  ).join('');
+}
+
+function goToPage(p) {
+  currentPage = Math.max(1, Math.min(p, totalPages));
+  renderTable();
+  renderPagination();
+}
+
+function onPageSizeChange() {
+  pageSize = parseInt(document.getElementById('page-size-select').value);
+  currentPage = 1;
+  totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  renderTable();
+  renderPagination();
+}
+
+// ─── Helpers ──────────────────────────────────────────────
+function formatNum(n) { return n ? n.toLocaleString('vi-VN') : '0'; }
+
+// ─── Selected Row ──────────────────────────────────────────
+let selectedRowId = null;
+
+function selectRow(event, id) {
+  if (event.target.closest('.actions-col')) return;
+  // Deselect previous
+  document.querySelectorAll('[data-selected="true"]').forEach(tr => {
+    tr.removeAttribute('data-selected');
+    tr.classList.remove('row-selected');
+  });
+  selectedRowId = id;
+  const tr = document.querySelector(`[data-record-id="${id}"]`);
+  if (tr) { tr.setAttribute('data-selected', 'true'); tr.classList.add('row-selected'); }
+}
+
+function getSelectedRecord() {
+  if (!selectedRowId) return null;
+  return ALL_RECORDS.find(r => r.id === selectedRowId) || null;
+}
+
+// ─── Keyboard ─────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  // Esc đóng dossier lookup nếu đang mở
+  if (e.key === 'Escape' && !document.getElementById('dialog-lookup-dossier').hidden) {
+    closeDossierLookup(); return;
+  }
+  if (e.ctrlKey && e.key === 'n') { e.preventDefault(); window.location.href = 'form_detail.html?mode=new'; }
+  if (e.key === 'F5') { e.preventDefault(); resetFilter(); }
+  // F2 — edit selected row
+  if (e.key === 'F2') { e.preventDefault(); const r = getSelectedRecord(); if (r) editRecord(r.id); }
+  // F3 — view selected row
+  if (e.key === 'F3') { e.preventDefault(); const r = getSelectedRecord(); if (r) viewRecord(r.id); }
+  // F9 — submit selected row
+  if (e.key === 'F9') {
+    e.preventDefault();
+    const r = getSelectedRecord();
+    if (r && r.STATE_CODE === 'DRAFT' && r.DOCUMENT_COUNT > 0) submitRecord(r.id, r.DOSSIER_CODE);
+    else if (r) alert('Cần có chứng từ và trạng thái Đang hoàn thiện để gửi kiểm soát');
+  }
+  // Delete — delete selected row
+  if (e.key === 'Delete') {
+    e.preventDefault();
+    const r = getSelectedRecord();
+    if (r) deleteRecord(r.id, r.DOSSIER_CODE);
+  }
+  // Ctrl+Shift+E — export
+  if (e.ctrlKey && e.shiftKey && e.key === 'E') { e.preventDefault(); openExportDialog(); }
+  // F4 — tra cứu hồ sơ
+  if (e.key === 'F4') { e.preventDefault(); openDossierLookup(); }
+  // F8 — gửi phê duyệt selected row
+  if (e.key === 'F8') {
+    e.preventDefault();
+    const sel = document.querySelector('tr[data-selected="true"]');
+    if (sel) {
+      const id = sel.dataset.recordId;
+      const r = ALL_RECORDS.find(x => x.id === id);
+      if (r && r.STATE_CODE === 'PENDING_CHECK') approveRecord(id, r.DOSSIER_CODE);
+    }
+  }
+});
+
+// ─── New Functions ─────────────────────────────────────────
+function submitRecord(id, code) {
+  if (confirm(`Gửi kiểm soát hồ sơ ${code}?`)) alert('✔ MSG-OK-SUBMIT: Đã gửi hồ sơ để kiểm soát!');
+}
+
+function approveRecord(id, code) {
+  if (confirm(`Gửi phê duyệt hồ sơ ${code}?`)) alert('✔ MSG-INF-NOTIFY-APPROVER: Đã chuyển hồ sơ sang Chờ phê duyệt!');
+}
+
+// ─── User LOV ─────────────────────────────────────────────
+const USER_LOV = [
+  { username:'nguyen.van.a', fullname:'Nguyễn Văn A', role:'Maker', unit:'Phòng Kế toán' },
+  { username:'tran.thi.b', fullname:'Trần Thị B', role:'Maker', unit:'Phòng Kế toán' },
+  { username:'le.van.c', fullname:'Lê Văn C', role:'Maker', unit:'Phòng Tài chính' },
+  { username:'pham.thi.d', fullname:'Phạm Thị D', role:'Maker', unit:'Phòng Tài chính' },
+  { username:'hoang.van.e', fullname:'Hoàng Văn E', role:'Maker', unit:'Ban Đầu tư' },
+  { username:'nguyen.checker', fullname:'Nguyễn Kiểm Soát', role:'Checker', unit:'Phòng Kiểm soát' },
+  { username:'tran.approver', fullname:'Trần Phê Duyệt', role:'Approver', unit:'Ban Giám đốc' }
+];
+let _userLookupTarget = 'filter-created-by';
+
+function openUserLookup(targetFieldId, titleText) {
+  _userLookupTarget = targetFieldId;
+  document.getElementById('user-lookup-title').textContent = titleText || 'Tra cứu Người dùng';
+  document.getElementById('lov-user-name').value = '';
+  document.getElementById('lov-user-role').value = '';
+  filterUserLOV();
+  document.getElementById('dialog-lookup-user').hidden = false;
+  document.getElementById('lov-user-name').focus();
+}
+
+function closeUserLookup() {
+  document.getElementById('dialog-lookup-user').hidden = true;
+}
+
+function filterUserLOV() {
+  const name = document.getElementById('lov-user-name').value.toLowerCase();
+  const role = document.getElementById('lov-user-role').value;
+  const results = USER_LOV.filter(u =>
+    (!name || u.username.toLowerCase().includes(name) || u.fullname.toLowerCase().includes(name)) &&
+    (!role || u.role === role)
+  );
+  const tbody = document.getElementById('lov-user-tbody');
+  document.getElementById('lov-user-count').textContent = results.length + ' kết quả';
+  if (!results.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);">Không có kết quả</td></tr>';
+    return;
+  }
+  tbody.innerHTML = results.map(u => `
+    <tr style="cursor:pointer;" onclick="selectUserLOV('${u.username}', '${u.fullname}')">
+      <td style="color:var(--primary);font-weight:600;">${u.username}</td>
+      <td>${u.fullname}</td>
+      <td><span style="font-size:11px;font-weight:600;background:${u.role==='Approver'?'#d4edda':u.role==='Checker'?'#cce5ff':'#e9ecef'};color:${u.role==='Approver'?'#155724':u.role==='Checker'?'#004085':'#495057'};padding:2px 8px;border-radius:10px;">${u.role}</span></td>
+      <td>${u.unit}</td>
+    </tr>`).join('');
+}
+
+function selectUserLOV(username, fullname) {
+  const el = document.getElementById(_userLookupTarget);
+  if (el) el.value = username;
+  closeUserLookup();
+  onFilter();
+}
+
+// ─── Export Dialog ─────────────────────────────────────────
+function openExportDialog() {
+  document.getElementById('export-count').textContent = filtered.length;
+  document.getElementById('dialog-export').hidden = false;
+}
+function doExport(fmt) {
+  document.getElementById('dialog-export').hidden = true;
+  alert(`✔ [EXP.CAPEX_DOSSIER.LIST.EXPORT] Xuất ${filtered.length} hồ sơ định dạng ${fmt.toUpperCase()}\n${filtered.length > 50000 ? 'Đang xử lý bất đồng bộ — sẽ thông báo qua email khi xong.' : 'Đang tải xuống...'}`);
+}
+
+function openDossierLookup() {
+  document.getElementById('lov-dossier-code').value = '';
+  document.getElementById('lov-dossier-project').value = '';
+  document.getElementById('lov-dossier-state').value = '';
+  filterDossierLOV();
+  document.getElementById('dialog-lookup-dossier').hidden = false;
+  document.getElementById('lov-dossier-code').focus();
+}
+
+function closeDossierLookup() {
+  document.getElementById('dialog-lookup-dossier').hidden = true;
+}
+
+function filterDossierLOV() {
+  const code = document.getElementById('lov-dossier-code').value.toLowerCase();
+  const proj = document.getElementById('lov-dossier-project').value.toLowerCase();
+  const state = document.getElementById('lov-dossier-state').value;
+  const results = ALL_RECORDS.filter(r =>
+    (!code || r.DOSSIER_CODE.toLowerCase().includes(code)) &&
+    (!proj || r.PROJECT_NAME.toLowerCase().includes(proj)) &&
+    (!state || r.STATE_CODE === state)
+  );
+  const BADGE_LABEL = {
+    DRAFT: 'Đang hoàn thiện', PENDING_CHECK: 'Chờ KS', CHECK_REJECTED: 'KS từ chối',
+    CHECK_CANCELLED: 'KS huỷ', PENDING_APPROVE: 'Chờ PD', APPROVE_REJECTED: 'PD từ chối',
+    APPROVE_CANCELLED: 'PD huỷ', APPROVED: 'Đã phê duyệt', DELETED: 'Đã xoá'
+  };
+  const tbody = document.getElementById('lov-dossier-tbody');
+  document.getElementById('lov-dossier-count').textContent = `${results.length} kết quả`;
+  if (!results.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:24px;color:var(--text-muted);">Không có kết quả</td></tr>';
+    return;
+  }
+  tbody.innerHTML = results.map(r => `
+    <tr style="cursor:pointer;" onclick="selectDossier(${JSON.stringify(r.DOSSIER_CODE).replace(/"/g,'&quot;')})">
+      <td style="color:var(--primary);font-weight:600;">${r.DOSSIER_CODE}</td>
+      <td>${r.PROJECT_NAME}</td>
+      <td><span class="badge badge-${r.STATE_CODE}">${BADGE_LABEL[r.STATE_CODE] || r.STATE_CODE}</span></td>
+      <td>${r.CREATED_BY}</td>
+    </tr>`).join('');
+}
+
+function selectDossier(dossierCode) {
+  document.getElementById('filter-dossier-code').value = dossierCode;
+  onFilter();
+  closeDossierLookup();
+}
+
+function saveFilter() {
+  const filters = {
+    q: document.getElementById('search-input').value,
+    st: document.getElementById('filter-state-code').value,
+    src: document.getElementById('filter-data-source-code').value,
+    dossier: document.getElementById('filter-dossier-code')?.value || '',
+    creator: document.getElementById('filter-created-by')?.value || '',
+    checker: document.getElementById('filter-checked-by')?.value || '',
+    approver: document.getElementById('filter-approved-by')?.value || '',
+    projectId: document.getElementById('filter-project-code')?.value || '',
+    fromDate: document.getElementById('filter-from-date')?.value || '',
+    toDate: document.getElementById('filter-to-date')?.value || ''
+  };
+  localStorage.setItem('capex_dossier_filter', JSON.stringify(filters));
+  document.getElementById('saved-filter-group').style.display = '';
+  const d = new Date();
+  document.getElementById('btn-load-filter').title = `Áp dụng bộ lọc đã lưu lúc ${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+  alert('✔ Đã lưu bộ lọc hiện tại');
+}
+
+function loadFilter() {
+  const saved = localStorage.getItem('capex_dossier_filter');
+  if (!saved) { alert('Chưa có bộ lọc nào được lưu'); return; }
+  const f = JSON.parse(saved);
+  document.getElementById('search-input').value = f.q || '';
+  document.getElementById('filter-state-code').value = f.st || '';
+  document.getElementById('filter-data-source-code').value = f.src || '';
+  if (document.getElementById('filter-dossier-code')) document.getElementById('filter-dossier-code').value = f.dossier || '';
+  if (document.getElementById('filter-created-by')) document.getElementById('filter-created-by').value = f.creator || '';
+  if (document.getElementById('filter-checked-by')) document.getElementById('filter-checked-by').value = f.checker || '';
+  if (document.getElementById('filter-approved-by')) document.getElementById('filter-approved-by').value = f.approver || '';
+  if (document.getElementById('filter-project-code')) document.getElementById('filter-project-code').value = f.projectId || '';
+  if (document.getElementById('filter-from-date')) document.getElementById('filter-from-date').value = f.fromDate || '';
+  if (document.getElementById('filter-to-date')) document.getElementById('filter-to-date').value = f.toDate || '';
+  onFilter();
+  alert('✔ Đã áp dụng bộ lọc đã lưu');
+}
+
+// ─── Conditional Columns ──────────────────────────────────
+function applyConditionalColumns(data) {
+  // Toggle columns controlled by hasRejectedDoc
+  const showRejected = !!data.hasRejectedDoc;
+  document.querySelectorAll('[data-conditional-show="hasRejectedDoc"]').forEach(el => {
+    el.hidden = !showRejected;
+  });
+
+  // Toggle columns controlled by hasCheckedDoc
+  const showChecked = !!data.hasCheckedDoc;
+  document.querySelectorAll('[data-conditional-show="hasCheckedDoc"]').forEach(el => {
+    el.hidden = !showChecked;
+  });
+}
+
+// ─── Init ─────────────────────────────────────────────────
+// Check if saved filter exists on init
+if (localStorage.getItem('capex_dossier_filter')) {
+  document.getElementById('saved-filter-group').style.display = '';
+}
+applyFilters();
+// Call applyConditionalColumns with API response data after load.
+// Here we use sample metadata; replace with actual API response object.
+applyConditionalColumns({ hasRejectedDoc: false, hasCheckedDoc: false });
+</script>
+</body>
+</html>

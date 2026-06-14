@@ -1305,10 +1305,9 @@ function bindKeyboard() {
     }
     // F2 — Sửa (khi ở view mode)
     if (e.key === 'F2' && mode === 'view') { e.preventDefault(); switchToEdit(); }
-    // F4 — mở lookup
+    // F4 — mở lookup (hoạt động cả view mode)
     if (e.key === 'F4') {
       e.preventDefault();
-      if (mode === 'view') return;
       const focused = document.activeElement;
       if (focused && focused.name === 'PROJECT_MANAGEMENT_CODE') {
         openLookup('board');

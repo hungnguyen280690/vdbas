@@ -1,0 +1,1204 @@
+{
+  "meta": {
+    "functionCode": "EXP.CAPEX_DOSSIER",
+    "functionName": "Quản lý hồ sơ Chi đầu tư",
+    "functionNameEn": "Dossier Management for CAPEX",
+    "module": "CHI",
+    "specVersion": "1.3",
+    "specRef": "CHI.CAPEX_DOSSIER.CRUD_spec_function.md",
+    "generatedAt": "2026-06-05",
+    "description": "Cho phép Maker tạo mới, tra cứu, sửa, xoá hồ sơ chi đầu tư; đính kèm chứng từ và gửi kiểm soát theo quy trình Maker–Checker–Approver.",
+    "roles": ["Maker", "Checker", "Approver", "Viewer"]
+  },
+  "designTokens": {
+    "primary": "#0b5394",
+    "accent": "#dc3545",
+    "success": "#28a745",
+    "warning": "#ffc107",
+    "info": "#17a2b8",
+    "danger": "#dc3545",
+    "textPrimary": "#212529",
+    "bgLight": "#f8f9fa",
+    "borderColor": "#dee2e6"
+  },
+  "lovDefinitions": {
+    "LOV.01": {
+      "name": "Danh mục Dự án/Công trình",
+      "values": [
+        {
+          "PROJECT_CODE": "7004686",
+          "PROJECT_NAME": "Các dự án thuộc dự án bộ quốc phòng",
+          "PROJECT_TYPE": "Military",
+          "PROJECT_SPECIFIC_CODE": "001200037",
+          "PROJECT_SPECIFIC_NAME": "Dự án TM02",
+          "GL_SEGMENT6_CODE": "1059227",
+          "GL_SEGMENT6_NAME": "BQL Cục thông tin BQP"
+        },
+        {
+          "PROJECT_CODE": "7004686",
+          "PROJECT_NAME": "Các dự án thuộc dự án bộ quốc phòng",
+          "PROJECT_TYPE": "Military",
+          "PROJECT_SPECIFIC_CODE": "001200038",
+          "PROJECT_SPECIFIC_NAME": "Dự án TM03",
+          "GL_SEGMENT6_CODE": "1059227",
+          "GL_SEGMENT6_NAME": "BQL Cục thông tin BQP"
+        },
+        {
+          "PROJECT_CODE": "7122155",
+          "PROJECT_NAME": "Dự án nâng cấp bệnh viện Bạch Mai",
+          "PROJECT_TYPE": "Citizen",
+          "PROJECT_SPECIFIC_CODE": null,
+          "PROJECT_SPECIFIC_NAME": null,
+          "GL_SEGMENT6_CODE": "3029123",
+          "GL_SEGMENT6_NAME": "BQLDA bệnh viện Bạch Mai"
+        }
+      ]
+    },
+    "LOV.03": {
+      "name": "Nguồn gốc (SOURCE)",
+      "values": [
+        { "code": "Thủ công", "label": "Thủ công", "description": "Nhập thủ công — mặc định khi tạo mới" },
+        { "code": "DVC", "label": "DVC", "description": "Dịch vụ công — khi nhận dữ liệu từ hệ thống khác" }
+      ]
+    },
+    "LOV.STATUS": {
+      "name": "Trạng thái hồ sơ",
+      "values": [
+        { "code": "DRAFT", "label": "Đang hoàn thiện", "color": "grey" },
+        { "code": "PENDING_CHECK", "label": "Chờ kiểm soát", "color": "blue" },
+        { "code": "CHECK_REJECTED", "label": "Từ chối kiểm soát", "color": "red" },
+        { "code": "CHECK_CANCELLED", "label": "Hủy kiểm soát", "color": "orange" },
+        { "code": "PENDING_APPROVE", "label": "Chờ phê duyệt", "color": "blue" },
+        { "code": "APPROVE_REJECTED", "label": "Từ chối phê duyệt", "color": "red" },
+        { "code": "APPROVE_CANCELLED", "label": "Hủy phê duyệt", "color": "orange" },
+        { "code": "APPROVED", "label": "Đã phê duyệt", "color": "green" },
+        { "code": "DELETED", "label": "Đã xóa", "color": "dark" }
+      ]
+    },
+    "LOV.05": {
+      "name": "Mã Ban quản lý dự án (ĐVQHNS)",
+      "values": [
+        { "PROJECT_MANAGEMENT_CODE": "1059227", "PROJECT_MANAGEMENT_NAME": "Thông tấn xã Việt Nam" },
+        { "PROJECT_MANAGEMENT_CODE": "3025567", "PROJECT_MANAGEMENT_NAME": "Ban quản lý các dự án đầu tư bộ văn hóa" }
+      ]
+    },
+    "LOV.DOC_TYPE": {
+      "name": "Loại tài liệu đính kèm",
+      "values": [
+        { "code": "ORIGINAL", "label": "Chứng từ gốc" },
+        { "code": "CONTRACT", "label": "Hợp đồng" },
+        { "code": "INVOICE", "label": "Hoá đơn" },
+        { "code": "STATEMENT", "label": "Bảng kê" },
+        { "code": "OTHER", "label": "Văn bản khác" }
+      ]
+    }
+  },
+  "stateMachine": {
+    "ref": "A11",
+    "initialState": "DRAFT",
+    "states": [
+      { "code": "DRAFT", "label": "Đang hoàn thiện", "canEdit": true, "canDelete": true, "canSubmit": true },
+      { "code": "PENDING_CHECK", "label": "Chờ kiểm soát", "canEdit": false, "canDelete": false },
+      { "code": "CHECK_REJECTED", "label": "Từ chối kiểm soát", "canEdit": false, "canDelete": false },
+      { "code": "CHECK_CANCELLED", "label": "Hủy kiểm soát", "canEdit": true, "canDelete": false },
+      { "code": "PENDING_APPROVE", "label": "Chờ phê duyệt", "canEdit": false, "canDelete": false },
+      { "code": "APPROVE_REJECTED", "label": "Từ chối phê duyệt", "canEdit": false, "canDelete": false },
+      { "code": "APPROVE_CANCELLED", "label": "Hủy phê duyệt", "canEdit": false, "canDelete": false },
+      { "code": "APPROVED", "label": "Đã phê duyệt", "canEdit": false, "canDelete": false },
+      { "code": "DELETED", "label": "Đã xóa", "canEdit": false, "canDelete": false }
+    ],
+    "transitions": [
+      { "from": "START", "to": "DRAFT", "event": "EXP.CAPEX_DOSSIER.NEW.OPEN", "actor": "Maker" },
+      { "from": "DRAFT", "to": "DRAFT", "event": "EXP.CAPEX_DOSSIER.NEW.SAVE", "actor": "Maker" },
+      { "from": "DRAFT", "to": "PENDING_CHECK", "event": "EXP.CAPEX_DOSSIER.NEW.SUBMIT", "actor": "Maker" },
+      { "from": "DRAFT", "to": "DELETED", "event": "EXP.CAPEX_DOSSIER.DELETE.CONFIRM", "actor": "Maker" },
+      { "from": "PENDING_CHECK", "to": "PENDING_APPROVE", "event": "EXP.CAPEX_DOSSIER.APPROVE.CHECKER", "actor": "Checker" },
+      { "from": "PENDING_CHECK", "to": "CHECK_REJECTED", "event": "EXP.CAPEX_DOSSIER.APPROVE.REJECT", "actor": "Checker" },
+      { "from": "PENDING_CHECK", "to": "CHECK_CANCELLED", "event": "EXP.CAPEX_DOSSIER.APPROVE.RETURN", "actor": "Checker" },
+      { "from": "PENDING_APPROVE", "to": "APPROVED", "event": "EXP.CAPEX_DOSSIER.APPROVE.APPROVER", "actor": "Approver" },
+      { "from": "PENDING_APPROVE", "to": "APPROVE_REJECTED", "event": "EXP.CAPEX_DOSSIER.APPROVE.REJECT", "actor": "Approver" },
+      { "from": "PENDING_APPROVE", "to": "PENDING_CHECK", "event": "EXP.CAPEX_DOSSIER.APPROVE.RETURN", "actor": "Approver" },
+      { "from": "CHECK_CANCELLED", "to": "DRAFT", "event": "EXP.CAPEX_DOSSIER.EDIT.OPEN", "actor": "Maker", "note": "Maker mở lại sau khi KS hủy" },
+      { "from": "APPROVE_CANCELLED", "to": "DRAFT", "event": "EXP.CAPEX_DOSSIER.EDIT.OPEN", "actor": "Maker", "note": "Maker mở lại sau khi PD hủy" }
+    ]
+  },
+  "tabs": [
+    {
+      "code": "tab-general",
+      "specRef": "B1.1",
+      "label": "Thông tin chung",
+      "area": "Top Area",
+      "fields": [
+        {
+          "code": "DOSSIER_CODE",
+          "label": "Mã hồ sơ",
+          "component": "TextBox",
+          "dataType": "String",
+          "required": "Y",
+          "maxLength": 30,
+          "readonly": true,
+          "immutable": true,
+          "specRef": "B1.1.row1",
+          "validation": ["VAL-11", "VAL-17"],
+          "apiField": "header.paymentDossierId",
+          "lov": null,
+          "dependsOn": null,
+          "showWhen": null,
+          "note": "Hệ thống sinh tự động sau khi NSD lưu lần đầu; read-only; immutable"
+        },
+        {
+          "code": "SEND_DATE",
+          "label": "Ngày gửi hồ sơ",
+          "component": "DatePicker",
+          "dataType": "Date",
+          "required": "Y",
+          "defaultValue": "TODAY",
+          "format": "dd/MM/yyyy",
+          "specRef": "B1.1.row2",
+          "validation": ["VAL-02", "VAL-04", "VAL-08"],
+          "apiField": "header.sendDate",
+          "lov": null,
+          "dependsOn": null,
+          "showWhen": null
+        },
+        {
+          "code": "PROJECT_CODE",
+          "label": "Mã dự án/công trình",
+          "component": "DropdownLookup",
+          "dataType": "String",
+          "required": "Y",
+          "maxLength": 20,
+          "specRef": "B1.1.row3",
+          "validation": ["VAL-01", "VAL-03", "VAL-06"],
+          "apiField": "header.projectId",
+          "lov": "LOV.01",
+          "lookupScreen": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
+          "shortcut": "F4",
+          "dependsOn": null,
+          "showWhen": null,
+          "cascades": ["PROJECT_NAME", "PROJECT_SPECIFIC_CODE", "PROJECT_SPECIFIC_NAME"]
+        },
+        {
+          "code": "PROJECT_NAME",
+          "label": "Tên dự án/công trình",
+          "component": "TextBox",
+          "dataType": "String",
+          "required": "C",
+          "readonly": true,
+          "maxLength": 255,
+          "specRef": "B1.1.row4",
+          "validation": ["VAL-06"],
+          "apiField": "header.projectName",
+          "lov": "LOV.01",
+          "dependsOn": "PROJECT_CODE",
+          "showWhen": null,
+          "note": "Tự động fill theo PROJECT_CODE; bắt buộc khi PROJECT_CODE đã chọn"
+        },
+        {
+          "code": "PROJECT_SPECIFIC_CODE",
+          "label": "Mã dự án đặc thù",
+          "component": "DropdownLookup",
+          "dataType": "String",
+          "required": "N",
+          "maxLength": 20,
+          "specRef": "B1.1.row5",
+          "validation": ["VAL-03", "VAL-06"],
+          "apiField": "header.projectSpecId",
+          "lov": "LOV.01",
+          "lookupScreen": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
+          "shortcut": "F4",
+          "dependsOn": "PROJECT_CODE",
+          "showWhen": "PROJECT_TYPE === 'Military'",
+          "cascades": ["PROJECT_SPECIFIC_NAME"]
+        },
+        {
+          "code": "PROJECT_SPECIFIC_NAME",
+          "label": "Tên dự án đặc thù",
+          "component": "TextBox",
+          "dataType": "String",
+          "required": "C",
+          "readonly": true,
+          "maxLength": 255,
+          "specRef": "B1.1.row6",
+          "validation": ["VAL-06"],
+          "apiField": "header.projectSpecName",
+          "lov": "LOV.01",
+          "dependsOn": "PROJECT_SPECIFIC_CODE",
+          "showWhen": "PROJECT_TYPE === 'Military'",
+          "note": "Tự động fill theo PROJECT_SPECIFIC_CODE; bắt buộc khi PROJECT_SPECIFIC_CODE đã chọn và Military"
+        },
+        {
+          "code": "PROJECT_MANAGEMENT_CODE",
+          "label": "Mã ĐVQHNS",
+          "component": "DropdownLookup",
+          "dataType": "String",
+          "required": "Y",
+          "maxLength": 20,
+          "specRef": "B1.1.row7",
+          "validation": ["VAL-01", "VAL-03", "VAL-06"],
+          "apiField": "header.projectManagementBoardId",
+          "lov": "LOV.05",
+          "lookupScreen": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
+          "shortcut": "F4",
+          "dependsOn": "PROJECT_CODE",
+          "showWhen": null,
+          "cascades": ["PROJECT_MANAGEMENT_NAME"]
+        },
+        {
+          "code": "PROJECT_MANAGEMENT_NAME",
+          "label": "Tên ĐVQHNS",
+          "component": "TextBox",
+          "dataType": "String",
+          "required": "C",
+          "readonly": true,
+          "maxLength": 255,
+          "specRef": "B1.1.row8",
+          "validation": ["VAL-06"],
+          "apiField": "header.projectManagementBoardName",
+          "lov": "LOV.05",
+          "dependsOn": "PROJECT_MANAGEMENT_CODE",
+          "showWhen": null,
+          "note": "Tự động fill theo PROJECT_MANAGEMENT_CODE"
+        },
+        {
+          "code": "STATE_CODE",
+          "label": "Trạng thái hồ sơ",
+          "component": "Label",
+          "dataType": "String",
+          "required": "Y",
+          "readonly": true,
+          "defaultValue": "DRAFT",
+          "specRef": "B1.1.row9",
+          "validation": ["VAL-13"],
+          "apiField": "header.paymentDossierStatus",
+          "lov": "LOV.STATUS",
+          "dependsOn": null,
+          "showWhen": null,
+          "note": "Hệ thống tự động cập nhật theo State Machine; read-only"
+        },
+        {
+          "code": "DATA_SOURCE_CODE",
+          "label": "Nguồn",
+          "component": "Dropdown",
+          "dataType": "String",
+          "required": "Y",
+          "defaultValue": "Thủ công",
+          "specRef": "B1.1.row10",
+          "validation": ["VAL-03"],
+          "apiField": "header.source",
+          "lov": "LOV.03",
+          "dependsOn": null,
+          "showWhen": null,
+          "note": "Read-only sau khi lưu lần đầu"
+        }
+      ]
+    },
+    {
+      "code": "tab-documents",
+      "specRef": "B1.2",
+      "label": "Danh sách chứng từ",
+      "area": "Middle Area — Grid",
+      "showWhen": "mode !== 'new'",
+      "isGrid": true,
+      "note": "Không hiển thị khi tạo mới (NEW). NSD bấm 'Thêm mới chứng từ' để thêm.",
+      "fields": [
+        {
+          "code": "DOC_SEQ_NO",
+          "label": "STT",
+          "component": "TextBox",
+          "dataType": "Number",
+          "required": "N",
+          "readonly": true,
+          "specRef": "B1.2.row1",
+          "validation": [],
+          "apiField": "documents[].seqNo",
+          "lov": null,
+          "note": "Auto-generated; sort từ trên xuống bắt đầu từ 1"
+        },
+        {
+          "code": "DOCUMENT_NUMBER",
+          "label": "Số chứng từ",
+          "component": "TextBox",
+          "dataType": "String",
+          "required": "Y",
+          "readonly": true,
+          "specRef": "B1.2.row2",
+          "validation": [],
+          "apiField": "documents[].docId",
+          "lov": null,
+          "note": "Hệ thống gen tự động; tham chiếu EXP.CAPEX_DOSSIER.3.3.1"
+        },
+        {
+          "code": "DOCUMENT_DATE",
+          "label": "Ngày chứng từ",
+          "component": "DatePicker",
+          "dataType": "Date",
+          "required": "Y",
+          "format": "dd/MM/yyyy",
+          "specRef": "B1.2.row3",
+          "validation": ["VAL-02"],
+          "apiField": "documents[].docDate",
+          "lov": null
+        },
+        {
+          "code": "ACCOUNTING_DATE",
+          "label": "Ngày hạch toán",
+          "component": "DatePicker",
+          "dataType": "Date",
+          "required": "Y",
+          "format": "dd/MM/yyyy",
+          "specRef": "B1.2.row4",
+          "validation": ["VAL-02", "VAL-08"],
+          "apiField": "documents[].postingDate",
+          "lov": null
+        },
+        {
+          "code": "CURRENCY_TYPE_CODE",
+          "label": "Loại tiền",
+          "component": "Dropdown",
+          "dataType": "String",
+          "required": "Y",
+          "defaultValue": "VND",
+          "specRef": "B1.2.row5",
+          "validation": ["VAL-03"],
+          "apiField": "documents[].currencyTypeCode",
+          "lov": "LOV.CURRENCY_TYPE",
+          "note": "Loại tiền thanh toán; quyết định hiển thị trường Số tiền nguyên tệ khi ≠ VND"
+        },
+        {
+          "code": "PAYMENT_REQUEST_AMOUNT",
+          "label": "Số tiền nguyên tệ",
+          "component": "NumberInput",
+          "dataType": "Number",
+          "required": "C",
+          "format": "#,##0.00",
+          "specRef": "B1.2.row6",
+          "validation": ["VAL-04"],
+          "apiField": "documents[].paymentAmount",
+          "lov": null,
+          "showWhen": "CURRENCY_TYPE_CODE !== 'VND'",
+          "note": "Bắt buộc khi đề nghị rút vốn bằng ngoại tệ"
+        },
+        {
+          "code": "PAYMENT_REQUEST_AMOUNT_VND",
+          "label": "Số tiền VND",
+          "component": "NumberInput",
+          "dataType": "Number",
+          "required": "Y",
+          "format": "#,##0",
+          "align": "right",
+          "specRef": "B1.2.row7",
+          "validation": ["VAL-01", "VAL-04", "VAL-07"],
+          "apiField": "documents[].vndPaymentAmount",
+          "lov": null
+        }
+      ]
+    },
+    {
+      "code": "tab-attach",
+      "specRef": "B1.3",
+      "label": "Đính kèm tài liệu",
+      "area": "Tab",
+      "linkedScreen": "EXP.CAPEX_DOSSIER.ATTACH",
+      "fields": [
+        {
+          "code": "FILE_NAME",
+          "label": "Tên file",
+          "component": "TextBox",
+          "dataType": "String",
+          "required": "N",
+          "readonly": true,
+          "specRef": "B3.3.row1",
+          "validation": [],
+          "apiField": "attachments[].fileName"
+        },
+        {
+          "code": "DOC_TYPE",
+          "label": "Loại tài liệu",
+          "component": "Dropdown",
+          "dataType": "String",
+          "required": "Y",
+          "specRef": "B3.3.row2",
+          "validation": ["VAL-03"],
+          "apiField": "attachments[].docType",
+          "lov": "LOV.DOC_TYPE"
+        },
+        {
+          "code": "NOTE",
+          "label": "Mô tả",
+          "component": "TextArea",
+          "dataType": "String",
+          "required": "N",
+          "maxLength": 250,
+          "specRef": "B3.3.row3",
+          "validation": ["VAL-10"],
+          "apiField": "attachments[].note"
+        },
+        {
+          "code": "FILE_BLOB",
+          "label": "File upload",
+          "component": "FileUpload",
+          "dataType": "Binary",
+          "required": "Y",
+          "maxSize": "10MB",
+          "allowedTypes": ["pdf", "jpg", "png", "docx"],
+          "specRef": "B3.3.row4",
+          "validation": ["VAL-09", "VAL-20"],
+          "apiField": "attachments[].fileBlob"
+        },
+        {
+          "code": "FILE_SIZE",
+          "label": "Kích thước",
+          "component": "Label",
+          "dataType": "Number",
+          "required": "N",
+          "specRef": "B3.3.row5",
+          "apiField": "attachments[].fileSize"
+        },
+        {
+          "code": "UPLOADED_BY",
+          "label": "Người upload",
+          "component": "Label",
+          "dataType": "String",
+          "required": "N",
+          "specRef": "B3.3.row6",
+          "apiField": "attachments[].uploadedBy"
+        },
+        {
+          "code": "UPLOADED_DATE",
+          "label": "Ngày upload",
+          "component": "Label",
+          "dataType": "DateTime",
+          "required": "N",
+          "specRef": "B3.3.row7",
+          "apiField": "attachments[].uploadedDate"
+        }
+      ]
+    },
+    {
+      "code": "tab-history",
+      "specRef": "B3.2",
+      "label": "Lịch sử giao dịch",
+      "area": "Tab",
+      "linkedScreen": "EXP.CAPEX_DOSSIER.HISTORY",
+      "readonly": true,
+      "shortcut": "Alt+H",
+      "fields": [
+        {
+          "code": "SEQ_NO",
+          "label": "STT",
+          "component": "Label",
+          "dataType": "Number",
+          "required": "N",
+          "readonly": true,
+          "specRef": "B3.2.row1",
+          "apiField": "history[].seqNo",
+          "note": "Tự tăng; sort DESC (mới nhất lên đầu)"
+        },
+        {
+          "code": "CREATED_BY",
+          "label": "Người tạo",
+          "component": "TextBox",
+          "dataType": "String",
+          "required": "N",
+          "readonly": true,
+          "specRef": "B3.2.row2",
+          "apiField": "history[].createdBy"
+        },
+        {
+          "code": "CREATED_DATE",
+          "label": "Ngày tạo",
+          "component": "DatePicker",
+          "dataType": "DateTime",
+          "required": "N",
+          "readonly": true,
+          "format": "dd/MM/yyyy HH:mm:ss",
+          "specRef": "B3.2.row3",
+          "apiField": "history[].createdDate"
+        },
+        {
+          "code": "UPDATED_BY",
+          "label": "Người cập nhật cuối",
+          "component": "TextBox",
+          "dataType": "String",
+          "required": "N",
+          "readonly": true,
+          "specRef": "B3.2.row4",
+          "apiField": "history[].lastUpdatedBy"
+        },
+        {
+          "code": "UPDATED_DATE",
+          "label": "Ngày cập nhật cuối",
+          "component": "DatePicker",
+          "dataType": "DateTime",
+          "required": "N",
+          "readonly": true,
+          "format": "dd/MM/yyyy HH:mm:ss",
+          "specRef": "B3.2.row5",
+          "apiField": "history[].lastUpdatedDate"
+        },
+        {
+          "code": "ACTION_DATE",
+          "label": "Thời gian thực hiện",
+          "component": "Label",
+          "dataType": "DateTime",
+          "required": "N",
+          "readonly": true,
+          "format": "dd/MM/yyyy HH:mm:ss",
+          "specRef": "B3.2.row6",
+          "apiField": "history[].actionDate",
+          "note": "Từ EXP_APPROVAL_LOG.ACTION_DATE — thời điểm thực hiện action"
+        }
+      ]
+    },
+    {
+      "code": "tab-approval",
+      "specRef": "A11",
+      "label": "Trạng thái phê duyệt",
+      "area": "Tab",
+      "readonly": true,
+      "shortcut": "Alt+P",
+      "fields": []
+    }
+  ],
+  "deleteDialog": {
+    "specRef": "B3.1",
+    "id": "dialog-delete-confirm",
+    "title": "Xác nhận xoá hồ sơ",
+    "triggerButton": "BTN_DELETE",
+    "fields": [
+      {
+        "code": "DOSSIER_CODE",
+        "label": "Mã hồ sơ",
+        "component": "Label",
+        "dataType": "String",
+        "required": "N",
+        "readonly": true,
+        "specRef": "B3.1.row1",
+        "validation": [],
+        "apiField": "header.paymentDossierId",
+        "note": "Tự lấy từ bản ghi hiện tại; read-only"
+      },
+      {
+        "code": "STATE_CODE",
+        "label": "Trạng thái hiện tại",
+        "component": "Label",
+        "dataType": "String",
+        "required": "N",
+        "readonly": true,
+        "specRef": "B3.1.row2",
+        "validation": ["VAL-13"],
+        "apiField": "header.paymentDossierStatus",
+        "note": "Phải = Đang hoàn thiện (VAL-13)"
+      },
+      {
+        "code": "DELETE_REASON",
+        "label": "Lý do xoá",
+        "component": "TextArea",
+        "dataType": "String",
+        "required": "Y",
+        "minLength": 10,
+        "maxLength": 500,
+        "specRef": "B3.1.row3",
+        "validation": ["VAL-16"],
+        "apiField": "deleteReason"
+      },
+      {
+        "code": "CONFIRM_REVIEWED",
+        "label": "Xác nhận đã rà soát",
+        "component": "Checkbox",
+        "dataType": "Boolean",
+        "required": "Y",
+        "specRef": "B3.1.row4",
+        "validation": ["VAL-16"],
+        "apiField": "confirmReviewed"
+      },
+      {
+        "code": "DELETED_BY",
+        "label": "Người xoá",
+        "component": "Label",
+        "dataType": "String",
+        "required": "N",
+        "readonly": true,
+        "specRef": "B3.1.row5",
+        "validation": [],
+        "apiField": "deletedBy",
+        "note": "Auto — user hiện tại"
+      },
+      {
+        "code": "DELETED_DATE",
+        "label": "Thời gian xoá",
+        "component": "Label",
+        "dataType": "DateTime",
+        "required": "N",
+        "readonly": true,
+        "format": "dd/MM/yyyy HH:mm:ss",
+        "specRef": "B3.1.row6",
+        "validation": [],
+        "apiField": "deletedDate",
+        "note": "Auto — thời gian hệ thống"
+      }
+    ]
+  },
+  "buttons": [
+    {
+      "code": "BTN_NEW",
+      "label": "Tạo mới",
+      "labelEn": "New",
+      "event": "EXP.CAPEX_DOSSIER.NEW.OPEN",
+      "variant": "primary",
+      "shortcut": "Ctrl+N",
+      "showOn": ["LIST"],
+      "enableWhen": "role === 'Maker'",
+      "position": "top-right",
+      "specRef": "C1.row1"
+    },
+    {
+      "code": "BTN_SAVE",
+      "label": "Lưu",
+      "labelEn": "Save",
+      "event": "EXP.CAPEX_DOSSIER.NEW.SAVE",
+      "variant": "primary",
+      "shortcut": "Ctrl+S",
+      "showOn": ["NEW"],
+      "enableWhen": "!hasValidationErrors",
+      "position": "bottom-right",
+      "specRef": "C1.row2"
+    },
+    {
+      "code": "BTN_SAVE_EDIT",
+      "label": "Lưu",
+      "labelEn": "Save",
+      "event": "EXP.CAPEX_DOSSIER.EDIT.SAVE",
+      "variant": "primary",
+      "shortcut": "Ctrl+S",
+      "showOn": ["EDIT"],
+      "enableWhen": "!hasValidationErrors",
+      "position": "bottom-right",
+      "specRef": "C1.row7"
+    },
+    {
+      "code": "BTN_SAVE_DRAFT",
+      "label": "Lưu nháp",
+      "labelEn": "Save Draft",
+      "event": "EXP.CAPEX_DOSSIER.NEW.SAVE",
+      "variant": "default",
+      "shortcut": "Ctrl+Shift+S",
+      "showOn": ["NEW", "EDIT"],
+      "enableWhen": "true",
+      "position": "bottom-right",
+      "specRef": "C1.row3"
+    },
+    {
+      "code": "BTN_SUBMIT",
+      "label": "Gửi kiểm soát",
+      "labelEn": "Submit",
+      "event": "EXP.CAPEX_DOSSIER.NEW.SUBMIT",
+      "variant": "primary",
+      "shortcut": "F9",
+      "showOn": ["NEW", "EDIT"],
+      "enableWhen": "STATE_CODE === 'DRAFT' && hasValidDocuments && role === 'Maker'",
+      "position": "bottom-right",
+      "specRef": "C1.row4"
+    },
+    {
+      "code": "BTN_VIEW",
+      "label": "Xem",
+      "labelEn": "View",
+      "event": "EXP.CAPEX_DOSSIER.VIEW.OPEN",
+      "variant": "ghost",
+      "shortcut": "F3",
+      "showOn": ["LIST"],
+      "enableWhen": "true",
+      "position": "table-action",
+      "testidPattern": "btn-view-{id}",
+      "note": "testid là dynamic per row: btn-view-{record.id}",
+      "specRef": "C1.row5"
+    },
+    {
+      "code": "BTN_EDIT",
+      "label": "Sửa",
+      "labelEn": "Edit",
+      "event": "EXP.CAPEX_DOSSIER.EDIT.OPEN",
+      "variant": "ghost",
+      "shortcut": "F2",
+      "showOn": ["LIST", "VIEW"],
+      "enableWhen": "STATE_CODE === 'DRAFT' && isMakerOwner",
+      "position": "table-action",
+      "specRef": "C1.row6"
+    },
+    {
+      "code": "BTN_DELETE",
+      "label": "Xoá",
+      "labelEn": "Delete",
+      "event": "EXP.CAPEX_DOSSIER.DELETE.OPEN",
+      "variant": "danger",
+      "shortcut": "Delete",
+      "showOn": ["LIST", "VIEW"],
+      "enableWhen": "STATE_CODE === 'DRAFT' && isMakerOwner",
+      "position": "table-action-danger",
+      "specRef": "C1.row8"
+    },
+    {
+      "code": "BTN_CONFIRM_DELETE",
+      "label": "Xác nhận xoá",
+      "labelEn": "Confirm Delete",
+      "event": "EXP.CAPEX_DOSSIER.DELETE.CONFIRM",
+      "variant": "danger",
+      "shortcut": "Enter",
+      "showOn": ["DELETE_DIALOG"],
+      "enableWhen": "deleteReason.length >= 10 && confirmReviewed === true",
+      "position": "dialog-right",
+      "specRef": "C1.row9"
+    },
+    {
+      "code": "BTN_CANCEL",
+      "label": "Huỷ",
+      "labelEn": "Cancel",
+      "event": "EXP.CAPEX_DOSSIER.NEW.CANCEL",
+      "variant": "default",
+      "shortcut": "Esc",
+      "showOn": ["NEW", "EDIT", "VIEW"],
+      "enableWhen": "true",
+      "position": "bottom-right",
+      "specRef": "C1.row10"
+    },
+    {
+      "code": "BTN_ADD_DOC",
+      "label": "Thêm mới chứng từ",
+      "labelEn": "Add Document",
+      "event": "EXP.CAPEX_DOSSIER.DOC.ADD",
+      "variant": "default",
+      "shortcut": "Ctrl+Shift+N",
+      "showOn": ["EDIT"],
+      "enableWhen": "DOSSIER_CODE !== null",
+      "position": "grid-top-right",
+      "specRef": "C1.row12"
+    },
+    {
+      "code": "BTN_EXPORT",
+      "label": "Xuất",
+      "labelEn": "Export",
+      "event": "EXP.CAPEX_DOSSIER.LIST.EXPORT",
+      "variant": "default",
+      "shortcut": "Ctrl+Shift+E",
+      "showOn": ["LIST"],
+      "enableWhen": "true",
+      "position": "top-right",
+      "specRef": "C1.row14"
+    },
+    {
+      "code": "BTN_PRINT",
+      "label": "In phiếu",
+      "labelEn": "Print",
+      "event": "EXP.CAPEX_DOSSIER.PRINT.PREVIEW",
+      "variant": "default",
+      "shortcut": "Ctrl+P",
+      "showOn": ["VIEW"],
+      "enableWhen": "true",
+      "position": "top-right",
+      "specRef": "C1.row15"
+    },
+    {
+      "code": "BTN_RESET_FILTER",
+      "label": "Đặt lại bộ lọc",
+      "labelEn": "Reset Filter",
+      "event": "EXP.CAPEX_DOSSIER.LIST.FILTER",
+      "variant": "default",
+      "shortcut": "F5",
+      "shortcutAlt": "Ctrl+R",
+      "showOn": ["LIST"],
+      "enableWhen": "true",
+      "position": "filter-right",
+      "specRef": "C1.row13"
+    },
+    {
+      "code": "BTN_SEARCH",
+      "label": "Tìm kiếm",
+      "labelEn": "Search",
+      "event": "EXP.CAPEX_DOSSIER.LIST.FILTER",
+      "variant": "primary",
+      "showOn": ["LIST"],
+      "enableWhen": "true",
+      "position": "filter-right",
+      "specRef": "B2.1.btn1",
+      "note": "Kích hoạt bộ lọc; cũng trigger tự động khi thay đổi filter field"
+    },
+    {
+      "code": "BTN_BACK",
+      "label": "Quay lại",
+      "labelEn": "Back",
+      "event": "EXP.CAPEX_DOSSIER.LIST.OPEN",
+      "variant": "default",
+      "showOn": ["VIEW"],
+      "enableWhen": "true",
+      "position": "bottom-right",
+      "specRef": "C1.row11",
+      "note": "Quay lại màn hình danh sách từ chế độ VIEW"
+    },
+    {
+      "code": "BTN_CANCEL_DELETE",
+      "label": "Huỷ",
+      "labelEn": "Cancel Delete",
+      "event": "EXP.CAPEX_DOSSIER.DELETE.CANCEL",
+      "variant": "default",
+      "shortcut": "Esc",
+      "showOn": ["DELETE_DIALOG"],
+      "enableWhen": "true",
+      "position": "dialog-left",
+      "specRef": "B3.1.btn1",
+      "note": "Đóng delete dialog, không thực hiện xoá"
+    },
+    {
+      "code": "BTN_UPLOAD",
+      "label": "Chọn file",
+      "labelEn": "Choose File",
+      "event": "EXP.CAPEX_DOSSIER.ATTACH.UPLOAD",
+      "variant": "default",
+      "showOn": ["NEW", "EDIT"],
+      "enableWhen": "true",
+      "position": "upload-zone",
+      "specRef": "B3.3.btn1",
+      "note": "Mở file picker; cũng hỗ trợ drag-and-drop vào upload-zone"
+    },
+    {
+      "code": "BTN_LOOKUP_PROJECT",
+      "label": "Tra cứu dự án",
+      "labelEn": "Lookup Project",
+      "event": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
+      "variant": "lookup",
+      "shortcut": "F4",
+      "showOn": ["NEW", "EDIT"],
+      "enableWhen": "true",
+      "position": "inline-lookup",
+      "parentField": "PROJECT_CODE",
+      "specRef": "B1.1.row3.lookup",
+      "note": "Nút F4 inline trong DropdownLookup PROJECT_CODE"
+    },
+    {
+      "code": "BTN_LOOKUP_SPEC",
+      "label": "Tra cứu dự án đặc thù",
+      "labelEn": "Lookup Specific Project",
+      "event": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
+      "variant": "lookup",
+      "shortcut": "F4",
+      "showOn": ["NEW", "EDIT"],
+      "enableWhen": "PROJECT_TYPE === 'Military'",
+      "position": "inline-lookup",
+      "parentField": "PROJECT_SPECIFIC_CODE",
+      "specRef": "B1.1.row5.lookup",
+      "note": "Nút F4 inline trong DropdownLookup PROJECT_SPECIFIC_CODE; chỉ hiện khi Military"
+    },
+    {
+      "code": "BTN_LOOKUP_BOARD",
+      "label": "Tra cứu ĐVQHNS",
+      "labelEn": "Lookup Management Board",
+      "event": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
+      "variant": "lookup",
+      "shortcut": "F4",
+      "showOn": ["NEW", "EDIT"],
+      "enableWhen": "true",
+      "position": "inline-lookup",
+      "parentField": "PROJECT_MANAGEMENT_CODE",
+      "specRef": "B1.1.row7.lookup",
+      "note": "Nút F4 inline trong DropdownLookup PROJECT_MANAGEMENT_CODE"
+    }
+  ],
+  "cancelDialog": {
+    "specRef": "B3.4",
+    "id": "dialog-cancel-confirm",
+    "title": "Xác nhận huỷ",
+    "triggerCondition": "isDirty === true",
+    "triggerButton": "BTN_CANCEL",
+    "note": "Hiển thị khi NSD bấm Huỷ mà có dữ liệu chưa lưu (isDirty). Nếu không có thay đổi thì navigate thẳng về LIST.",
+    "actions": [
+      {
+        "code": "BTN_CONTINUE_EDIT",
+        "label": "Tiếp tục chỉnh sửa",
+        "variant": "default",
+        "event": "close-dialog"
+      },
+      {
+        "code": "BTN_CONFIRM_CANCEL",
+        "label": "Xác nhận huỷ",
+        "variant": "primary",
+        "event": "EXP.CAPEX_DOSSIER.LIST.OPEN"
+      }
+    ]
+  },
+  "listFilter": {
+    "specRef": "B2.1",
+    "note": "Bộ lọc màn hình LIST — chia 2 vùng: quick filter (luôn hiện) và advanced filter (toggle).",
+    "quickFilter": [
+      {
+        "code": "DOSSIER_CODE",
+        "id": "filter-dossier-code",
+        "label": "Mã hồ sơ",
+        "component": "DropdownLookup",
+        "shortcut": "F4",
+        "note": "Tìm chính xác hoặc bắt đầu bằng"
+      },
+      {
+        "code": "DOSSIER_CODE",
+        "id": "search-input",
+        "label": "Tìm nhanh",
+        "component": "TextBox",
+        "placeholder": "Mã hồ sơ, người lập...",
+        "searchFields": ["DOSSIER_CODE", "CREATED_BY"],
+        "note": "Tìm kiếm tổng hợp — match bất kỳ field nào trong record"
+      },
+      {
+        "code": "STATE_CODE",
+        "id": "filter-state-code",
+        "label": "Trạng thái",
+        "component": "Dropdown",
+        "lov": "LOV.STATUS",
+        "defaultValue": ""
+      },
+      {
+        "code": "DATA_SOURCE_CODE",
+        "id": "filter-data-source-code",
+        "label": "Nguồn",
+        "component": "Dropdown",
+        "lov": "LOV.03",
+        "defaultValue": ""
+      }
+    ],
+    "advancedFilter": [
+      {
+        "code": "DATE_FIELD",
+        "id": "filter-date-type",
+        "label": "Loại ngày",
+        "component": "Dropdown",
+        "values": [
+          { "code": "SEND_DATE", "label": "Ngày gửi" },
+          { "code": "CREATED_DATE", "label": "Ngày lập" },
+          { "code": "CHECKED_DATE", "label": "Ngày kiểm soát" },
+          { "code": "APPROVED_DATE", "label": "Ngày phê duyệt" }
+        ],
+        "defaultValue": "SEND_DATE",
+        "note": "Quyết định filter-from-date / filter-to-date áp dụng cho field nào"
+      },
+      {
+        "code": "FROM_DATE",
+        "id": "filter-from-date",
+        "label": "Từ ngày",
+        "component": "DatePicker",
+        "format": "dd/MM/yyyy",
+        "linkedTo": "DATE_FIELD"
+      },
+      {
+        "code": "TO_DATE",
+        "id": "filter-to-date",
+        "label": "Đến ngày",
+        "component": "DatePicker",
+        "format": "dd/MM/yyyy",
+        "linkedTo": "DATE_FIELD"
+      },
+      {
+        "code": "PROJECT_CODE",
+        "id": "filter-project-code",
+        "label": "Mã dự án",
+        "component": "DropdownLookup",
+        "lookupScreen": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
+        "shortcut": "F4"
+      },
+      {
+        "code": "CREATED_BY",
+        "id": "filter-created-by",
+        "label": "Người lập",
+        "component": "DropdownLookup",
+        "shortcut": "F4"
+      },
+      {
+        "code": "CHECKED_BY",
+        "id": "filter-checked-by",
+        "label": "Người kiểm soát",
+        "component": "DropdownLookup",
+        "shortcut": "F4"
+      },
+      {
+        "code": "APPROVED_BY",
+        "id": "filter-approved-by",
+        "label": "Người phê duyệt",
+        "component": "DropdownLookup",
+        "shortcut": "F4"
+      }
+    ],
+    "filterTags": {
+      "id": "filter-tags",
+      "note": "UI widget hiển thị các active filter dưới dạng tag chip; mỗi tag có nút × để xoá filter đó"
+    }
+  },
+  "statsBar": {
+    "specRef": "B2.3",
+    "id": "stats-bar",
+    "note": "Thanh thống kê phía trên danh sách — tự động cập nhật theo kết quả filter hiện tại.",
+    "items": [
+      { "code": "STAT_TOTAL",         "id": "stat-total",          "label": "Tổng hồ sơ",        "aggregation": "COUNT(*)" },
+      { "code": "STAT_DRAFT",         "id": "stat-draft",          "label": "Đang hoàn thiện",   "aggregation": "COUNT(STATE_CODE = 'DRAFT')" },
+      { "code": "STAT_PENDING_CHECK", "id": "stat-pending-check",  "label": "Chờ kiểm soát",     "aggregation": "COUNT(STATE_CODE = 'PENDING_CHECK')" },
+      { "code": "STAT_PENDING_APPROVE","id": "stat-pending-approve","label": "Chờ phê duyệt",    "aggregation": "COUNT(STATE_CODE = 'PENDING_APPROVE')" },
+      { "code": "STAT_APPROVED",      "id": "stat-approved",       "label": "Đã phê duyệt",      "aggregation": "COUNT(STATE_CODE = 'APPROVED')" },
+      { "code": "STAT_REJECTED",      "id": "stat-rejected",       "label": "Từ chối",            "aggregation": "COUNT(STATE_CODE IN ('CHECK_REJECTED','APPROVE_REJECTED'))" },
+      { "code": "STAT_TOTAL_VND",     "id": "stat-total-vnd",      "label": "Tổng tiền VND",      "aggregation": "SUM(TOTAL_VND)", "format": "#,##0 VND" }
+    ]
+  },
+  "grid": {
+    "specRef": "B2.2",
+    "defaultSort": "CREATED_DATE DESC",
+    "pageSize": 20,
+    "pageSizeOptions": [20, 50, 100, 200],
+    "columns": [
+      { "code": "DOSSIER_CODE",             "label": "Mã hồ sơ",                      "type": "link",         "sortable": true,  "apiField": "list[].paymentDossierId",        "specRef": "B2.2.row1" },
+      { "code": "PROJECT_NAME",             "label": "Tên dự án",                      "type": "text",         "sortable": true,  "apiField": "list[].projectName",             "specRef": "B2.2.row1b" },
+      { "code": "SEND_DATE",                "label": "Ngày gửi",                       "type": "date",         "sortable": true,  "format": "dd/mm/yyyy HH:MM", "apiField": "list[].sendDate",               "specRef": "B2.2.row2" },
+      { "code": "STATE_CODE",               "label": "Trạng thái",                     "type": "badge",        "sortable": true,  "apiField": "list[].paymentDossierStatus",    "specRef": "B2.2.row3" },
+      { "code": "CREATED_BY",               "label": "Người lập",                      "type": "text",         "sortable": true,  "apiField": "list[].createdBy",               "specRef": "B2.2.row4" },
+      { "code": "CREATED_DATE",             "label": "Ngày lập",                       "type": "date",         "sortable": true,  "format": "dd/mm/yyyy HH:MM", "defaultSort": "DESC", "apiField": "list[].createdDate", "specRef": "B2.2.row5" },
+      { "code": "RETURNING_REASON",         "label": "Lý do từ chối tiếp nhận",        "type": "text",         "sortable": true,  "conditionalShow": "hasRejectedDoc", "apiField": "list[].returningReason",  "specRef": "B2.2.row6" },
+      { "code": "CHECKED_BY",               "label": "Người kiểm soát",                "type": "text",         "sortable": true,  "conditionalShow": "hasCheckedDoc",  "apiField": "list[].checkedBy",        "specRef": "B2.2.row7" },
+      { "code": "CHECKED_DATE",             "label": "Ngày kiểm soát",                 "type": "date",         "sortable": true,  "conditionalShow": "hasCheckedDoc",  "apiField": "list[].checkedDate",      "specRef": "B2.2.row8" },
+      { "code": "CHECK_REJECTION_REASON",   "label": "Lý do từ chối/hủy kiểm soát",   "type": "text",         "sortable": false, "apiField": "list[].checkRejectionReason",    "specRef": "B2.2.row9" },
+      { "code": "APPROVED_BY",              "label": "Người phê duyệt",                "type": "text",         "sortable": false, "apiField": "list[].approvedBy",              "specRef": "B2.2.row10" },
+      { "code": "APPROVED_DATE",            "label": "Ngày phê duyệt",                 "type": "date",         "sortable": true,  "apiField": "list[].approvedDate",            "specRef": "B2.2.row11" },
+      { "code": "APPROVAL_REJECTION_REASON","label": "Lý do từ chối/hủy phê duyệt",   "type": "text",         "sortable": false, "apiField": "list[].approvalRejectionReason", "specRef": "B2.2.row12" },
+      { "code": "ACTIONS",                  "label": "Thao tác",                       "type": "action-group", "sortable": false, "apiField": null,                             "specRef": "B2.2.rowN" }
+    ]
+  },
+  "conventions": {
+    "specRef": "B4",
+    "currency": { "format": "#,##0", "align": "right" },
+    "date": { "format": "dd/MM/yyyy", "timezone": "Asia/Ho_Chi_Minh" },
+    "datetime": { "format": "dd/MM/yyyy HH:mm:ss" },
+    "lookup": { "icon": "magnifier", "shortcut": "F4" },
+    "required": { "indicator": "* (red)", "conditional": "(*)" },
+    "disabled": { "tooltip": "Giải thích lý do disable" },
+    "error": { "style": "red-border + message below" },
+    "fieldCode": "UPPER_SNAKE_CASE",
+    "apiField": {
+      "note": "API field names dùng camelCase và có thể khác với spec field code. Xem apiField trong từng field definition.",
+      "headerPrefix": "header.",
+      "listPrefix": "list[].",
+      "documentsPrefix": "documents[].",
+      "attachmentsPrefix": "attachments[].",
+      "historyPrefix": "history[].",
+      "fVer": "Optimistic lock version — DB column EXP_DOSSIER.DOSSIER_VERSION, apiField: header.dossierVersion"
+    }
+  },
+  "componentMap": {
+    "TextBox": "<input type='text' />",
+    "TextArea": "<textarea></textarea>",
+    "Dropdown": "<select></select>",
+    "DropdownLookup": "<input type='text' + button.lookup (F4)>",
+    "NumberInput": "<input type='text' inputmode='numeric' class='text-right' />",
+    "DatePicker": "<input type='text' placeholder='dd/mm/yyyy' />",
+    "FileUpload": "<div class='upload-zone'>",
+    "Checkbox": "<input type='checkbox' />",
+    "Radio": "<input type='radio' />",
+    "Label": "<span></span>"
+  },
+  "validations": {
+    "note": "Định nghĩa các rule validation được reference trong field.validation[]",
+    "rules": {
+      "VAL-01": { "label": "Bắt buộc",              "rule": "value !== null && value !== ''",                                    "message": "Trường này là bắt buộc" },
+      "VAL-02": { "label": "Định dạng ngày",       "rule": "isValidDate(value, 'dd/MM/yyyy')",                                  "message": "Ngày không hợp lệ — định dạng dd/mm/yyyy" },
+      "VAL-03": { "label": "Giá trị hợp lệ",       "rule": "value IN lov.codes",                                                "message": "Giá trị không nằm trong danh sách cho phép" },
+      "VAL-04": { "label": "Số dương",             "rule": "value > 0",                                                         "message": "Giá trị phải lớn hơn 0" },
+      "VAL-05": { "label": "Cross-field",          "rule": "ràng buộc phụ thuộc giữa các trường",                               "message": "{Tên trường A} và {Tên trường B} không hợp lệ: {mô tả ràng buộc}" },
+      "VAL-06": { "label": "Phụ thuộc cascade",    "rule": "dependsOn field đã có giá trị",                                     "message": "Vui lòng chọn {parentField} trước" },
+      "VAL-07": { "label": "Tổng tiền hợp lệ",     "rule": "TOTAL_VND = SUM(documents[].PAYMENT_REQUEST_AMOUNT_VND)",           "message": "Tổng tiền VND không khớp với tổng chứng từ" },
+      "VAL-08": { "label": "Ngày không tương lai", "rule": "value <= TODAY",                                                    "message": "Ngày không được lớn hơn ngày hiện tại" },
+      "VAL-09": { "label": "Định dạng file",       "rule": "extension IN ['pdf','jpg','png','docx']",                           "message": "Định dạng file không được hỗ trợ (chỉ pdf, jpg, png, docx)" },
+      "VAL-10": { "label": "Độ dài tối đa",        "rule": "value.length <= field.maxLength",                                   "message": "Vượt quá {maxLength} ký tự" },
+      "VAL-11": { "label": "Mã duy nhất",          "rule": "DOSSIER_CODE IS UNIQUE per system",                                 "message": "Mã hồ sơ đã tồn tại trong hệ thống" },
+      "VAL-12": { "label": "Hạn mức",              "rule": "amount <= userLimit OR unitLimit",                                  "message": "Số tiền vượt hạn mức — cần phê duyệt cấp cao hơn" },
+      "VAL-13": { "label": "Trạng thái hợp lệ",    "rule": "STATE_CODE IN stateMachine.states[].code",                         "message": "Trạng thái không hợp lệ" },
+      "VAL-14": { "label": "Maker owner",          "rule": "currentUser === record.createdBy",                                  "message": "Chỉ Người lập gốc mới được phép Sửa/Xoá" },
+      "VAL-15": { "label": "Optimistic lock",      "rule": "F_VER_client === F_VER_db",                                         "message": "Bản ghi đã bị thay đổi từ phiên khác. Vui lòng tải lại trước khi tiếp tục" },
+      "VAL-16": { "label": "Xác nhận xoá",         "rule": "DELETE_REASON.length >= 10 && CONFIRM_REVIEWED === true",          "message": "Cần nhập lý do xoá (≥10 ký tự) và tích xác nhận" },
+      "VAL-17": { "label": "Immutable field",      "rule": "field.immutable === true → không cho phép sửa sau khi lưu lần đầu","message": "Trường này không thể thay đổi" },
+      "VAL-18": { "label": "Cảnh báo trùng",       "rule": "EXISTS hồ sơ cùng (PROJECT_CODE + PROJECT_MANAGEMENT_CODE) trong N phút", "message": "Phát hiện hồ sơ tương tự đã được lập gần đây. Bạn có muốn tiếp tục?" },
+      "VAL-19": { "label": "Cross-Validation CCID","rule": "tổ hợp GL_SEGMENT1..12 thuộc CCID hợp lệ",                         "message": "Tổ hợp segment COA không hợp lệ theo Cross-Validation Rule (CCID)" },
+      "VAL-20": { "label": "Kích thước file",      "rule": "file.size <= 10MB",                                                 "message": "File vượt quá 10MB" },
+      "VAL-21": { "label": "Trạng thái hạch toán", "rule": "ACCOUNTING_STATUS IN ('ACCOUNTED', 'ACCOUNTING_POSTED')",           "message": "Không cho phép thực hiện thanh toán khi chưa hạch toán" }
+    }
+  },
+  "permissions": {
+    "note": "Ma trận quyền theo role × action. Giá trị: true = được phép, false = không, 'conditional' = tuỳ điều kiện (xem enableWhen của button tương ứng).",
+    "matrix": {
+      "LIST.VIEW":         { "Maker": true,          "Checker": true,          "Approver": true,          "Viewer": true  },
+      "DETAIL.VIEW":       { "Maker": true,          "Checker": true,          "Approver": true,          "Viewer": true  },
+      "CREATE":            { "Maker": true,          "Checker": false,         "Approver": false,         "Viewer": false },
+      "EDIT":              { "Maker": "conditional", "Checker": false,         "Approver": false,         "Viewer": false },
+      "DELETE":            { "Maker": "conditional", "Checker": false,         "Approver": false,         "Viewer": false },
+      "SUBMIT":            { "Maker": "conditional", "Checker": false,         "Approver": false,         "Viewer": false },
+      "CHECKER.APPROVE":   { "Maker": false,         "Checker": true,          "Approver": false,         "Viewer": false },
+      "CHECKER.REJECT":    { "Maker": false,         "Checker": true,          "Approver": false,         "Viewer": false },
+      "CHECKER.RETURN":    { "Maker": false,         "Checker": true,          "Approver": false,         "Viewer": false },
+      "APPROVER.APPROVE":  { "Maker": false,         "Checker": false,         "Approver": true,          "Viewer": false },
+      "APPROVER.REJECT":   { "Maker": false,         "Checker": false,         "Approver": true,          "Viewer": false },
+      "APPROVER.RETURN":   { "Maker": false,         "Checker": false,         "Approver": true,          "Viewer": false },
+      "EXPORT":            { "Maker": true,          "Checker": true,          "Approver": true,          "Viewer": true  },
+      "PRINT":             { "Maker": true,          "Checker": true,          "Approver": true,          "Viewer": true  },
+      "ATTACH.UPLOAD":     { "Maker": "conditional", "Checker": false,         "Approver": false,         "Viewer": false }
+    },
+    "conditionalRules": {
+      "EDIT":         "STATE_CODE === 'DRAFT' && isMakerOwner",
+      "DELETE":       "STATE_CODE === 'DRAFT' && isMakerOwner",
+      "SUBMIT":       "STATE_CODE === 'DRAFT' && hasValidDocuments && isMakerOwner",
+      "ATTACH.UPLOAD":"STATE_CODE IN ('DRAFT','CHECK_CANCELLED','APPROVE_CANCELLED')"
+    }
+  },
+  "messages": {
+    "note": "Định nghĩa message codes — dùng cho toast notification, alert và inline error. type: success|error|warning|info",
+    "codes": {
+      "MSG-OK-SAVE":            { "type": "success", "display": "toast",  "text": "Lưu hồ sơ thành công! Mã hồ sơ: {DOSSIER_CODE}" },
+      "MSG-OK-DRAFT":           { "type": "success", "display": "toast",  "text": "Lưu nháp thành công. Trạng thái: Đang hoàn thiện" },
+      "MSG-OK-SUBMIT":          { "type": "success", "display": "toast",  "text": "Gửi kiểm soát thành công! Thông báo đã gửi đến Người kiểm soát." },
+      "MSG-OK-DELETE":          { "type": "success", "display": "toast",  "text": "Xoá hồ sơ thành công. Hồ sơ đã được ẩn khỏi danh sách." },
+      "MSG-OK-EXPORT":          { "type": "success", "display": "toast",  "text": "Xuất file thành công." },
+      "MSG-OK-UPLOAD":          { "type": "success", "display": "toast",  "text": "Upload file thành công: {FILE_NAME}" },
+      "MSG-ERR-REQUIRED":       { "type": "error",   "display": "inline", "text": "Vui lòng nhập {Tên trường}" },
+      "MSG-ERR-FORMAT":         { "type": "error",   "display": "inline", "text": "Định dạng {Tên trường} không hợp lệ" },
+      "MSG-ERR-LOOKUP":         { "type": "error",   "display": "inline", "text": "Giá trị không nằm trong danh mục" },
+      "MSG-ERR-RANGE":          { "type": "error",   "display": "inline", "text": "{Tên trường} nằm ngoài phạm vi cho phép ({min}–{max})" },
+      "MSG-ERR-CROSS-FIELD":    { "type": "error",   "display": "inline", "text": "{Tên trường A} và {Tên trường B} không hợp lệ: {mô tả ràng buộc}" },
+      "MSG-ERR-FILE":           { "type": "error",   "display": "inline", "text": "File vượt giới hạn hoặc sai định dạng" },
+      "MSG-ERR-DUPLICATE":      { "type": "error",   "display": "inline", "text": "Đã tồn tại bản ghi có {trường khoá} = {giá trị}" },
+      "MSG-ERR-SYSTEM":         { "type": "error",   "display": "modal",  "text": "Lỗi hệ thống, traceId: <…>. Vui lòng thử lại hoặc liên hệ Quản trị" },
+      "MSG-ERR-TIMEOUT":        { "type": "error",   "display": "modal",  "text": "Yêu cầu quá thời gian xử lý, vui lòng thử lại" },
+      "MSG-ERR-PERMISSION":     { "type": "error",   "display": "modal",  "text": "Bạn không có quyền thực hiện thao tác này" },
+      "MSG-ERR-SESSION":        { "type": "error",   "display": "modal",  "text": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại" },
+      "MSG-ERR-SAVE":           { "type": "error",   "display": "modal",  "text": "Lưu thất bại. Vui lòng kiểm tra lại thông tin và thử lại." },
+      "MSG-ERR-SUBMIT":         { "type": "error",   "display": "modal",  "text": "Không thể gửi kiểm soát. Hồ sơ cần có ít nhất 1 chứng từ." },
+      "MSG-ERR-DELETE":         { "type": "error",   "display": "modal",  "text": "Xoá thất bại. Chỉ xoá được hồ sơ ở trạng thái Đang hoàn thiện." },
+      "MSG-ERR-FILE-TYPE":      { "type": "error",   "display": "inline", "text": "Định dạng file không hợp lệ. Chỉ chấp nhận pdf, jpg, png, docx." },
+      "MSG-ERR-FILE-SIZE":      { "type": "error",   "display": "inline", "text": "File vượt quá giới hạn 10MB." },
+      "MSG-ERR-STATUS":         { "type": "error",   "display": "inline", "text": "Hồ sơ đang ở trạng thái {state}, không cho phép Sửa/Xoá" },
+      "MSG-ERR-MAKER":          { "type": "error",   "display": "inline", "text": "Chỉ Người lập gốc mới được phép Sửa/Xoá" },
+      "MSG-ERR-LOCK":           { "type": "error",   "display": "modal",  "text": "Bản ghi đã bị thay đổi từ phiên khác. Vui lòng tải lại trước khi tiếp tục" },
+      "MSG-ERR-CONCURRENT":     { "type": "error",   "display": "modal",  "text": "Hồ sơ đang được {user} chỉnh sửa, vui lòng thử lại sau" },
+      "MSG-ERR-DELETE-CFM":     { "type": "error",   "display": "inline", "text": "Vui lòng nhập lý do (≥ 10 ký tự) và xác nhận đã rà soát" },
+      "MSG-ERR-AMOUNT-MISMATCH":{ "type": "error",   "display": "modal",  "text": "Tổng số tiền chứng từ không khớp với yêu cầu nghiệp vụ" },
+      "MSG-ERR-CCID":           { "type": "error",   "display": "inline", "text": "Tổ hợp segment COA không hợp lệ theo Cross-Validation Rule (CCID)" },
+      "MSG-ERR-UNAPPROVED":     { "type": "error",   "display": "modal",  "text": "Không hủy phê duyệt được hồ sơ ở trạng thái thanh toán là PAYMENT_SUCCESS, hoặc trạng thái hạch toán là GL_ACCOUNTED" },
+      "MSG-CFM-CANCEL":         { "type": "warning", "display": "modal",  "text": "Dữ liệu chưa được lưu. Bạn có chắc muốn huỷ?" },
+      "MSG-CFM-DELETE":         { "type": "warning", "display": "modal",  "text": "Bạn có chắc muốn xoá hồ sơ {DOSSIER_CODE}?" },
+      "MSG-WARN-UNSAVED":       { "type": "warning", "display": "modal",  "text": "Dữ liệu chưa được lưu. Bạn có chắc muốn huỷ?" },
+      "MSG-WARN-DELETE":        { "type": "warning", "display": "modal",  "text": "Bạn đang thực hiện xoá hồ sơ {DOSSIER_CODE}. Hành động này không thể hoàn tác." },
+      "MSG-WARN-LIMIT":         { "type": "warning", "display": "modal",  "text": "Số tiền vượt hạn mức — cần phê duyệt cấp cao hơn" },
+      "MSG-WARN-OUTSIDE-HOUR":  { "type": "warning", "display": "toast",  "text": "Ngoài giờ giao dịch, vui lòng xem lại" },
+      "MSG-WARN-DUPLICATE":     { "type": "warning", "display": "modal",  "text": "Phát hiện hồ sơ tương tự đã được lập gần đây. Bạn có muốn tiếp tục?" },
+      "MSG-WARN-AMOUNT-MISMATCH":{ "type": "warning","display": "modal",  "text": "Chênh lệch giữa tổng chứng từ nằm trong ngưỡng tolerance — vui lòng kiểm tra lại" },
+      "MSG-WARN-FAILED_RESERVE":{ "type": "warning", "display": "modal",  "text": "Hồ sơ không dành được dự toán thành công" },
+      "MSG-WARN-FAILED_PAYMENT":{ "type": "warning", "display": "modal",  "text": "Hồ sơ không thanh toán thành công" },
+      "MSG-WARN-DUE-DATE":      { "type": "warning", "display": "modal",  "text": "Hồ sơ quá hạn xử lý {date}, cần lập Văn bản xin lỗi và đề nghị gia hạn thời gian giải quyết" },
+      "MSG-INF-NOTIFY-CHECKER": { "type": "info",    "display": "toast",  "text": "Đã gửi thông báo đến Người kiểm soát {user}" },
+      "MSG-INF-NOTIFY-APPROVER":{ "type": "info",    "display": "toast",  "text": "Đã gửi thông báo đến Người phê duyệt {user}" },
+      "MSG-INF-NOTIFY-APPROVAL_REJ":{ "type": "warning","display": "toast","text": "Hồ sơ đã bị từ chối phê duyệt" },
+      "MSG-INF-NOTIFY-CHECK_REJ":{ "type": "warning","display": "toast",  "text": "Hồ sơ đã bị từ chối kiểm soát" }
+    }
+  },
+  "testcaseRef": "testcases.json"
+}
