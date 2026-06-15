@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /home/hungnv256/Documents/code/file/req/01-inputs/layout show HEAD:../CHI.CAPEX_DOSSIER.CRUD_spec_function.md)",
+      "Bash(git -C /home/hungnv256/Documents/code/file/req/01-inputs/layout log --all --full-history -- ../CHI.CAPEX_DOSSIER.CRUD_spec_function.md)",
+      "Bash(git -C /home/hungnv256/Documents/code/file/req/01-inputs/layout show HEAD:../EXPENDITURE.sql)",
+      "Bash(git -C /home/hungnv256/Documents/code/file/req/01-inputs/layout log --all --full-history -- ../EXPENDITURE.sql)"
+    ]
+  }
+}

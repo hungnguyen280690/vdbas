@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "Skill(update-config)",
+      "Bash(rm -rf ~/.claude/plugins/cache)",
+      "Bash(echo '{\"version\":2,\"plugins\":{}}')",
+      "Bash(git -C /home/hungnv256/Documents/code/fe/vdbas_exp_fe log --oneline -5)",
+      "Bash(git -C /home/hungnv256/Documents/code log --oneline -5)",
+      "Bash(docker image inspect *)",
+      "Bash(git -C /home/hungnv256/Documents/code log --oneline --all --since=\"2026-06-10\" -- fe/vdbas_exp_fe/)",
+      "Bash(git -C /home/hungnv256/Documents/code branch -a)",
+      "Bash(git -C /home/hungnv256/Documents/code show 92ca2cd --stat)",
+      "Bash(docker exec *)",
+      "Bash(git -C /home/hungnv256/Documents/code log --oneline --all --decorate)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8082/api/mock/token)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:8085/api/v1/category-groups/search)",
+      "Bash(make test-e2e-real *)",
+      "Skill(run)",
+      "Bash(make start-mock *)",
+      "Bash(echo \"Started in background, PID=$!\")",
+      "Bash(curl -s http://localhost:9090/api/me/menus)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3003)",
+      "Bash(DISPLAY=:0 google-chrome --headless --disable-gpu --no-sandbox --screenshot=/tmp/screen_home.png --window-size=1400,900 http://localhost:3000)",
+      "Bash(echo \"exit: $?\")",
+      "Bash(node -e ' *)",
+      "Bash(node *)"
+    ]
+  }
+}
