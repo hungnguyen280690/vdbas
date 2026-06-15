@@ -1,6 +1,8 @@
-import { useState, useEffect, useRef, useCallback } from 'react'
+import { useState, useEffect, useRef, useCallback, useMemo } from 'react'
 import './FormDetail.css'
-import { MOCK_DATA, LOV01_DATA, type DossierRecord, type DossierStatus, type LovEntry } from './FormDetail.mock'
+import type { DossierRecord, DossierStatus, LovEntry } from './FormDetail.mock'
+import { CapexDossierHooks, MasterDataHooks } from '../hooks/useCapexDossier'
+import type { DossierDetail, ProjectInfo, DataSourceCode } from '../types'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -85,19 +87,6 @@ function getInitialForm(record: DossierRecord | null): FormState {
   }
 }
 
-function filterLov(filters: LovFilters): LovEntry[] {
-  const code = filters.code.toLowerCase()
-  const name = filters.name.toLowerCase()
-  const type = filters.type
-  const seg6 = filters.seg6.toLowerCase()
-  return LOV01_DATA.filter(p =>
-    (!code || p.PROJECT_CODE.toLowerCase().includes(code)) &&
-    (!name || p.PROJECT_NAME.toLowerCase().includes(name)) &&
-    (!type || p.PROJECT_TYPE === type) &&
-    (!seg6 || p.GL_SEGMENT6_CODE.toLowerCase().includes(seg6))
-  )
-}
-
 function formatVND(n: number | null | undefined): string {
   if (!n) return '0'
   return n.toLocaleString('vi-VN', { maximumFractionDigits: 0 })
@@ -112,6 +101,77 @@ function nowDMYHMS(): string {
   const now = new Date()
   const p = (n: number) => String(n).padStart(2, '0')
   return `${p(now.getDate())}/${p(now.getMonth() + 1)}/${now.getFullYear()} ${p(now.getHours())}:${p(now.getMinutes())}:${p(now.getSeconds())}`
+}
+
+function fromISODate(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const [y, m, d] = iso.slice(0, 10).split('-')
+  return `${d}/${m}/${y}`
+}
+
+function fromISODateTime(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const dt = new Date(iso)
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${p(dt.getDate())}/${p(dt.getMonth() + 1)}/${dt.getFullYear()} ${p(dt.getHours())}:${p(dt.getMinutes())}:${p(dt.getSeconds())}`
+}
+
+function toISODate(dmy: string): string {
+  if (!dmy) return ''
+  const [d, m, y] = dmy.split('/')
+  return `${y}-${m.padStart(2, '0')}-${d.padStart(2, '0')}`
+}
+
+function toDetailRecord(d: DossierDetail): DossierRecord {
+  const docTotalVnd = (d.documents ?? []).reduce((s, doc) =>
+    s + (doc.lines ?? []).reduce((ls, ln) => ls + (ln.paymentRequestAmountVnd ?? 0), 0), 0)
+  return {
+    id: d.dossierId,
+    DOSSIER_CODE: d.dossierCode,
+    SEND_DATE: fromISODate(d.sendDate),
+    PROJECT_CODE: d.projectCode,
+    PROJECT_NAME: d.projectName,
+    PROJECT_TYPE: d.projectSpecificCode ? 'Military' : 'Citizen',
+    PROJECT_SPECIFIC_CODE: d.projectSpecificCode ?? null,
+    PROJECT_SPECIFIC_NAME: d.projectSpecificName ?? null,
+    PROJECT_MANAGEMENT_CODE: d.projectManagementCode,
+    PROJECT_MANAGEMENT_NAME: d.projectManagementName,
+    STATE_CODE: d.stateCode,
+    DATA_SOURCE_CODE: d.dataSourceCode,
+    CREATED_BY: d.createdBy,
+    CREATED_DATE: fromISODateTime(d.createdDate),
+    LAST_UPDATED_BY: d.updatedBy,
+    LAST_UPDATED_DATE: fromISODateTime(d.updatedDate),
+    TOTAL_VND: docTotalVnd,
+    DOCUMENT_COUNT: (d.documents ?? []).length,
+    documents: (d.documents ?? []).map(doc => ({
+      DOCUMENT_NUMBER: doc.documentNumber,
+      DOCUMENT_DATE: fromISODate(doc.documentDate),
+      ACCOUNTING_DATE: fromISODate(doc.accountingDate),
+      DOC_NAME: doc.projectItemName ?? '',
+      PAYMENT_REQUEST_AMOUNT: (doc.lines ?? []).reduce((s, ln) => s + (ln.paymentRequestAmount ?? 0), 0) || null,
+      PAYMENT_REQUEST_AMOUNT_VND: (doc.lines ?? []).reduce((s, ln) => s + (ln.paymentRequestAmountVnd ?? 0), 0),
+      currencyTypeCode: doc.currencyTypeCode,
+    })),
+    CHECKED_BY: d.checkedBy ?? undefined,
+    CHECKED_DATE: fromISODate(d.checkedDate) || undefined,
+    APPROVED_BY: d.approvedBy ?? undefined,
+    APPROVED_DATE: fromISODate(d.approvedDate) || undefined,
+    CHECK_REJECTION_REASON: d.checkRejectionReason ?? undefined,
+    APPROVAL_REJECTION_REASON: d.approvalRejectionReason ?? undefined,
+  }
+}
+
+function toProjectLovEntry(p: ProjectInfo): LovEntry {
+  return {
+    PROJECT_CODE: p.projectCode,
+    PROJECT_NAME: p.projectName,
+    PROJECT_TYPE: p.projectTypeCode,
+    PROJECT_SPECIFIC_CODE: p.projectSpecificCode ?? null,
+    PROJECT_SPECIFIC_NAME: p.projectSpecificName ?? null,
+    GL_SEGMENT6_CODE: p.projectManagementCode,
+    GL_SEGMENT6_NAME: p.projectManagementName,
+  }
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -129,18 +189,12 @@ export default function FormDetail({
   const initialRecordId = recordIdProp !== undefined ? recordIdProp : searchParams.get('id')
   const autoAction = searchParams.get('action')
 
-  const record = initialRecordId
-    ? (MOCK_DATA.records.find(r => r.id === initialRecordId) ?? null)
-    : null
-
   // ── State ──────────────────────────────────────────────────────────────────
   const [mode] = useState<PageMode>(initialMode)
-  const [form, setForm] = useState<FormState>(() => getInitialForm(record))
+  const [form, setForm] = useState<FormState>(() => getInitialForm(null))
   const [activeTab, setActiveTab] = useState<TabId>('tab-general')
   const [isDirty, setIsDirty] = useState(false)
-  const [showMilitaryFields, setShowMilitaryFields] = useState(
-    record?.PROJECT_TYPE === 'Military'
-  )
+  const [showMilitaryFields, setShowMilitaryFields] = useState(false)
 
   // Modals
   const [isDeleteOpen, setIsDeleteOpen] = useState(false)
@@ -161,18 +215,47 @@ export default function FormDetail({
   // Lookup
   const [lookupTarget, setLookupTarget] = useState<'project' | 'board' | 'spec'>('project')
   const [lovFilters, setLovFilters] = useState<LovFilters>({ code: '', name: '', type: '', seg6: '' })
-  const lovResults = filterLov(lovFilters)
+  const { data: projectsData } = MasterDataHooks.useProjects({
+    code: lovFilters.code || undefined,
+    name: lovFilters.name || undefined,
+    projectTypeCode: lovFilters.type ? lovFilters.type as 'Military' | 'Citizen' : undefined,
+    projectManagementCode: lovFilters.seg6 || undefined,
+  })
+  const lovResults: LovEntry[] = useMemo(() => (projectsData ?? []).map(toProjectLovEntry), [projectsData])
 
   // Attachment form
   const [attachDocType, setAttachDocType] = useState('')
   const [attachNote, setAttachNote] = useState('')
 
   // Duplicate check state
-  const [dupProject, setDupProject] = useState('')
-  const [dupBoard, setDupBoard] = useState('')
+  const [dupProject] = useState('')
+  const [dupBoard] = useState('')
 
   const lovCodeInputRef = useRef<HTMLInputElement>(null)
   const deleteReasonRef = useRef<HTMLTextAreaElement>(null)
+  const autoDeleteTriggeredRef = useRef(false)
+
+  // ── API ──────────────────────────────────────────────────────────────────────
+
+  const { data: apiDetail, isLoading: isDetailLoading } = CapexDossierHooks.useDetail(initialRecordId ?? '')
+  const { data: allProjectsData } = MasterDataHooks.useProjects()
+  const createMutation = CapexDossierHooks.useCreate({ skipNotification: false })
+  const updateMutation = CapexDossierHooks.useUpdate(initialRecordId ?? '', { skipNotification: false })
+  const deleteMutation = CapexDossierHooks.useDelete()
+  const submitMutation = CapexDossierHooks.useSubmit()
+
+  // ── Derived from API ──────────────────────────────────────────────────────────
+
+  const record: DossierRecord | null = apiDetail ? toDetailRecord(apiDetail) : null
+  const allProjectLovEntries = useMemo(() => (allProjectsData ?? []).map(toProjectLovEntry), [allProjectsData])
+
+  // Initialize form when record loads asynchronously
+  useEffect(() => {
+    if (apiDetail && initialMode !== 'new') {
+      setForm(getInitialForm(toDetailRecord(apiDetail)))
+      setShowMilitaryFields(apiDetail.projectSpecificCode != null)
+    }
+  }, [apiDetail]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // ── Derived ────────────────────────────────────────────────────────────────
   const docs = record?.documents ?? []
@@ -222,15 +305,14 @@ export default function FormDetail({
     }
   }, [mode, record, isConcurrentlyEdited])
 
-  // Auto-open delete dialog
+  // Auto-open delete dialog (record loads async — guard against re-trigger)
   useEffect(() => {
-    if (autoAction === 'delete' && record && canDelete) {
-      const t = setTimeout(() => {
-        openDeleteDialog()
-      }, 300)
+    if (autoAction === 'delete' && record && canDelete && !autoDeleteTriggeredRef.current) {
+      autoDeleteTriggeredRef.current = true
+      const t = setTimeout(() => openDeleteDialog(), 300)
       return () => clearTimeout(t)
     }
-  }, []) // eslint-disable-line react-hooks/exhaustive-deps
+  }, [record, canDelete]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-focus lookup input when opened
   useEffect(() => {
@@ -340,7 +422,7 @@ export default function FormDetail({
   }
 
   function handleProjectCodeChange(val: string) {
-    const proj = LOV01_DATA.find(p => p.PROJECT_CODE === val)
+    const proj = allProjectLovEntries.find(p => p.PROJECT_CODE === val)
     setForm(f => ({
       ...f,
       PROJECT_CODE: val,
@@ -353,31 +435,13 @@ export default function FormDetail({
   }
 
   function handleBoardCodeChange(val: string) {
-    const proj = LOV01_DATA.find(p => p.GL_SEGMENT6_CODE === val)
+    const proj = allProjectLovEntries.find(p => p.GL_SEGMENT6_CODE === val)
     setForm(f => ({
       ...f,
       PROJECT_MANAGEMENT_CODE: val,
       PROJECT_MANAGEMENT_NAME: proj?.GL_SEGMENT6_NAME ?? '',
     }))
     setIsDirty(true)
-    // VAL-18 duplicate check
-    if (mode === 'new' && form.PROJECT_CODE && val) {
-      checkDuplicate(form.PROJECT_CODE, val)
-    }
-  }
-
-  function checkDuplicate(projectCode: string, boardCode: string) {
-    const found = MOCK_DATA.records.find(r =>
-      r.PROJECT_CODE === projectCode &&
-      r.PROJECT_MANAGEMENT_CODE === boardCode &&
-      r.STATE_CODE === 'DRAFT' &&
-      r.id !== record?.id
-    )
-    if (found) {
-      setDupProject(projectCode)
-      setDupBoard(boardCode)
-      setIsDuplicateOpen(true)
-    }
   }
 
   // ── Action handlers ────────────────────────────────────────────────────────
@@ -420,34 +484,83 @@ export default function FormDetail({
     return true
   }, [form])
 
-  function onSave() {
+  async function onSave() {
     if (!validateForm()) return
-    alert('✔ MSG-OK-SAVE: Lưu hồ sơ thành công!\n\nMã hồ sơ: HS-CHI-2026-XXXX\nTrạng thái: Đang hoàn thiện')
-    setIsDirty(false)
-    navigateTo('/capex-dossier')
+    try {
+      await createMutation.mutateAsync({
+        sendDate: toISODate(form.SEND_DATE),
+        projectCode: form.PROJECT_CODE,
+        projectSpecificCode: form.PROJECT_SPECIFIC_CODE || null,
+        projectManagementCode: form.PROJECT_MANAGEMENT_CODE,
+        dataSourceCode: form.DATA_SOURCE_CODE as DataSourceCode,
+      })
+      setIsDirty(false)
+      navigateTo('/capex-dossier')
+    } catch (error: unknown) {
+      if ((error as Record<string, unknown>)._handled) return
+      window.alert('[MSG-ERR-SAVE] Lỗi khi tạo hồ sơ')
+    }
   }
 
-  function onSaveEdit() {
+  async function onSaveEdit() {
     if (!validateForm()) return
-    alert('✔ MSG-OK-SAVE: Lưu hồ sơ thành công!\nTrạng thái: Đang hoàn thiện')
-    setIsDirty(false)
-    navigateTo('/capex-dossier')
+    try {
+      await updateMutation.mutateAsync({
+        sendDate: toISODate(form.SEND_DATE),
+        projectCode: form.PROJECT_CODE,
+        projectSpecificCode: form.PROJECT_SPECIFIC_CODE || undefined,
+        projectManagementCode: form.PROJECT_MANAGEMENT_CODE,
+        version: apiDetail?.version ?? 0,
+      })
+      setIsDirty(false)
+      navigateTo('/capex-dossier')
+    } catch (error: unknown) {
+      if ((error as Record<string, unknown>)._handled) return
+      window.alert('[MSG-ERR-SAVE] Lỗi khi cập nhật hồ sơ')
+    }
   }
 
-  function onSaveDraft() {
-    alert('💾 MSG-OK-SAVE: Lưu nháp thành công!\nTrạng thái: Đang hoàn thiện')
-    setIsDirty(false)
+  async function onSaveDraft() {
+    if (!validateForm()) return
+    try {
+      if (mode === 'new') {
+        await createMutation.mutateAsync({
+          sendDate: toISODate(form.SEND_DATE),
+          projectCode: form.PROJECT_CODE,
+          projectSpecificCode: form.PROJECT_SPECIFIC_CODE || null,
+          projectManagementCode: form.PROJECT_MANAGEMENT_CODE,
+          dataSourceCode: form.DATA_SOURCE_CODE as DataSourceCode,
+        })
+      } else {
+        await updateMutation.mutateAsync({
+          sendDate: toISODate(form.SEND_DATE),
+          projectCode: form.PROJECT_CODE,
+          projectSpecificCode: form.PROJECT_SPECIFIC_CODE || undefined,
+          projectManagementCode: form.PROJECT_MANAGEMENT_CODE,
+          version: apiDetail?.version ?? 0,
+        })
+      }
+      setIsDirty(false)
+    } catch (error: unknown) {
+      if ((error as Record<string, unknown>)._handled) return
+      window.alert('[MSG-ERR-SAVE] Lỗi khi lưu nháp')
+    }
   }
 
-  function onSubmit() {
+  async function onSubmit() {
     if (!validateForm()) return
     if (!canSubmit) {
-      alert('[MSG-ERR-SUBMIT] Không thể gửi kiểm soát. Hồ sơ cần có ít nhất 1 chứng từ.')
+      window.alert('[MSG-ERR-SUBMIT] Không thể gửi kiểm soát. Hồ sơ cần có ít nhất 1 chứng từ.')
       return
     }
-    if (confirm('Bạn có chắc muốn Gửi kiểm soát?\n\nSau khi gửi, hồ sơ sẽ chuyển sang trạng thái Chờ kiểm soát.')) {
-      alert('✔ MSG-OK-SUBMIT: Đã gửi hồ sơ để kiểm soát!\nThông báo đã gửi đến Người kiểm soát.')
-      navigateTo('/capex-dossier')
+    if (window.confirm('Bạn có chắc muốn Gửi kiểm soát?\n\nSau khi gửi, hồ sơ sẽ chuyển sang trạng thái Chờ kiểm soát.')) {
+      try {
+        await submitMutation.mutateAsync(record!.id)
+        navigateTo('/capex-dossier')
+      } catch (error: unknown) {
+        if ((error as Record<string, unknown>)._handled) return
+        window.alert('[MSG-ERR-SUBMIT] Lỗi khi gửi hồ sơ kiểm soát')
+      }
     }
   }
 
@@ -459,10 +572,18 @@ export default function FormDetail({
     setIsDeleteOpen(true)
   }
 
-  function onConfirmDelete() {
-    alert('✔ MSG-OK-DELETE: Xoá hồ sơ thành công!\nHồ sơ đã được ẩn khỏi danh sách.')
-    setIsDeleteOpen(false)
-    navigateTo('/capex-dossier')
+  async function onConfirmDelete() {
+    try {
+      await deleteMutation.mutateAsync({
+        id: record!.id,
+        data: { deleteReason, confirmReviewed },
+      })
+      setIsDeleteOpen(false)
+      navigateTo('/capex-dossier')
+    } catch (error: unknown) {
+      if ((error as Record<string, unknown>)._handled) return
+      window.alert('[MSG-ERR-DELETE] Lỗi khi xoá hồ sơ')
+    }
   }
 
   // ── Lookup ─────────────────────────────────────────────────────────────────
@@ -532,6 +653,16 @@ export default function FormDetail({
   }
 
   // ── Render ─────────────────────────────────────────────────────────────────
+
+  if (isDetailLoading && initialRecordId) {
+    return (
+      <div className="form-detail-root">
+        <div className="page-wrapper">
+          <div style={{ padding: 40, textAlign: 'center' }}>Đang tải...</div>
+        </div>
+      </div>
+    )
+  }
 
   const wf = record ? getWorkflowCircle(record.STATE_CODE) : { makerClass: 'active', checkerClass: '', approverClass: '', line1Class: '', line2Class: '' }
   const history = buildHistory()

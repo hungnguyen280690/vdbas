@@ -1,0 +1,10 @@
+[
+  { "username": "nguyen.van.a",   "fullname": "Nguyễn Văn A",      "role": "Maker",    "unit": "Phòng Kế toán"   },
+  { "username": "tran.thi.b",     "fullname": "Trần Thị B",        "role": "Maker",    "unit": "Phòng Kế toán"   },
+  { "username": "le.van.c",       "fullname": "Lê Văn C",          "role": "Maker",    "unit": "Phòng Tài chính" },
+  { "username": "pham.thi.d",     "fullname": "Phạm Thị D",        "role": "Maker",    "unit": "Phòng Tài chính" },
+  { "username": "hoang.van.e",    "fullname": "Hoàng Văn E",       "role": "Maker",    "unit": "Ban Đầu tư"      },
+  { "username": "vu.thi.f",       "fullname": "Vũ Thị F",          "role": "Maker",    "unit": "Ban Đầu tư"      },
+  { "username": "nguyen.checker", "fullname": "Nguyễn Kiểm Soát",  "role": "Checker",  "unit": "Phòng Kiểm soát" },
+  { "username": "tran.approver",  "fullname": "Trần Phê Duyệt",    "role": "Approver", "unit": "Ban Giám đốc"    }
+]

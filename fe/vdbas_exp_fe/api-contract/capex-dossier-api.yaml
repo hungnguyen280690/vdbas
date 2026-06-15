@@ -16,8 +16,10 @@ tags:
     description: CRUD and workflow operations for CAPEX Dossiers
   - name: Document
     description: Operations for documents attached to a dossier
+  - name: Attachment
+    description: Upload and manage file attachments for a dossier
   - name: MasterData
-    description: Reference data for lookups (Projects, Treasury, etc.)
+    description: Reference data for lookups (Projects, Users, etc.)
 
 paths:
   /capex-dossier:
@@ -29,25 +31,56 @@ paths:
         - name: dossierCode
           in: query
           schema: { type: string }
+          description: Filter by dossier code (contains)
         - name: projectCode
           in: query
           schema: { type: string }
+          description: Filter by project code (contains)
         - name: stateCode
           in: query
           schema: { type: string }
-          description: Filter by status (DRAFT, PENDING_CHECK, etc.)
+          description: "Filter by status (DRAFT, PENDING_CHECK, CHECK_REJECTED, CHECK_CANCELLED, PENDING_APPROVE, APPROVE_REJECTED, APPROVE_CANCELLED, APPROVED)"
+        - name: dataSourceCode
+          in: query
+          schema: { type: string, enum: ['Thủ công', DVC, 'Chuyển đổi'] }
+          description: Filter by data source
+        - name: createdBy
+          in: query
+          schema: { type: string }
+          description: Filter by creator username (contains)
+        - name: checkedBy
+          in: query
+          schema: { type: string }
+          description: Filter by checker username (contains)
+        - name: approvedBy
+          in: query
+          schema: { type: string }
+          description: Filter by approver username (contains)
+        - name: dateType
+          in: query
+          schema: { type: string, enum: [SEND_DATE, CREATED_DATE, CHECKED_DATE, APPROVED_DATE], default: SEND_DATE }
+          description: Which date field fromDate/toDate applies to
         - name: fromDate
           in: query
           schema: { type: string, format: date }
+          description: Range start date (applies to dateType field)
         - name: toDate
           in: query
           schema: { type: string, format: date }
+          description: Range end date (applies to dateType field)
         - name: page
           in: query
           schema: { type: integer, default: 0 }
         - name: size
           in: query
           schema: { type: integer, default: 20 }
+        - name: sortField
+          in: query
+          schema: { type: string, default: CREATED_DATE }
+          description: "Field to sort by (DOSSIER_CODE, SEND_DATE, STATE_CODE, CREATED_BY, CREATED_DATE, CHECKED_DATE, APPROVED_DATE, TOTAL_VND)"
+        - name: sortDir
+          in: query
+          schema: { type: string, enum: [asc, desc], default: desc }
       responses:
         '200':
           description: Success
@@ -165,6 +198,119 @@ paths:
                 type: array
                 items: { $ref: '#/components/schemas/DocumentDetail' }
 
+  /capex-dossier/{id}/attachments:
+    get:
+      tags: [Attachment]
+      summary: List attachments of a dossier
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/AttachmentInfo' }
+    post:
+      tags: [Attachment]
+      summary: Upload attachment
+      description: Upload a file attachment (≤10MB, pdf/jpg/png/docx).
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required: [file, archiveType]
+              properties:
+                file:
+                  type: string
+                  format: binary
+                archiveType:
+                  type: string
+                  enum: [ORIGINAL, CONTRACT, INVOICE, STATEMENT, OTHER]
+                description:
+                  type: string
+                  maxLength: 250
+      responses:
+        '201':
+          description: Uploaded
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AttachmentInfo' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+
+  /capex-dossier/{id}/attachments/{attachmentId}:
+    parameters:
+      - name: id
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+      - name: attachmentId
+        in: path
+        required: true
+        schema: { type: string, format: uuid }
+    delete:
+      tags: [Attachment]
+      summary: Delete attachment
+      responses:
+        '204': { description: Deleted }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /capex-dossier/export:
+    get:
+      tags: [Dossier]
+      summary: Export dossier list
+      description: >
+        Export filtered dossiers. If result count ≤ 50,000 returns file directly;
+        otherwise triggers async job and sends email notification.
+      parameters:
+        - name: format
+          in: query
+          required: true
+          schema: { type: string, enum: [xlsx, pdf, csv] }
+        - name: dossierCode
+          in: query
+          schema: { type: string }
+        - name: stateCode
+          in: query
+          schema: { type: string }
+        - name: dataSourceCode
+          in: query
+          schema: { type: string }
+        - name: createdBy
+          in: query
+          schema: { type: string }
+        - name: checkedBy
+          in: query
+          schema: { type: string }
+        - name: approvedBy
+          in: query
+          schema: { type: string }
+        - name: dateType
+          in: query
+          schema: { type: string, enum: [SEND_DATE, CREATED_DATE, CHECKED_DATE, APPROVED_DATE] }
+        - name: fromDate
+          in: query
+          schema: { type: string, format: date }
+        - name: toDate
+          in: query
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: File download (sync, ≤50,000 records)
+          content:
+            application/octet-stream:
+              schema: { type: string, format: binary }
+        '202':
+          description: Async export accepted — email notification will be sent on completion
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  jobId: { type: string }
+                  message: { type: string }
+
   /master-data/projects:
     get:
       tags: [MasterData]
@@ -176,6 +322,13 @@ paths:
         - name: name
           in: query
           schema: { type: string }
+        - name: projectTypeCode
+          in: query
+          schema: { type: string, enum: [Military, Citizen] }
+        - name: projectManagementCode
+          in: query
+          schema: { type: string }
+          description: Filter by GL_SEGMENT6_CODE
       responses:
         '200':
           description: Success
@@ -184,6 +337,27 @@ paths:
               schema:
                 type: array
                 items: { $ref: '#/components/schemas/ProjectInfo' }
+
+  /master-data/users:
+    get:
+      tags: [MasterData]
+      summary: Search users (LOV.USER)
+      parameters:
+        - name: keyword
+          in: query
+          schema: { type: string }
+          description: Search by username or fullname (contains)
+        - name: role
+          in: query
+          schema: { type: string, enum: [Maker, Checker, Approver] }
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/UserInfo' }
 
 components:
   schemas:
@@ -200,11 +374,18 @@ components:
         projectSpecificName: { type: string, nullable: true }
         projectManagementCode: { type: string }
         projectManagementName: { type: string }
-        dataSourceCode: { type: string, enum: [MANUAL, DVC] }
+        dataSourceCode: { type: string, enum: ['Thủ công', DVC, 'Chuyển đổi'] }
         createdBy: { type: string }
         createdDate: { type: string, format: date-time }
         updatedBy: { type: string }
         updatedDate: { type: string, format: date-time }
+        checkedBy: { type: string, nullable: true }
+        checkedDate: { type: string, format: date-time, nullable: true }
+        approvedBy: { type: string, nullable: true }
+        approvedDate: { type: string, format: date-time, nullable: true }
+        checkRejectionReason: { type: string, nullable: true }
+        approvalRejectionReason: { type: string, nullable: true }
+        returningReason: { type: string, nullable: true, description: "Lý do từ chối tiếp nhận" }
         version: { type: integer, description: "Optimistic locking version (F-VER)" }
 
     DossierSummary:
@@ -214,9 +395,18 @@ components:
         dossierCode: { type: string }
         sendDate: { type: string, format: date }
         stateCode: { type: string }
+        projectCode: { type: string }
         projectName: { type: string }
+        dataSourceCode: { type: string }
         createdBy: { type: string }
         createdDate: { type: string, format: date-time }
+        checkedBy: { type: string, nullable: true }
+        checkedDate: { type: string, format: date-time, nullable: true }
+        approvedBy: { type: string, nullable: true }
+        approvedDate: { type: string, format: date-time, nullable: true }
+        checkRejectionReason: { type: string, nullable: true }
+        approvalRejectionReason: { type: string, nullable: true }
+        returningReason: { type: string, nullable: true, description: "Lý do từ chối tiếp nhận" }
         totalAmountVnd: { type: number }
         documentCount: { type: integer }
 
@@ -226,9 +416,9 @@ components:
       properties:
         sendDate: { type: string, format: date }
         projectCode: { type: string }
-        projectSpecificCode: { type: string }
+        projectSpecificCode: { type: string, nullable: true }
         projectManagementCode: { type: string }
-        dataSourceCode: { type: string, default: MANUAL }
+        dataSourceCode: { type: string, enum: ['Thủ công', DVC, 'Chuyển đổi'], default: 'Thủ công' }
 
     DossierUpdateRequest:
       type: object
@@ -372,9 +562,20 @@ components:
       properties:
         projectCode: { type: string, description: "EXP_PROJECT.PROJECT_CODE" }
         projectName: { type: string, description: "EXP_PROJECT.PROJECT_NAME" }
-        projectTypeCode: { type: string, description: "EXP_PROJECT.PROJECT_TYPE_CODE" }
-        projectManagementCode: { type: string, description: "EXP_PROJECT.PROJECT_MANAGEMENT_CODE" }
+        projectTypeCode: { type: string, enum: [Military, Citizen], description: "EXP_PROJECT.PROJECT_TYPE_CODE" }
+        projectSpecificCode: { type: string, nullable: true, description: "Mã dự án đặc thù (Military only)" }
+        projectSpecificName: { type: string, nullable: true, description: "Tên dự án đặc thù (Military only)" }
+        projectManagementCode: { type: string, description: "EXP_PROJECT.PROJECT_MANAGEMENT_CODE = GL_SEGMENT6_CODE" }
         projectManagementName: { type: string, description: "EXP_PROJECT_MANAGEMENT.PROJECT_MANAGEMENT_NAME (via JOIN)" }
+
+    UserInfo:
+      type: object
+      description: "User lookup for Maker/Checker/Approver LOV"
+      properties:
+        username: { type: string }
+        fullname: { type: string }
+        role: { type: string, enum: [Maker, Checker, Approver] }
+        unit: { type: string, description: "Đơn vị/phòng ban" }
 
     ApiError:
       type: object

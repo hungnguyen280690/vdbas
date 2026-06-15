@@ -1,6 +1,8 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import './FormList.css'
-import { MOCK_DATA, USER_LOV, type DossierRecord, type DossierStatus, type MockData } from './FormList.mock'
+import type { DossierRecord, DossierStatus } from './FormList.mock'
+import { CapexDossierHooks, MasterDataHooks } from '../hooks/useCapexDossier'
+import type { DossierSummary } from '../types'
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -37,6 +39,46 @@ function parseDMY(s: string): number | null {
   return parseInt(y + m.padStart(2, '0') + d.padStart(2, '0'), 10)
 }
 
+function fromISODate(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const [y, m, d] = iso.slice(0, 10).split('-')
+  return `${d}/${m}/${y}`
+}
+
+function fromISODateTime(iso: string | null | undefined): string {
+  if (!iso) return ''
+  const dt = new Date(iso)
+  const p = (n: number) => String(n).padStart(2, '0')
+  return `${p(dt.getDate())}/${p(dt.getMonth() + 1)}/${dt.getFullYear()} ${p(dt.getHours())}:${p(dt.getMinutes())}:${p(dt.getSeconds())}`
+}
+
+function toRecord(d: DossierSummary): DossierRecord {
+  return {
+    id: d.dossierId,
+    DOSSIER_CODE: d.dossierCode,
+    SEND_DATE: fromISODate(d.sendDate),
+    PROJECT_CODE: d.projectCode,
+    PROJECT_NAME: d.projectName,
+    PROJECT_TYPE: 'Citizen',
+    PROJECT_MANAGEMENT_CODE: '',
+    PROJECT_MANAGEMENT_NAME: '',
+    STATE_CODE: d.stateCode as DossierStatus,
+    DATA_SOURCE_CODE: d.dataSourceCode,
+    CREATED_BY: d.createdBy,
+    CREATED_DATE: fromISODateTime(d.createdDate),
+    LAST_UPDATED_DATE: '',
+    TOTAL_VND: d.totalAmountVnd,
+    DOCUMENT_COUNT: d.documentCount,
+    CHECKED_BY: d.checkedBy ?? undefined,
+    CHECKED_DATE: fromISODate(d.checkedDate) || undefined,
+    APPROVED_BY: d.approvedBy ?? undefined,
+    APPROVED_DATE: fromISODate(d.approvedDate) || undefined,
+    CHECK_REJECTION_REASON: d.checkRejectionReason ?? undefined,
+    APPROVAL_REJECTION_REASON: d.approvalRejectionReason ?? undefined,
+    RETURNING_REASON: d.returningReason ?? undefined,
+  }
+}
+
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 interface Filters {
@@ -60,7 +102,6 @@ const EMPTY_FILTERS: Filters = {
 }
 
 interface Props {
-  data?: MockData
   showRejectedCol?: boolean
   showCheckedCol?: boolean
   currentUser?: string
@@ -70,14 +111,11 @@ interface Props {
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const FormList: React.FC<Props> = ({
-  data = MOCK_DATA,
   showRejectedCol: showRejectedColProp = false,
   showCheckedCol: showCheckedColProp = false,
   currentUser,
   onNavigate,
 }) => {
-  const allRecords: DossierRecord[] = data.records
-
   // ── Filter state
   const [filters, setFilters] = useState<Filters>(EMPTY_FILTERS)
   const [advOpen, setAdvOpen] = useState(false)
@@ -119,6 +157,16 @@ const FormList: React.FC<Props> = ({
   // ── Refs for auto-focus
   const lovUserNameRef = useRef<HTMLInputElement>(null)
   const lovDossierCodeRef = useRef<HTMLInputElement>(null)
+
+  // ── API ──────────────────────────────────────────────────────────────────────
+
+  const { data: apiData, isLoading, isError } = CapexDossierHooks.useList({ size: 1000 })
+  const submitMutation = CapexDossierHooks.useSubmit()
+  const { data: usersData } = MasterDataHooks.useUsers({
+    keyword: lovUserName || undefined,
+    role: lovUserRole ? lovUserRole as 'Maker' | 'Checker' | 'Approver' : undefined,
+  })
+  const allRecords = useMemo(() => (apiData?.content ?? []).map(toRecord), [apiData])
 
   // ── Derived: filtered + sorted ─────────────────────────────────────────────
 
@@ -252,10 +300,15 @@ const FormList: React.FC<Props> = ({
   function viewRecord(id: string) { goToDetail(id, 'view') }
   function editRecord(id: string) { goToDetail(id, 'edit') }
   function deleteRecord(id: string) { goToDetail(id, 'view', { action: 'delete' }) }
-  function submitRecord(id: string, code: string) {
-    if (window.confirm(`Gửi kiểm soát hồ sơ ${code}?`))
-      window.alert('✔ MSG-OK-SUBMIT: Đã gửi hồ sơ để kiểm soát!')
-    void id
+  async function submitRecord(id: string, code: string) {
+    if (window.confirm(`Gửi kiểm soát hồ sơ ${code}?`)) {
+      try {
+        await submitMutation.mutateAsync(id)
+      } catch (error: unknown) {
+        if ((error as Record<string, unknown>)._handled) return
+        window.alert('[MSG-ERR-SUBMIT] Lỗi khi gửi hồ sơ kiểm soát')
+      }
+    }
   }
   const getSelectedRecord = useCallback((): DossierRecord | null => {
     if (!selectedRowId) return null
@@ -323,11 +376,7 @@ const FormList: React.FC<Props> = ({
     setIsUserLookupOpen(false)
   }
 
-  const filteredUserLOV = USER_LOV.filter((u) => {
-    const nm = lovUserName.toLowerCase()
-    return (!nm || u.username.toLowerCase().includes(nm) || u.fullname.toLowerCase().includes(nm)) &&
-           (!lovUserRole || u.role === lovUserRole)
-  })
+  const filteredUserLOV = usersData ?? []
 
   // ── Dossier LOV ────────────────────────────────────────────────────────────
 
@@ -439,6 +488,9 @@ const FormList: React.FC<Props> = ({
 
   const roleBg = (role: string) => role === 'Approver' ? '#d4edda' : role === 'Checker' ? '#cce5ff' : '#e9ecef'
   const roleColor = (role: string) => role === 'Approver' ? '#155724' : role === 'Checker' ? '#004085' : '#495057'
+
+  if (isLoading) return <div className="page-wrapper"><div style={{ padding: 40, textAlign: 'center' }}>Đang tải...</div></div>
+  if (isError)   return <div className="page-wrapper"><div style={{ padding: 40, color: 'red' }}>Lỗi tải dữ liệu. Vui lòng thử lại.</div></div>
 
   return (
     <div className="page-wrapper">

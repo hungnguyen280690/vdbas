@@ -1,0 +1,47 @@
+[
+  {
+    "projectCode": "7122155",
+    "projectName": "Dự án nâng cấp bệnh viện Bạch Mai",
+    "projectTypeCode": "Citizen",
+    "projectSpecificCode": null,
+    "projectSpecificName": null,
+    "projectManagementCode": "3029123",
+    "projectManagementName": "BQLDA bệnh viện Bạch Mai"
+  },
+  {
+    "projectCode": "7004686",
+    "projectName": "Các dự án thuộc dự án bộ quốc phòng",
+    "projectTypeCode": "Military",
+    "projectSpecificCode": "001200037",
+    "projectSpecificName": "Dự án TM02",
+    "projectManagementCode": "1059227",
+    "projectManagementName": "BQL Cục thông tin BQP"
+  },
+  {
+    "projectCode": "7004686",
+    "projectName": "Các dự án thuộc dự án bộ quốc phòng",
+    "projectTypeCode": "Military",
+    "projectSpecificCode": "001200038",
+    "projectSpecificName": "Dự án TM03",
+    "projectManagementCode": "1059227",
+    "projectManagementName": "BQL Cục thông tin BQP"
+  },
+  {
+    "projectCode": "7033991",
+    "projectName": "Dự án đầu tư xây dựng trường học khu vực miền Bắc",
+    "projectTypeCode": "Citizen",
+    "projectSpecificCode": null,
+    "projectSpecificName": null,
+    "projectManagementCode": "4011567",
+    "projectManagementName": "BQL Dự án Giáo dục vùng I"
+  },
+  {
+    "projectCode": "7088123",
+    "projectName": "Dự án cải tạo hệ thống giao thông đô thị Hà Nội",
+    "projectTypeCode": "Citizen",
+    "projectSpecificCode": null,
+    "projectSpecificName": null,
+    "projectManagementCode": "5022334",
+    "projectManagementName": "Ban QLDA Giao thông Hà Nội"
+  }
+]

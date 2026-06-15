@@ -1,7 +1,35 @@
 {
   "permissions": {
     "allow": [
-      "Bash(npm install *)"
+      "Bash(npm install *)",
+      "Read(//home/hungnv256/.claude/commands/**)",
+      "Read(//home/hungnv256/.claude/**)",
+      "Bash(node server.js)",
+      "Bash(curl -s http://localhost:9090/api/v1/capex-dossier?page=0)",
+      "Bash(node -e \"const d=require\\('fs'\\).readFileSync\\('/dev/stdin','utf8'\\); const j=JSON.parse\\(d\\); console.log\\('total:', j.totalElements, '| content count:', j.content?.length, '| first:', j.content?.[0]?.dossierCode\\)\")",
+      "Bash(curl *)",
+      "Bash(lsof -ti:9090)",
+      "Bash(xargs kill -9)",
+      "Bash(python3 -m json.tool --no-ensure-ascii)",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('dossierCode:', d['dossierCode'], '| docs:', len\\(d['documents']\\), '| state:', d['stateCode']\\)\")",
+      "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); [print\\(p['projectCode'], p.get\\('projectSpecificCode'\\)\\) for p in d]\")",
+      "Bash(python3 -m json.tool)",
+      "Bash(npx tsc *)",
+      "Skill(run)",
+      "Bash(fuser -k 9090/tcp 3000/tcp 3003/tcp)",
+      "Bash(npm start *)",
+      "Bash(echo \"mock-server PID: $!\")",
+      "Bash(npm run *)",
+      "Bash(echo \"exp PID: $!\")",
+      "Bash(echo \"host PID: $!\")",
+      "Bash(chromium-cli screenshot *)",
+      "Bash(DISPLAY=:0 google-chrome --headless --screenshot=/tmp/host-screenshot.png --window-size=1440,900 --no-sandbox --disable-gpu http://localhost:3000)",
+      "Bash(DISPLAY=:0 google-chrome --headless --screenshot=/tmp/host-screenshot2.png --window-size=1440,900 --no-sandbox --disable-gpu --virtual-time-budget=5000 http://localhost:3000)",
+      "Bash(node -e ' *)",
+      "Bash(timeout 20 node -e ' *)",
+      "Bash(pkill -f \"node.*server.js\")",
+      "Bash(pkill -f \"vite.*3000\")",
+      "Bash(pkill -f \"vite.*3003\")"
     ]
   }
 }
