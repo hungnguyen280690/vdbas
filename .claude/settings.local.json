@@ -45,7 +45,9 @@
       "Bash(curl -s \"http://localhost:8085/api/v1/capex-dossier?size=1&stateCode=DRAFT\" -H \"X-User-Id: test\")",
       "Bash(curl -s \"http://localhost:8085/api/v1/master-data/treasury\" -H \"X-User-Id: test-user-001\")",
       "Bash(curl -s \"http://localhost:8085/api/v1/master-data/states\" -H \"X-User-Id: test-user-001\")",
-      "Bash(curl -s \"http://localhost:8085/api/v1/capex-dossier?size=5\" -H \"X-User-Id: test-user-001\")"
+      "Bash(curl -s \"http://localhost:8085/api/v1/capex-dossier?size=5\" -H \"X-User-Id: test-user-001\")",
+      "Bash(ps *)",
+      "Bash(xargs ls)"
     ]
   }
 }

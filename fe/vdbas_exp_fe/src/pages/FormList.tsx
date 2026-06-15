@@ -1,8 +1,14 @@
 import { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import './FormList.css'
 import type { DossierRecord, DossierStatus } from './FormList.mock'
-import { CapexDossierHooks, MasterDataHooks } from '../hooks/useCapexDossier'
-import type { DossierSummary } from '../types'
+import { CapexDossierHooks } from '../hooks/useCapexDossier'
+import type { DossierSummary, UserInfo } from '../types'
+
+const MOCK_USERS: UserInfo[] = [
+  { username: 'maker01',   fullname: 'Người lập 01',       role: 'Maker',    unit: '' },
+  { username: 'checker01', fullname: 'Người kiểm soát 01', role: 'Checker',  unit: '' },
+  { username: 'approver01',fullname: 'Người phê duyệt 01', role: 'Approver', unit: '' },
+]
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
@@ -162,10 +168,6 @@ const FormList: React.FC<Props> = ({
 
   const { data: apiData, isLoading, isError } = CapexDossierHooks.useList({ size: 1000 })
   const submitMutation = CapexDossierHooks.useSubmit()
-  const { data: usersData } = MasterDataHooks.useUsers({
-    keyword: lovUserName || undefined,
-    role: lovUserRole ? lovUserRole as 'Maker' | 'Checker' | 'Approver' : undefined,
-  })
   const allRecords = useMemo(() => (apiData?.content ?? []).map(toRecord), [apiData])
 
   // ── Derived: filtered + sorted ─────────────────────────────────────────────
@@ -376,7 +378,10 @@ const FormList: React.FC<Props> = ({
     setIsUserLookupOpen(false)
   }
 
-  const filteredUserLOV = usersData ?? []
+  const filteredUserLOV = MOCK_USERS.filter(u =>
+    (!lovUserName || u.username.includes(lovUserName) || u.fullname.includes(lovUserName)) &&
+    (!lovUserRole || u.role === lovUserRole)
+  )
 
   // ── Dossier LOV ────────────────────────────────────────────────────────────
 

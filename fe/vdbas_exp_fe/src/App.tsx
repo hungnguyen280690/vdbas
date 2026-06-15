@@ -26,7 +26,7 @@ const App: React.FC = () => {
 
   const renderContent = (): ReactElement => {
     if (currentPath === '/category-groups') return <CategoryGroupsPage />
-    if (currentPath === '/capex-dossier')   return <FormList onNavigate={navigate} />
+    if (currentPath === '/capex-dossiers')  return <FormList onNavigate={navigate} />
     if (currentPath === '/capex-dossier/detail') {
       return <FormDetail mode={navParams.mode as 'new' | 'edit' | 'view'} recordId={navParams.id ?? null} onNavigate={navigate} />
     }

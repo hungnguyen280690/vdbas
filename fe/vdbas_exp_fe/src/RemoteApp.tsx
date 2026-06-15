@@ -22,27 +22,24 @@ import FormList from '@/pages/FormList'
 import FormDetail from '@/pages/FormDetail'
 import type { ReactElement } from 'react'
 
-// ── Route registry — add new pages here ───────────────────────────────────────
-interface RouteDefinition {
-  path: string
-  component: ReactElement
-}
-
-const ROUTES: RouteDefinition[] = [
-  { path: '/',                       component: <HomePage />           },
-  { path: '/category-groups',        component: <CategoryGroupsPage /> },
-  { path: '/capex-dossier',          component: <FormList />           },
-  { path: '/capex-dossier/detail',   component: <FormDetail />         },
-]
-
-const renderContent = (currentPath: string): ReactElement => {
-  const route = ROUTES.find((r) => r.path === currentPath)
-  return route ? route.component : <HomePage />
-}
-
 const RemoteApp: React.FC = () => {
   const [currentPath, setCurrentPath]           = useState('/')
+  const [navParams, setNavParams]               = useState<Record<string, string>>({})
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+
+  const navigate = (path: string, params: Record<string, string> = {}) => {
+    setCurrentPath(path)
+    setNavParams(params)
+  }
+
+  const renderContent = (): ReactElement => {
+    if (currentPath === '/category-groups')      return <CategoryGroupsPage />
+    if (currentPath === '/capex-dossiers')       return <FormList onNavigate={navigate} />
+    if (currentPath === '/capex-dossier/detail') {
+      return <FormDetail mode={navParams.mode as 'new' | 'edit' | 'view'} recordId={navParams.id ?? null} onNavigate={navigate} />
+    }
+    return <HomePage />
+  }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -58,7 +55,7 @@ const RemoteApp: React.FC = () => {
                 collapsed={sidebarCollapsed}
                 onCollapse={() => setSidebarCollapsed((c) => !c)}
                 currentPath={currentPath}
-                onMenuClick={setCurrentPath}
+                onMenuClick={(path) => navigate(path)}
               />
               <div style={{
                 flex: 1,
@@ -66,7 +63,7 @@ const RemoteApp: React.FC = () => {
                 background: '#F5F6F7',
                 padding: 24,
               }}>
-                {renderContent(currentPath)}
+                {renderContent()}
               </div>
             </div>
           </PermissionProvider>
