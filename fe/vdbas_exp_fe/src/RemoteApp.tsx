@@ -19,6 +19,7 @@ import '@/i18n'
 import HomePage from '@/pages/HomePage'
 import CategoryGroupsPage from '@/pages/CategoryGroupsPage'
 import FormList from '@/pages/FormList'
+import FormDetail from '@/pages/FormDetail'
 import type { ReactElement } from 'react'
 
 // ── Route registry — add new pages here ───────────────────────────────────────
@@ -28,9 +29,10 @@ interface RouteDefinition {
 }
 
 const ROUTES: RouteDefinition[] = [
-  { path: '/',                 component: <HomePage />           },
-  { path: '/category-groups', component: <CategoryGroupsPage /> },
-  { path: '/capex-dossier',   component: <FormList />           },
+  { path: '/',                       component: <HomePage />           },
+  { path: '/category-groups',        component: <CategoryGroupsPage /> },
+  { path: '/capex-dossier',          component: <FormList />           },
+  { path: '/capex-dossier/detail',   component: <FormDetail />         },
 ]
 
 const renderContent = (currentPath: string): ReactElement => {
