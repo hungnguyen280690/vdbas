@@ -25,7 +25,27 @@
       "Bash(echo \"exit: $?\")",
       "Bash(node -e ' *)",
       "Bash(node *)",
-      "Bash(python3 -m json.tool /home/hungnv256/Documents/code/fe/vdbas_exp_fe/layout/field-spec.json)"
+      "Bash(python3 -m json.tool /home/hungnv256/Documents/code/fe/vdbas_exp_fe/layout/field-spec.json)",
+      "Bash(chmod +x /home/hungnv256/Documents/test-exp-api.sh)",
+      "Bash(bash -n /home/hungnv256/Documents/test-exp-api.sh)",
+      "Bash(./test-exp-api.sh *)",
+      "Bash(chmod +x ./test-exp-api.sh)",
+      "Bash(jar -tf ~/.m2/repository/com/fis/vdbas/vdbas-common/1.0.0-SNAPSHOT/vdbas-common-1.0.0-SNAPSHOT.jar)",
+      "Bash(unzip -l ~/.m2/repository/com/fis/vdbas/vdbas-common/1.0.0-SNAPSHOT/vdbas-common-1.0.0-SNAPSHOT.jar)",
+      "Bash(unzip *)",
+      "Bash(docker rmi vdbas-exp-be-api:latest *)",
+      "Bash(curl -s \"http://localhost:8085/api/v1/capex-dossier?size=50\" -H \"X-User-Id: test-user-001\")",
+      "Bash(xargs cat)",
+      "Bash(docker stop *)",
+      "Bash(docker rm *)",
+      "Bash(xargs ls -la)",
+      "Bash(curl -s \"http://localhost:8085/api/v1/master-data/gl-segments/2\" -H \"X-User-Id: test-user-001\")",
+      "Bash(curl -s \"http://localhost:8085/actuator/info\" -H \"X-User-Id: test-user\")",
+      "Bash(curl -s \"http://localhost:8085/api/v1/capex-dossier?size=1\" -H \"X-User-Id: test-user-001\")",
+      "Bash(curl -s \"http://localhost:8085/api/v1/capex-dossier?size=1&stateCode=DRAFT\" -H \"X-User-Id: test\")",
+      "Bash(curl -s \"http://localhost:8085/api/v1/master-data/treasury\" -H \"X-User-Id: test-user-001\")",
+      "Bash(curl -s \"http://localhost:8085/api/v1/master-data/states\" -H \"X-User-Id: test-user-001\")",
+      "Bash(curl -s \"http://localhost:8085/api/v1/capex-dossier?size=5\" -H \"X-User-Id: test-user-001\")"
     ]
   }
 }
