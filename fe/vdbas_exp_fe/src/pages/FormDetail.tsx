@@ -653,7 +653,7 @@ export default function FormDetail({
                   placeholder="(Tự động sinh sau khi Lưu)"
                   value={form.DOSSIER_CODE}
                   onChange={() => {}}
-                  data-api-field="header.paymentDossierId"
+                  data-api-field="dossierCode"
                   data-testid="input-dossier-code"
                 />
               </div>
@@ -677,7 +677,7 @@ export default function FormDetail({
                   value={form.SEND_DATE}
                   disabled={isViewMode}
                   onChange={e => setField('SEND_DATE', e.target.value)}
-                  data-api-field="header.sendDate"
+                  data-api-field="sendDate"
                   data-testid="input-send-date"
                 />
               </div>
@@ -704,7 +704,7 @@ export default function FormDetail({
                     value={form.PROJECT_CODE}
                     disabled={isViewMode}
                     onChange={e => handleProjectCodeChange(e.target.value)}
-                    data-api-field="header.projectId"
+                    data-api-field="projectCode"
                     data-testid="input-project-code"
                   />
                   <button
@@ -739,7 +739,7 @@ export default function FormDetail({
                   placeholder="(Tự động fill theo Mã dự án)"
                   value={form.PROJECT_NAME}
                   onChange={() => {}}
-                  data-api-field="header.projectName"
+                  data-api-field="projectName"
                   data-testid="input-project-name"
                 />
               </div>
@@ -769,7 +769,7 @@ export default function FormDetail({
                     value={form.PROJECT_SPECIFIC_CODE}
                     disabled={isViewMode}
                     onChange={e => setField('PROJECT_SPECIFIC_CODE', e.target.value)}
-                    data-api-field="header.projectSpecId"
+                    data-api-field="projectSpecificCode"
                     data-testid="input-project-specific-code"
                   />
                   <button
@@ -807,7 +807,7 @@ export default function FormDetail({
                   placeholder="(Tự động fill)"
                   value={form.PROJECT_SPECIFIC_NAME}
                   onChange={() => {}}
-                  data-api-field="header.projectSpecName"
+                  data-api-field="projectSpecificName"
                   data-testid="input-project-specific-name"
                 />
               </div>
@@ -834,7 +834,7 @@ export default function FormDetail({
                     value={form.PROJECT_MANAGEMENT_CODE}
                     disabled={isViewMode}
                     onChange={e => handleBoardCodeChange(e.target.value)}
-                    data-api-field="header.projectManagementBoardId"
+                    data-api-field="projectManagementCode"
                     data-testid="input-project-management-code"
                   />
                   <button
@@ -869,7 +869,7 @@ export default function FormDetail({
                   placeholder="(Tự động fill theo Mã ĐVQHNS)"
                   value={form.PROJECT_MANAGEMENT_NAME}
                   onChange={() => {}}
-                  data-api-field="header.projectManagementBoardName"
+                  data-api-field="projectManagementName"
                   data-testid="input-project-management-name"
                 />
               </div>
@@ -888,7 +888,7 @@ export default function FormDetail({
                 <label>Trạng thái hồ sơ <span className="req">*</span></label>
                 <span
                   data-value={form.STATE_CODE}
-                  data-api-field="header.paymentDossierStatus"
+                  data-api-field="stateCode"
                   data-testid="input-state-code"
                 >
                   {STATUS_LABELS[form.STATE_CODE] || form.STATE_CODE}
@@ -913,7 +913,7 @@ export default function FormDetail({
                   value={form.DATA_SOURCE_CODE}
                   disabled={isReadOnly('source')}
                   onChange={e => setField('DATA_SOURCE_CODE', e.target.value)}
-                  data-api-field="header.source"
+                  data-api-field="dataSourceCode"
                   data-testid="input-data-source-code"
                 >
                   <option value="Thủ công">Thủ công</option>
@@ -1035,7 +1035,7 @@ export default function FormDetail({
                     value={attachDocType}
                     onChange={e => setAttachDocType(e.target.value)}
                     data-testid="select-doc-type"
-                    data-api-field="attachments[].docType"
+                    data-api-field="attachments[].archiveType"
                   >
                     <option value="">-- Chọn loại --</option>
                     <option value="ORIGINAL">Chứng từ gốc</option>
@@ -1064,7 +1064,7 @@ export default function FormDetail({
                     value={attachNote}
                     onChange={e => setAttachNote(e.target.value)}
                     data-testid="input-note"
-                    data-api-field="attachments[].note"
+                    data-api-field="attachments[].description"
                   />
                 </div>
               </div>
@@ -1093,7 +1093,7 @@ export default function FormDetail({
                 <tr>
                   <th style={{ width: 40 }}>STT</th>
                   <th data-field-code="CREATED_BY">Người thực hiện</th>
-                  <th data-field-code="ACTION_DATE" data-api-field="history[].actionDate">Thời gian thực hiện</th>
+                  <th data-field-code="ACTION_DATE" data-api-field="approvalHistory[].actionDate">Thời gian thực hiện</th>
                   <th>Loại thao tác</th>
                   <th>Chi tiết thay đổi (oldValue → newValue)</th>
                 </tr>

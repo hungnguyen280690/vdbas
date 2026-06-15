@@ -82,3 +82,36 @@ Visit https://react.dev/link/error-boundaries to learn more about error boundari
 11:05:27 AM [vite] (client) page reload layout/form_detail.html
 11:05:30 AM [vite] (client) page reload layout/form_detail.html
 11:05:37 AM [vite] (client) page reload layout/form_detail.html
+11:10:32 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:16:56 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:17:01 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:17:11 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:17:15 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:17:19 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:17:24 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:17:46 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:17:59 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:18:21 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:18:26 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:18:42 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:25:05 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:25:09 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:25:13 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:25:17 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:25:21 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:25:26 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:25:30 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:25:36 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
+11:28:21 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:24 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:27 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:30 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:34 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:37 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:40 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:43 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:46 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:49 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:52 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:55 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:28:59 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx

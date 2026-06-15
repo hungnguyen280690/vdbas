@@ -63,6 +63,7 @@ interface Props {
   data?: MockData
   showRejectedCol?: boolean
   showCheckedCol?: boolean
+  currentUser?: string
   onNavigate?: (path: string, params?: Record<string, string>) => void
 }
 
@@ -72,6 +73,7 @@ const FormList: React.FC<Props> = ({
   data = MOCK_DATA,
   showRejectedCol: showRejectedColProp = false,
   showCheckedCol: showCheckedColProp = false,
+  currentUser,
   onNavigate,
 }) => {
   const allRecords: DossierRecord[] = data.records
@@ -175,7 +177,6 @@ const FormList: React.FC<Props> = ({
     approved: filtered.filter((r) => r.STATE_CODE === 'APPROVED').length,
     rejected: filtered.filter((r) => r.STATE_CODE === 'CHECK_REJECTED' || r.STATE_CODE === 'APPROVE_REJECTED').length,
     totalVnd: filtered.reduce((s, r) => s + (r.TOTAL_VND ?? 0), 0),
-    footerDocTotal: filtered.reduce((s, r) => s + (r.DOCUMENT_COUNT ?? 0), 0),
   }), [filtered])
 
   // ── Filter tag helpers ─────────────────────────────────────────────────────
@@ -256,12 +257,6 @@ const FormList: React.FC<Props> = ({
       window.alert('✔ MSG-OK-SUBMIT: Đã gửi hồ sơ để kiểm soát!')
     void id
   }
-  function approveRecord(id: string, code: string) {
-    if (window.confirm(`Gửi phê duyệt hồ sơ ${code}?`))
-      window.alert('✔ MSG-INF-NOTIFY-APPROVER: Đã chuyển hồ sơ sang Chờ phê duyệt!')
-    void id
-  }
-
   const getSelectedRecord = useCallback((): DossierRecord | null => {
     if (!selectedRowId) return null
     return allRecords.find((r) => r.id === selectedRowId) ?? null
@@ -408,12 +403,6 @@ const FormList: React.FC<Props> = ({
       if (e.key === 'F4') {
         e.preventDefault()
         openDossierLookup()
-      }
-
-      if (e.key === 'F8') {
-        e.preventDefault()
-        const r = getSelectedRecord()
-        if (r && r.STATE_CODE === 'PENDING_CHECK') approveRecord(r.id, r.DOSSIER_CODE)
       }
 
       if (e.key === 'F9') {
@@ -703,10 +692,10 @@ const FormList: React.FC<Props> = ({
           <table className="data-table" id="list-table">
             <thead>
               <tr>
-                <th data-api-field="list[].paymentDossierId" data-spec-ref="B2.2.row1"
+                <th data-api-field="list[].dossierCode" data-spec-ref="B2.2.row1"
                   title="Click để sắp xếp" onClick={() => handleSort('DOSSIER_CODE')}>Mã hồ sơ ↕</th>
                 <th data-api-field="list[].sendDate" data-spec-ref="B2.2.row2" onClick={() => handleSort('SEND_DATE')}>Ngày gửi ↕</th>
-                <th data-api-field="list[].paymentDossierStatus" data-spec-ref="B2.2.row3" onClick={() => handleSort('STATE_CODE')}>Trạng thái ↕</th>
+                <th data-api-field="list[].stateCode" data-spec-ref="B2.2.row3" onClick={() => handleSort('STATE_CODE')}>Trạng thái ↕</th>
                 <th data-api-field="list[].createdBy" data-spec-ref="B2.2.row4" onClick={() => handleSort('CREATED_BY')}>Người lập ↕</th>
                 <th data-api-field="list[].createdDate" data-spec-ref="B2.2.row5" onClick={() => handleSort('CREATED_DATE')}>Ngày lập ↕</th>
                 <th data-api-field="list[].returningReason" data-spec-ref="B2.2.row6"
@@ -716,17 +705,17 @@ const FormList: React.FC<Props> = ({
                 <th data-api-field="list[].checkedBy" data-spec-ref="B2.2.row7"
                   data-conditional-show="hasCheckedDoc"
                   hidden={!showCheckedCol}
-                  onClick={() => handleSort('CHECKED_BY')}>Người KS ↕</th>
+                  onClick={() => handleSort('CHECKED_BY')}>Người kiểm soát ↕</th>
                 <th data-api-field="list[].checkedDate" data-spec-ref="B2.2.row8"
                   data-conditional-show="hasCheckedDoc"
                   hidden={!showCheckedCol}
-                  onClick={() => handleSort('CHECKED_DATE')}>Ngày KS ↕</th>
+                  onClick={() => handleSort('CHECKED_DATE')}>Ngày kiểm soát ↕</th>
                 <th data-api-field="list[].checkRejectionReason" data-spec-ref="B2.2.row9" className="no-sort">Lý do từ chối/hủy kiểm soát</th>
-                <th data-api-field="list[].approvedBy" data-spec-ref="B2.2.row10" className="no-sort">Người PD</th>
-                <th data-api-field="list[].approvedDate" data-spec-ref="B2.2.row11" onClick={() => handleSort('APPROVED_DATE')}>Ngày PD ↕</th>
+                <th data-api-field="list[].approvedBy" data-spec-ref="B2.2.row10" className="no-sort">Người phê duyệt</th>
+                <th data-api-field="list[].approvedDate" data-spec-ref="B2.2.row11" onClick={() => handleSort('APPROVED_DATE')}>Ngày phê duyệt ↕</th>
                 <th data-api-field="list[].approvalRejectionReason" data-spec-ref="B2.2.row12" className="no-sort">Lý do từ chối/hủy phê duyệt</th>
-                <th data-field-code="PROJECT_NAME" data-api-field="list[].projectName" data-spec-ref="B2.2.row1b" onClick={() => handleSort('PROJECT_NAME')}>Dự án/Công trình ↕</th>
-                <th data-api-field="list[].documentCount" onClick={() => handleSort('DOCUMENT_COUNT')}>Số CT ↕</th>
+                <th data-field-code="PROJECT_NAME" data-api-field="list[].projectName" data-spec-ref="B2.2.row1b" onClick={() => handleSort('PROJECT_NAME')}>Tên dự án ↕</th>
+                <th data-api-field="list[].documentCount" style={{ textAlign: 'center' }} onClick={() => handleSort('DOCUMENT_COUNT')}>Số CT ↕</th>
                 <th data-api-field="list[].totalVnd" onClick={() => handleSort('TOTAL_VND')}>Tổng tiền VND ↕</th>
                 <th className="no-sort" data-spec-ref="B2.2.rowN" style={{ textAlign: 'center' }}>Thao tác</th>
               </tr>
@@ -740,8 +729,8 @@ const FormList: React.FC<Props> = ({
                   </td>
                 </tr>
               ) : pageData.map((r) => {
-                const canEdit = r.STATE_CODE === 'DRAFT' || r.STATE_CODE === 'CHECK_CANCELLED'
-                const canDelete = r.STATE_CODE === 'DRAFT'
+                const canEdit = (r.STATE_CODE === 'DRAFT' || r.STATE_CODE === 'CHECK_CANCELLED') && (!currentUser || r.CREATED_BY === currentUser)
+                const canDelete = r.STATE_CODE === 'DRAFT' && (!currentUser || r.CREATED_BY === currentUser)
                 const isSelected = selectedRowId === r.id
                 return (
                   <tr key={r.id} data-record-id={r.id} data-testid={`row-${r.id}`}
@@ -765,7 +754,7 @@ const FormList: React.FC<Props> = ({
                     <td>{r.APPROVAL_REJECTION_REASON ?? ''}</td>
                     <td style={{ maxWidth: 220, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }} title={r.PROJECT_NAME}>{r.PROJECT_NAME}</td>
                     <td style={{ textAlign: 'center' }}>{r.DOCUMENT_COUNT}</td>
-                    <td className="text-right">{formatNum(r.TOTAL_VND)}</td>
+                    <td style={{ textAlign: 'right', fontFamily: 'monospace' }}>{formatNum(r.TOTAL_VND ?? 0)}</td>
                     <td onClick={(e) => e.stopPropagation()}>
                       <div className="actions-col">
                         <button className="btn btn-ghost btn-sm" title="Xem (F3)"
@@ -789,11 +778,11 @@ const FormList: React.FC<Props> = ({
             </tbody>
             <tfoot>
               <tr>
-                <td colSpan={13} style={{ textAlign: 'right' }}>
+                <td colSpan={13} style={{ textAlign: 'right', color: 'var(--text-muted)' }}>
                   Tổng cộng (<span id="footer-count">{filtered.length}</span> hồ sơ):
                 </td>
-                <td style={{ textAlign: 'center' }} id="footer-doc-total">{stats.footerDocTotal}</td>
-                <td style={{ textAlign: 'right', fontFamily: 'monospace' }} id="footer-vnd-total">{formatNum(stats.totalVnd)}</td>
+                <td style={{ textAlign: 'center' }}>{filtered.reduce((s, r) => s + (r.DOCUMENT_COUNT ?? 0), 0)}</td>
+                <td style={{ textAlign: 'right', fontFamily: 'monospace' }}>{formatNum(filtered.reduce((s, r) => s + (r.TOTAL_VND ?? 0), 0))}</td>
                 <td></td>
               </tr>
             </tfoot>
