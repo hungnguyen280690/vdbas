@@ -68,3 +68,17 @@ Visit https://react.dev/link/error-boundaries to learn more about error boundari
 9:19:14 AM [vite] (client) hmr update /src/index.css, /src/pages/FormList.tsx
 9:19:18 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
 9:19:24 AM [vite] (client) hmr update /src/index.css, /src/pages/FormDetail.tsx
+11:04:41 AM [vite] (client) page reload layout/form_list.html
+11:04:46 AM [vite] (client) page reload layout/form_detail.html
+11:04:49 AM [vite] (client) page reload layout/form_detail.html
+11:04:54 AM [vite] (client) page reload layout/form_detail.html
+11:04:58 AM [vite] (client) page reload layout/form_detail.html
+11:05:02 AM [vite] (client) page reload layout/form_detail.html
+11:05:06 AM [vite] (client) page reload layout/form_detail.html
+11:05:10 AM [vite] (client) page reload layout/form_detail.html
+11:05:14 AM [vite] (client) page reload layout/form_detail.html
+11:05:18 AM [vite] (client) page reload layout/form_detail.html
+11:05:21 AM [vite] (client) page reload layout/form_detail.html
+11:05:27 AM [vite] (client) page reload layout/form_detail.html
+11:05:30 AM [vite] (client) page reload layout/form_detail.html
+11:05:37 AM [vite] (client) page reload layout/form_detail.html

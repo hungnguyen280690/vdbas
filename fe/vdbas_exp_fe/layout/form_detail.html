@@ -261,7 +261,7 @@
           <input name="DOSSIER_CODE" type="text"
                  class="form-control" readonly
                  placeholder="(Tự động sinh sau khi Lưu)"
-                 data-api-field="header.paymentDossierId"
+                 data-api-field="dossierCode"
                  data-testid="input-dossier-code" />
         </div>
 
@@ -278,7 +278,7 @@
           <label>Ngày gửi hồ sơ <span class="req">*</span></label>
           <input name="SEND_DATE" type="text"
                  class="form-control" placeholder="dd/mm/yyyy"
-                 data-api-field="header.sendDate"
+                 data-api-field="sendDate"
                  data-testid="input-send-date" />
         </div>
 
@@ -297,7 +297,7 @@
           <div class="input-group">
             <input name="PROJECT_CODE" type="text"
                    class="form-control" placeholder="Nhập hoặc F4 để tra cứu"
-                   data-api-field="header.projectId"
+                   data-api-field="projectCode"
                    data-testid="input-project-code"
                    oninput="onProjectIdChange(this.value)" />
             <button type="button" class="btn-lookup" title="F4 — Tra cứu dự án" data-testid="btn-lookup-project">🔍</button>
@@ -320,7 +320,7 @@
           <input name="PROJECT_NAME" type="text"
                  class="form-control" readonly
                  placeholder="(Tự động fill theo Mã dự án)"
-                 data-api-field="header.projectName"
+                 data-api-field="projectName"
                  data-testid="input-project-name" />
         </div>
 
@@ -340,7 +340,7 @@
           <div class="input-group">
             <input name="PROJECT_SPECIFIC_CODE" type="text"
                    class="form-control" placeholder="F4 — Chỉ dành cho Military"
-                   data-api-field="header.projectSpecId"
+                   data-api-field="projectSpecificCode"
                    data-testid="input-project-specific-code" />
             <button type="button" class="btn-lookup" title="F4" data-testid="btn-lookup-spec">🔍</button>
           </div>
@@ -362,7 +362,7 @@
           <input name="PROJECT_SPECIFIC_NAME" type="text"
                  class="form-control" readonly
                  placeholder="(Tự động fill)"
-                 data-api-field="header.projectSpecName"
+                 data-api-field="projectSpecificName"
                  data-testid="input-project-specific-name" />
         </div>
 
@@ -381,7 +381,7 @@
           <div class="input-group">
             <input name="PROJECT_MANAGEMENT_CODE" type="text"
                    class="form-control" placeholder="Nhập hoặc F4 để tra cứu"
-                   data-api-field="header.projectManagementBoardId"
+                   data-api-field="projectManagementCode"
                    data-testid="input-project-management-code"
                    oninput="onBoardIdChange(this.value)" />
             <button type="button" class="btn-lookup" title="F4 — Tra cứu ĐVQHNS" data-testid="btn-lookup-board">🔍</button>
@@ -403,7 +403,7 @@
           <input name="PROJECT_MANAGEMENT_NAME" type="text"
                  class="form-control" readonly
                  placeholder="(Tự động fill theo Mã ĐVQHNS)"
-                 data-api-field="header.projectManagementBoardName"
+                 data-api-field="projectManagementName"
                  data-testid="input-project-management-name" />
         </div>
 
@@ -419,7 +419,7 @@
              data-lov="LOV.STATUS">
           <label>Trạng thái hồ sơ <span class="req">*</span></label>
           <span name="STATE_CODE"
-                 data-api-field="header.paymentDossierStatus"
+                 data-api-field="stateCode"
                  data-testid="input-state-code">DRAFT</span>
         </div>
 
@@ -435,7 +435,7 @@
              data-lov="LOV.03">
           <label>Nguồn <span class="req">*</span></label>
           <select name="DATA_SOURCE_CODE" class="form-control"
-                  data-api-field="header.source"
+                  data-api-field="dataSourceCode"
                   data-testid="input-data-source-code">
             <option value="Thủ công">Thủ công</option>
             <option value="DVC">DVC</option>
@@ -508,7 +508,7 @@
                data-lov="LOV.DOC_TYPE">
             <label>Loại tài liệu <span class="req">*</span></label>
             <select name="DOC_TYPE" class="form-control" data-testid="select-doc-type"
-                    data-api-field="attachments[].docType">
+                    data-api-field="attachments[].archiveType">
               <option value="">-- Chọn loại --</option>
               <option value="ORIGINAL">Chứng từ gốc</option>
               <option value="CONTRACT">Hợp đồng</option>
@@ -525,7 +525,7 @@
             <textarea name="NOTE" class="form-control" maxlength="250" rows="2"
                       placeholder="Mô tả file đính kèm (tuỳ chọn)"
                       data-testid="input-note"
-                      data-api-field="attachments[].note"></textarea>
+                      data-api-field="attachments[].description"></textarea>
           </div>
         </div>
       </div>
@@ -554,7 +554,7 @@
           <tr>
             <th style="width:40px;">STT</th>
             <th data-field-code="CREATED_BY">Người thực hiện</th>
-            <th data-field-code="ACTION_DATE" data-api-field="history[].actionDate">Thời gian thực hiện</th>
+            <th data-field-code="ACTION_DATE" data-api-field="approvalHistory[].actionDate">Thời gian thực hiện</th>
             <th>Loại thao tác</th>
             <th>Chi tiết thay đổi (oldValue → newValue)</th>
           </tr>

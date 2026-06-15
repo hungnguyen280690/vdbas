@@ -24,7 +24,8 @@
       "Bash(DISPLAY=:0 google-chrome --headless --disable-gpu --no-sandbox --screenshot=/tmp/screen_home.png --window-size=1400,900 http://localhost:3000)",
       "Bash(echo \"exit: $?\")",
       "Bash(node -e ' *)",
-      "Bash(node *)"
+      "Bash(node *)",
+      "Bash(python3 -m json.tool /home/hungnv256/Documents/code/fe/vdbas_exp_fe/layout/field-spec.json)"
     ]
   }
 }

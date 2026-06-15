@@ -4,9 +4,9 @@
     "functionName": "Quản lý hồ sơ Chi đầu tư",
     "functionNameEn": "Dossier Management for CAPEX",
     "module": "CHI",
-    "specVersion": "1.3",
+    "specVersion": "1.4",
     "specRef": "CHI.CAPEX_DOSSIER.CRUD_spec_function.md",
-    "generatedAt": "2026-06-05",
+    "generatedAt": "2026-06-15",
     "description": "Cho phép Maker tạo mới, tra cứu, sửa, xoá hồ sơ chi đầu tư; đính kèm chứng từ và gửi kiểm soát theo quy trình Maker–Checker–Approver.",
     "roles": ["Maker", "Checker", "Approver", "Viewer"]
   },
@@ -57,7 +57,7 @@
     "LOV.03": {
       "name": "Nguồn gốc (SOURCE)",
       "values": [
-        { "code": "Thủ công", "label": "Thủ công", "description": "Nhập thủ công — mặc định khi tạo mới" },
+        { "code": "MANUAL", "label": "Thủ công", "description": "Nhập thủ công — mặc định khi tạo mới" },
         { "code": "DVC", "label": "DVC", "description": "Dịch vụ công — khi nhận dữ liệu từ hệ thống khác" }
       ]
     },
@@ -140,7 +140,7 @@
           "immutable": true,
           "specRef": "B1.1.row1",
           "validation": ["VAL-11", "VAL-17"],
-          "apiField": "header.paymentDossierId",
+          "apiField": "dossierCode",
           "lov": null,
           "dependsOn": null,
           "showWhen": null,
@@ -156,7 +156,7 @@
           "format": "dd/MM/yyyy",
           "specRef": "B1.1.row2",
           "validation": ["VAL-02", "VAL-04", "VAL-08"],
-          "apiField": "header.sendDate",
+          "apiField": "sendDate",
           "lov": null,
           "dependsOn": null,
           "showWhen": null
@@ -170,7 +170,7 @@
           "maxLength": 20,
           "specRef": "B1.1.row3",
           "validation": ["VAL-01", "VAL-03", "VAL-06"],
-          "apiField": "header.projectId",
+          "apiField": "projectCode",
           "lov": "LOV.01",
           "lookupScreen": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
           "shortcut": "F4",
@@ -188,7 +188,7 @@
           "maxLength": 255,
           "specRef": "B1.1.row4",
           "validation": ["VAL-06"],
-          "apiField": "header.projectName",
+          "apiField": "projectName",
           "lov": "LOV.01",
           "dependsOn": "PROJECT_CODE",
           "showWhen": null,
@@ -203,7 +203,7 @@
           "maxLength": 20,
           "specRef": "B1.1.row5",
           "validation": ["VAL-03", "VAL-06"],
-          "apiField": "header.projectSpecId",
+          "apiField": "projectSpecificCode",
           "lov": "LOV.01",
           "lookupScreen": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
           "shortcut": "F4",
@@ -221,7 +221,7 @@
           "maxLength": 255,
           "specRef": "B1.1.row6",
           "validation": ["VAL-06"],
-          "apiField": "header.projectSpecName",
+          "apiField": "projectSpecificName",
           "lov": "LOV.01",
           "dependsOn": "PROJECT_SPECIFIC_CODE",
           "showWhen": "PROJECT_TYPE === 'Military'",
@@ -236,7 +236,7 @@
           "maxLength": 20,
           "specRef": "B1.1.row7",
           "validation": ["VAL-01", "VAL-03", "VAL-06"],
-          "apiField": "header.projectManagementBoardId",
+          "apiField": "projectManagementCode",
           "lov": "LOV.05",
           "lookupScreen": "EXP.CAPEX_DOSSIER.LOOKUP.PROJECT",
           "shortcut": "F4",
@@ -254,7 +254,7 @@
           "maxLength": 255,
           "specRef": "B1.1.row8",
           "validation": ["VAL-06"],
-          "apiField": "header.projectManagementBoardName",
+          "apiField": "projectManagementName",
           "lov": "LOV.05",
           "dependsOn": "PROJECT_MANAGEMENT_CODE",
           "showWhen": null,
@@ -270,7 +270,7 @@
           "defaultValue": "DRAFT",
           "specRef": "B1.1.row9",
           "validation": ["VAL-13"],
-          "apiField": "header.paymentDossierStatus",
+          "apiField": "stateCode",
           "lov": "LOV.STATUS",
           "dependsOn": null,
           "showWhen": null,
@@ -282,10 +282,10 @@
           "component": "Dropdown",
           "dataType": "String",
           "required": "Y",
-          "defaultValue": "Thủ công",
+          "defaultValue": "MANUAL",
           "specRef": "B1.1.row10",
           "validation": ["VAL-03"],
-          "apiField": "header.source",
+          "apiField": "dataSourceCode",
           "lov": "LOV.03",
           "dependsOn": null,
           "showWhen": null,
@@ -311,9 +311,9 @@
           "readonly": true,
           "specRef": "B1.2.row1",
           "validation": [],
-          "apiField": "documents[].seqNo",
+          "apiField": null,
           "lov": null,
-          "note": "Auto-generated; sort từ trên xuống bắt đầu từ 1"
+          "note": "UI-only sequential number; không có trường tương ứng trong API"
         },
         {
           "code": "DOCUMENT_NUMBER",
@@ -324,7 +324,7 @@
           "readonly": true,
           "specRef": "B1.2.row2",
           "validation": [],
-          "apiField": "documents[].docId",
+          "apiField": "documents[].documentNumber",
           "lov": null,
           "note": "Hệ thống gen tự động; tham chiếu EXP.CAPEX_DOSSIER.3.3.1"
         },
@@ -337,7 +337,7 @@
           "format": "dd/MM/yyyy",
           "specRef": "B1.2.row3",
           "validation": ["VAL-02"],
-          "apiField": "documents[].docDate",
+          "apiField": "documents[].documentDate",
           "lov": null
         },
         {
@@ -349,7 +349,7 @@
           "format": "dd/MM/yyyy",
           "specRef": "B1.2.row4",
           "validation": ["VAL-02", "VAL-08"],
-          "apiField": "documents[].postingDate",
+          "apiField": "documents[].accountingDate",
           "lov": null
         },
         {
@@ -374,10 +374,10 @@
           "format": "#,##0.00",
           "specRef": "B1.2.row6",
           "validation": ["VAL-04"],
-          "apiField": "documents[].paymentAmount",
+          "apiField": "documents[].lines[].paymentRequestAmount",
           "lov": null,
           "showWhen": "CURRENCY_TYPE_CODE !== 'VND'",
-          "note": "Bắt buộc khi đề nghị rút vốn bằng ngoại tệ"
+          "note": "Bắt buộc khi đề nghị rút vốn bằng ngoại tệ. Thuộc DocumentLine (EXP_DOCUMENT_LINE)"
         },
         {
           "code": "PAYMENT_REQUEST_AMOUNT_VND",
@@ -389,8 +389,9 @@
           "align": "right",
           "specRef": "B1.2.row7",
           "validation": ["VAL-01", "VAL-04", "VAL-07"],
-          "apiField": "documents[].vndPaymentAmount",
-          "lov": null
+          "apiField": "documents[].lines[].paymentRequestAmountVnd",
+          "lov": null,
+          "note": "Thuộc DocumentLine (EXP_DOCUMENT_LINE)"
         }
       ]
     },
@@ -420,7 +421,7 @@
           "required": "Y",
           "specRef": "B3.3.row2",
           "validation": ["VAL-03"],
-          "apiField": "attachments[].docType",
+          "apiField": "attachments[].archiveType",
           "lov": "LOV.DOC_TYPE"
         },
         {
@@ -432,7 +433,7 @@
           "maxLength": 250,
           "specRef": "B3.3.row3",
           "validation": ["VAL-10"],
-          "apiField": "attachments[].note"
+          "apiField": "attachments[].description"
         },
         {
           "code": "FILE_BLOB",
@@ -444,7 +445,8 @@
           "allowedTypes": ["pdf", "jpg", "png", "docx"],
           "specRef": "B3.3.row4",
           "validation": ["VAL-09", "VAL-20"],
-          "apiField": "attachments[].fileBlob"
+          "apiField": null,
+          "note": "UI-only upload field; AttachmentInfo không trả về file binary"
         },
         {
           "code": "FILE_SIZE",
@@ -453,7 +455,8 @@
           "dataType": "Number",
           "required": "N",
           "specRef": "B3.3.row5",
-          "apiField": "attachments[].fileSize"
+          "apiField": null,
+          "note": "Không có trong AttachmentInfo — tính từ file trước khi upload"
         },
         {
           "code": "UPLOADED_BY",
@@ -462,7 +465,7 @@
           "dataType": "String",
           "required": "N",
           "specRef": "B3.3.row6",
-          "apiField": "attachments[].uploadedBy"
+          "apiField": "attachments[].createdBy"
         },
         {
           "code": "UPLOADED_DATE",
@@ -471,7 +474,7 @@
           "dataType": "DateTime",
           "required": "N",
           "specRef": "B3.3.row7",
-          "apiField": "attachments[].uploadedDate"
+          "apiField": "attachments[].createdDate"
         }
       ]
     },
@@ -492,8 +495,8 @@
           "required": "N",
           "readonly": true,
           "specRef": "B3.2.row1",
-          "apiField": "history[].seqNo",
-          "note": "Tự tăng; sort DESC (mới nhất lên đầu)"
+          "apiField": null,
+          "note": "UI-only sequential number; ApprovalLogEntry không có seqNo"
         },
         {
           "code": "CREATED_BY",
@@ -503,7 +506,7 @@
           "required": "N",
           "readonly": true,
           "specRef": "B3.2.row2",
-          "apiField": "history[].createdBy"
+          "apiField": "createdBy"
         },
         {
           "code": "CREATED_DATE",
@@ -514,7 +517,7 @@
           "readonly": true,
           "format": "dd/MM/yyyy HH:mm:ss",
           "specRef": "B3.2.row3",
-          "apiField": "history[].createdDate"
+          "apiField": "createdDate"
         },
         {
           "code": "UPDATED_BY",
@@ -524,7 +527,7 @@
           "required": "N",
           "readonly": true,
           "specRef": "B3.2.row4",
-          "apiField": "history[].lastUpdatedBy"
+          "apiField": "updatedBy"
         },
         {
           "code": "UPDATED_DATE",
@@ -535,7 +538,7 @@
           "readonly": true,
           "format": "dd/MM/yyyy HH:mm:ss",
           "specRef": "B3.2.row5",
-          "apiField": "history[].lastUpdatedDate"
+          "apiField": "updatedDate"
         },
         {
           "code": "ACTION_DATE",
@@ -546,8 +549,8 @@
           "readonly": true,
           "format": "dd/MM/yyyy HH:mm:ss",
           "specRef": "B3.2.row6",
-          "apiField": "history[].actionDate",
-          "note": "Từ EXP_APPROVAL_LOG.ACTION_DATE — thời điểm thực hiện action"
+          "apiField": "approvalHistory[].actionDate",
+          "note": "Từ ApprovalLogEntry.actionDate (EXP_APPROVAL_LOG.ACTION_DATE) — thời điểm thực hiện action"
         }
       ]
     },
@@ -576,7 +579,7 @@
         "readonly": true,
         "specRef": "B3.1.row1",
         "validation": [],
-        "apiField": "header.paymentDossierId",
+        "apiField": "dossierCode",
         "note": "Tự lấy từ bản ghi hiện tại; read-only"
       },
       {
@@ -588,7 +591,7 @@
         "readonly": true,
         "specRef": "B3.1.row2",
         "validation": ["VAL-13"],
-        "apiField": "header.paymentDossierStatus",
+        "apiField": "stateCode",
         "note": "Phải = Đang hoàn thiện (VAL-13)"
       },
       {
@@ -1050,19 +1053,19 @@
     "pageSize": 20,
     "pageSizeOptions": [20, 50, 100, 200],
     "columns": [
-      { "code": "DOSSIER_CODE",             "label": "Mã hồ sơ",                      "type": "link",         "sortable": true,  "apiField": "list[].paymentDossierId",        "specRef": "B2.2.row1" },
+      { "code": "DOSSIER_CODE",             "label": "Mã hồ sơ",                      "type": "link",         "sortable": true,  "apiField": "list[].dossierCode",             "specRef": "B2.2.row1" },
       { "code": "PROJECT_NAME",             "label": "Tên dự án",                      "type": "text",         "sortable": true,  "apiField": "list[].projectName",             "specRef": "B2.2.row1b" },
       { "code": "SEND_DATE",                "label": "Ngày gửi",                       "type": "date",         "sortable": true,  "format": "dd/mm/yyyy HH:MM", "apiField": "list[].sendDate",               "specRef": "B2.2.row2" },
-      { "code": "STATE_CODE",               "label": "Trạng thái",                     "type": "badge",        "sortable": true,  "apiField": "list[].paymentDossierStatus",    "specRef": "B2.2.row3" },
+      { "code": "STATE_CODE",               "label": "Trạng thái",                     "type": "badge",        "sortable": true,  "apiField": "list[].stateCode",               "specRef": "B2.2.row3" },
       { "code": "CREATED_BY",               "label": "Người lập",                      "type": "text",         "sortable": true,  "apiField": "list[].createdBy",               "specRef": "B2.2.row4" },
       { "code": "CREATED_DATE",             "label": "Ngày lập",                       "type": "date",         "sortable": true,  "format": "dd/mm/yyyy HH:MM", "defaultSort": "DESC", "apiField": "list[].createdDate", "specRef": "B2.2.row5" },
-      { "code": "RETURNING_REASON",         "label": "Lý do từ chối tiếp nhận",        "type": "text",         "sortable": true,  "conditionalShow": "hasRejectedDoc", "apiField": "list[].returningReason",  "specRef": "B2.2.row6" },
-      { "code": "CHECKED_BY",               "label": "Người kiểm soát",                "type": "text",         "sortable": true,  "conditionalShow": "hasCheckedDoc",  "apiField": "list[].checkedBy",        "specRef": "B2.2.row7" },
-      { "code": "CHECKED_DATE",             "label": "Ngày kiểm soát",                 "type": "date",         "sortable": true,  "conditionalShow": "hasCheckedDoc",  "apiField": "list[].checkedDate",      "specRef": "B2.2.row8" },
-      { "code": "CHECK_REJECTION_REASON",   "label": "Lý do từ chối/hủy kiểm soát",   "type": "text",         "sortable": false, "apiField": "list[].checkRejectionReason",    "specRef": "B2.2.row9" },
-      { "code": "APPROVED_BY",              "label": "Người phê duyệt",                "type": "text",         "sortable": false, "apiField": "list[].approvedBy",              "specRef": "B2.2.row10" },
-      { "code": "APPROVED_DATE",            "label": "Ngày phê duyệt",                 "type": "date",         "sortable": true,  "apiField": "list[].approvedDate",            "specRef": "B2.2.row11" },
-      { "code": "APPROVAL_REJECTION_REASON","label": "Lý do từ chối/hủy phê duyệt",   "type": "text",         "sortable": false, "apiField": "list[].approvalRejectionReason", "specRef": "B2.2.row12" },
+      { "code": "RETURNING_REASON",         "label": "Lý do từ chối tiếp nhận",        "type": "text",         "sortable": true,  "conditionalShow": "hasRejectedDoc", "apiField": null, "apiNote": "Không có trong DossierSummary — cần BE mở rộng hoặc lấy từ approvalHistory[last].reason", "specRef": "B2.2.row6" },
+      { "code": "CHECKED_BY",               "label": "Người kiểm soát",                "type": "text",         "sortable": true,  "conditionalShow": "hasCheckedDoc",  "apiField": null, "apiNote": "Không có trong DossierSummary — cần BE mở rộng hoặc lấy từ approvalHistory[last].actionUser khi actionRole=Checker", "specRef": "B2.2.row7" },
+      { "code": "CHECKED_DATE",             "label": "Ngày kiểm soát",                 "type": "date",         "sortable": true,  "conditionalShow": "hasCheckedDoc",  "apiField": null, "apiNote": "Không có trong DossierSummary — cần BE mở rộng hoặc lấy từ approvalHistory[last].actionDate khi actionRole=Checker", "specRef": "B2.2.row8" },
+      { "code": "CHECK_REJECTION_REASON",   "label": "Lý do từ chối/hủy kiểm soát",   "type": "text",         "sortable": false, "apiField": null, "apiNote": "Không có trong DossierSummary — cần BE mở rộng hoặc lấy từ approvalHistory[last].reason khi Checker reject", "specRef": "B2.2.row9" },
+      { "code": "APPROVED_BY",              "label": "Người phê duyệt",                "type": "text",         "sortable": false, "apiField": null, "apiNote": "Không có trong DossierSummary — cần BE mở rộng hoặc lấy từ approvalHistory[last].actionUser khi actionRole=Approver", "specRef": "B2.2.row10" },
+      { "code": "APPROVED_DATE",            "label": "Ngày phê duyệt",                 "type": "date",         "sortable": true,  "apiField": null, "apiNote": "Không có trong DossierSummary — cần BE mở rộng hoặc lấy từ approvalHistory[last].actionDate khi APPROVED", "specRef": "B2.2.row11" },
+      { "code": "APPROVAL_REJECTION_REASON","label": "Lý do từ chối/hủy phê duyệt",   "type": "text",         "sortable": false, "apiField": null, "apiNote": "Không có trong DossierSummary — cần BE mở rộng hoặc lấy từ approvalHistory[last].reason khi Approver reject", "specRef": "B2.2.row12" },
       { "code": "ACTIONS",                  "label": "Thao tác",                       "type": "action-group", "sortable": false, "apiField": null,                             "specRef": "B2.2.rowN" }
     ]
   },
@@ -1077,13 +1080,13 @@
     "error": { "style": "red-border + message below" },
     "fieldCode": "UPPER_SNAKE_CASE",
     "apiField": {
-      "note": "API field names dùng camelCase và có thể khác với spec field code. Xem apiField trong từng field definition.",
-      "headerPrefix": "header.",
+      "note": "API field names dùng camelCase theo đúng capex-dossier-api.yaml. Header fields (DossierHeader) không có prefix; list dùng list[]; documents dùng documents[]; amounts dùng documents[].lines[]; attachments dùng attachments[]; approvalHistory dùng approvalHistory[].",
       "listPrefix": "list[].",
       "documentsPrefix": "documents[].",
+      "linesPrefix": "documents[].lines[].",
       "attachmentsPrefix": "attachments[].",
-      "historyPrefix": "history[].",
-      "fVer": "Optimistic lock version — DB column EXP_DOSSIER.DOSSIER_VERSION, apiField: header.dossierVersion"
+      "approvalHistoryPrefix": "approvalHistory[].",
+      "fVer": "Optimistic lock version — DossierHeader.version (DB: EXP_DOSSIER.DOSSIER_VERSION), apiField: 'version'"
     }
   },
   "componentMap": {

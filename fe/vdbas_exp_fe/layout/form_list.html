@@ -325,19 +325,19 @@
       <table class="data-table" id="list-table">
         <thead>
           <tr>
-            <th data-api-field="list[].paymentDossierId" data-spec-ref="B2.2.row1" onclick="sortBy('DOSSIER_CODE')" title="Click để sắp xếp">Mã hồ sơ ↕</th>
-            <th data-api-field="list[].sendDate" data-spec-ref="B2.2.row2" onclick="sortBy('SEND_DATE')">Ngày gửi ↕</th>
-            <th data-api-field="list[].paymentDossierStatus" data-spec-ref="B2.2.row3" onclick="sortBy('STATE_CODE')">Trạng thái ↕</th>
-            <th data-api-field="list[].createdBy" data-spec-ref="B2.2.row4" onclick="sortBy('CREATED_BY')">Người lập ↕</th>
-            <th data-api-field="list[].createdDate" data-spec-ref="B2.2.row5" onclick="sortBy('CREATED_DATE')">Ngày lập ↕</th>
-            <th data-api-field="list[].returningReason" data-spec-ref="B2.2.row6" data-conditional-show="hasRejectedDoc" hidden onclick="sortBy('RETURNING_REASON')">Lý do từ chối tiếp nhận ↕</th>
-            <th data-api-field="list[].checkedBy" data-spec-ref="B2.2.row7" data-conditional-show="hasCheckedDoc" hidden onclick="sortBy('CHECKED_BY')">Người KS ↕</th>
-            <th data-api-field="list[].checkedDate" data-spec-ref="B2.2.row8" data-conditional-show="hasCheckedDoc" hidden onclick="sortBy('CHECKED_DATE')">Ngày KS ↕</th>
-            <th data-api-field="list[].checkRejectionReason" data-spec-ref="B2.2.row9" class="no-sort">Lý do từ chối/hủy kiểm soát</th>
-            <th data-api-field="list[].approvedBy" data-spec-ref="B2.2.row10" class="no-sort">Người PD</th>
-            <th data-api-field="list[].approvedDate" data-spec-ref="B2.2.row11" onclick="sortBy('APPROVED_DATE')">Ngày PD ↕</th>
-            <th data-api-field="list[].approvalRejectionReason" data-spec-ref="B2.2.row12" class="no-sort">Lý do từ chối/hủy phê duyệt</th>
-            <th data-field-code="PROJECT_NAME" data-api-field="list[].projectName" data-spec-ref="B2.2.row1b" onclick="sortBy('PROJECT_NAME')">Dự án/Công trình ↕</th>
+            <th data-field-code="DOSSIER_CODE" data-api-field="list[].dossierCode" data-spec-ref="B2.2.row1" onclick="sortBy('DOSSIER_CODE')" title="Click để sắp xếp">Mã hồ sơ ↕</th>
+            <th data-field-code="SEND_DATE" data-api-field="list[].sendDate" data-spec-ref="B2.2.row2" onclick="sortBy('SEND_DATE')">Ngày gửi ↕</th>
+            <th data-field-code="STATE_CODE" data-api-field="list[].stateCode" data-spec-ref="B2.2.row3" onclick="sortBy('STATE_CODE')">Trạng thái ↕</th>
+            <th data-field-code="CREATED_BY" data-api-field="list[].createdBy" data-spec-ref="B2.2.row4" onclick="sortBy('CREATED_BY')">Người lập ↕</th>
+            <th data-field-code="CREATED_DATE" data-api-field="list[].createdDate" data-spec-ref="B2.2.row5" onclick="sortBy('CREATED_DATE')">Ngày lập ↕</th>
+            <th data-field-code="RETURNING_REASON" data-api-field="list[].returningReason" data-spec-ref="B2.2.row6" data-conditional-show="hasRejectedDoc" hidden onclick="sortBy('RETURNING_REASON')">Lý do từ chối tiếp nhận ↕</th>
+            <th data-field-code="CHECKED_BY" data-api-field="list[].checkedBy" data-spec-ref="B2.2.row7" data-conditional-show="hasCheckedDoc" hidden onclick="sortBy('CHECKED_BY')">Người kiểm soát ↕</th>
+            <th data-field-code="CHECKED_DATE" data-api-field="list[].checkedDate" data-spec-ref="B2.2.row8" data-conditional-show="hasCheckedDoc" hidden onclick="sortBy('CHECKED_DATE')">Ngày kiểm soát ↕</th>
+            <th data-field-code="CHECK_REJECTION_REASON" data-api-field="list[].checkRejectionReason" data-spec-ref="B2.2.row9" class="no-sort">Lý do từ chối/hủy kiểm soát</th>
+            <th data-field-code="APPROVED_BY" data-api-field="list[].approvedBy" data-spec-ref="B2.2.row10" class="no-sort">Người phê duyệt</th>
+            <th data-field-code="APPROVED_DATE" data-api-field="list[].approvedDate" data-spec-ref="B2.2.row11" onclick="sortBy('APPROVED_DATE')">Ngày phê duyệt ↕</th>
+            <th data-field-code="APPROVAL_REJECTION_REASON" data-api-field="list[].approvalRejectionReason" data-spec-ref="B2.2.row12" class="no-sort">Lý do từ chối/hủy phê duyệt</th>
+            <th data-field-code="PROJECT_NAME" data-api-field="list[].projectName" data-spec-ref="B2.2.row1b" onclick="sortBy('PROJECT_NAME')">Tên dự án ↕</th>
             <th data-api-field="list[].documentCount" onclick="sortBy('DOCUMENT_COUNT')">Số CT ↕</th>
             <th data-api-field="list[].totalVnd" onclick="sortBy('TOTAL_VND')">Tổng tiền VND ↕</th>
             <th class="no-sort" data-spec-ref="B2.2.rowN" style="text-align:center;">Thao tác</th>
