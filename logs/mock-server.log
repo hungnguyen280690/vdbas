@@ -1,0 +1,7 @@
+Mock server: http://localhost:9090
+  GET  /api/mock/token
+  GET  /api/me/apps
+  GET  /api/me/menus
+  GET  /api/me/apis
+  POST /api/v1/category-groups/search
+  CRUD /api/v1/category-groups/:groupCode

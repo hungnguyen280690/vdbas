@@ -63,6 +63,7 @@ interface Props {
   data?: MockData
   showRejectedCol?: boolean
   showCheckedCol?: boolean
+  onNavigate?: (path: string, params?: Record<string, string>) => void
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
@@ -71,6 +72,7 @@ const FormList: React.FC<Props> = ({
   data = MOCK_DATA,
   showRejectedCol: showRejectedColProp = false,
   showCheckedCol: showCheckedColProp = false,
+  onNavigate,
 }) => {
   const allRecords: DossierRecord[] = data.records
 
@@ -232,15 +234,23 @@ const FormList: React.FC<Props> = ({
     setCurrentPage(1)
   }, [])
 
-  function viewRecord(id: string) {
-    window.location.href = `form_detail.html?id=${id}&mode=view`
+  function goToDetail(id: string, mode: string, extra?: Record<string, string>) {
+    if (onNavigate) {
+      onNavigate('/capex-dossier/detail', { id, mode, ...extra })
+    } else {
+      window.location.href = `form_detail.html?id=${id}&mode=${mode}${extra?.action ? '&action=' + extra.action : ''}`
+    }
   }
-  function editRecord(id: string) {
-    window.location.href = `form_detail.html?id=${id}&mode=edit`
+  function goToNew() {
+    if (onNavigate) {
+      onNavigate('/capex-dossier/detail', { mode: 'new' })
+    } else {
+      window.location.href = 'form_detail.html?mode=new'
+    }
   }
-  function deleteRecord(id: string) {
-    window.location.href = `form_detail.html?id=${id}&mode=view&action=delete`
-  }
+  function viewRecord(id: string) { goToDetail(id, 'view') }
+  function editRecord(id: string) { goToDetail(id, 'edit') }
+  function deleteRecord(id: string) { goToDetail(id, 'view', { action: 'delete' }) }
   function submitRecord(id: string, code: string) {
     if (window.confirm(`Gửi kiểm soát hồ sơ ${code}?`))
       window.alert('✔ MSG-OK-SUBMIT: Đã gửi hồ sơ để kiểm soát!')
@@ -375,7 +385,7 @@ const FormList: React.FC<Props> = ({
 
       if (e.ctrlKey && e.key === 'n') {
         e.preventDefault()
-        window.location.href = 'form_detail.html?mode=new'
+        goToNew()
       }
 
       if (e.key === 'F5') {
@@ -458,7 +468,7 @@ const FormList: React.FC<Props> = ({
           </button>
           <button className="btn btn-primary" data-testid="btn-new" data-permission="Maker"
             title="Tạo mới (Ctrl+N)"
-            onClick={() => { window.location.href = 'form_detail.html?mode=new' }}>
+            onClick={goToNew}>
             + Tạo mới <span style={{ fontSize: 10, opacity: .75, marginLeft: 2 }}>Ctrl+N</span>
           </button>
         </div>
@@ -739,8 +749,8 @@ const FormList: React.FC<Props> = ({
                     onClick={(e) => handleRowClick(e, r.id)}
                     onDoubleClick={() => viewRecord(r.id)}>
                     <td>
-                      <a href={`form_detail.html?id=${r.id}&mode=view`} className="table-link"
-                        onClick={(e) => e.stopPropagation()}>{r.DOSSIER_CODE}</a>
+                      <span className="table-link" style={{ cursor: 'pointer' }}
+                        onClick={(e) => { e.stopPropagation(); viewRecord(r.id) }}>{r.DOSSIER_CODE}</span>
                     </td>
                     <td>{r.SEND_DATE}</td>
                     <td><span className={`badge badge-${r.STATE_CODE}`}>{STATUS_LABELS[r.STATE_CODE]}</span></td>

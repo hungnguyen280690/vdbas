@@ -1,0 +1,10 @@
+
+> vdbas-host@1.0.0 dev:mock
+> vite --mode mock
+
+
+  VITE v8.0.13   mock   ready in 555 ms
+
+  ➜  Local:   http://localhost:3000/
+  ➜  Network: use --host to expose
+9:13:21 AM [vite] (client) [console.error] [ dynamic-remote-type-hints-plugin ] err: [object Event]

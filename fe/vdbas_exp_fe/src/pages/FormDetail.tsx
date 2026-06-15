@@ -384,7 +384,7 @@ export default function FormDetail({
 
   function handleSwitchToEdit() {
     if (record) {
-      navigateTo('form_detail.html', { id: record.id, mode: 'edit' })
+      navigateTo('/capex-dossier/detail', { id: record.id, mode: 'edit' })
     }
   }
 
@@ -392,7 +392,7 @@ export default function FormDetail({
     if (isDirty) {
       setIsCancelConfirmOpen(true)
     } else {
-      navigateTo('form_list.html')
+      navigateTo('/capex-dossier')
     }
   }
 
@@ -424,14 +424,14 @@ export default function FormDetail({
     if (!validateForm()) return
     alert('✔ MSG-OK-SAVE: Lưu hồ sơ thành công!\n\nMã hồ sơ: HS-CHI-2026-XXXX\nTrạng thái: Đang hoàn thiện')
     setIsDirty(false)
-    navigateTo('form_list.html')
+    navigateTo('/capex-dossier')
   }
 
   function onSaveEdit() {
     if (!validateForm()) return
     alert('✔ MSG-OK-SAVE: Lưu hồ sơ thành công!\nTrạng thái: Đang hoàn thiện')
     setIsDirty(false)
-    navigateTo('form_list.html')
+    navigateTo('/capex-dossier')
   }
 
   function onSaveDraft() {
@@ -447,7 +447,7 @@ export default function FormDetail({
     }
     if (confirm('Bạn có chắc muốn Gửi kiểm soát?\n\nSau khi gửi, hồ sơ sẽ chuyển sang trạng thái Chờ kiểm soát.')) {
       alert('✔ MSG-OK-SUBMIT: Đã gửi hồ sơ để kiểm soát!\nThông báo đã gửi đến Người kiểm soát.')
-      navigateTo('form_list.html')
+      navigateTo('/capex-dossier')
     }
   }
 
@@ -462,7 +462,7 @@ export default function FormDetail({
   function onConfirmDelete() {
     alert('✔ MSG-OK-DELETE: Xoá hồ sơ thành công!\nHồ sơ đã được ẩn khỏi danh sách.')
     setIsDeleteOpen(false)
-    navigateTo('form_list.html')
+    navigateTo('/capex-dossier')
   }
 
   // ── Lookup ─────────────────────────────────────────────────────────────────
@@ -546,7 +546,7 @@ export default function FormDetail({
         <div className="page-header">
           <div>
             <div className="breadcrumb">
-              <span onClick={() => navigateTo('form_list.html')}>Danh sách hồ sơ Chi đầu tư</span>
+              <span onClick={() => navigateTo('/capex-dossier')}>Danh sách hồ sơ Chi đầu tư</span>
               &nbsp;/&nbsp;
               <span>{pageTitle}</span>
             </div>
@@ -1196,7 +1196,7 @@ export default function FormDetail({
               hidden={mode !== 'view'}
               data-testid="btn-back"
               title="Quay lại danh sách"
-              onClick={() => navigateTo('form_list.html')}
+              onClick={() => navigateTo('/capex-dossier')}
             >
               ← Quay lại
             </button>
@@ -1370,7 +1370,7 @@ export default function FormDetail({
             </div>
             <div className="modal-footer">
               <button className="btn btn-default" onClick={() => setIsCancelConfirmOpen(false)}>Tiếp tục chỉnh sửa</button>
-              <button className="btn btn-primary" onClick={() => navigateTo('form_list.html')}>Xác nhận huỷ</button>
+              <button className="btn btn-primary" onClick={() => navigateTo('/capex-dossier')}>Xác nhận huỷ</button>
             </div>
           </div>
         </div>
@@ -1472,7 +1472,7 @@ export default function FormDetail({
               <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Bạn có muốn tiếp tục tạo hồ sơ mới?</p>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-default" onClick={() => { setIsDuplicateOpen(false); navigateTo('form_list.html') }}>Huỷ</button>
+              <button className="btn btn-default" onClick={() => { setIsDuplicateOpen(false); navigateTo('/capex-dossier') }}>Huỷ</button>
               <button className="btn btn-primary" onClick={() => setIsDuplicateOpen(false)}>Tiếp tục</button>
             </div>
           </div>
@@ -1567,7 +1567,7 @@ export default function FormDetail({
               <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 8 }}>Mã lỗi: MSG-ERR-CONCURRENT</p>
             </div>
             <div className="modal-footer">
-              <button className="btn btn-default" onClick={() => navigateTo('form_list.html')}>← Quay lại danh sách</button>
+              <button className="btn btn-default" onClick={() => navigateTo('/capex-dossier')}>← Quay lại danh sách</button>
               <button className="btn btn-primary" onClick={() => setIsConcurrentOpen(false)}>Thử lại</button>
             </div>
           </div>

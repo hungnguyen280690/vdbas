@@ -9,32 +9,30 @@ import HeaderBreadcrumb from '@/components/common/HeaderBreadcrumb'
 import HomePage from '@/pages/HomePage'
 import CategoryGroupsPage from '@/pages/CategoryGroupsPage'
 import FormList from '@/pages/FormList'
+import FormDetail from '@/pages/FormDetail'
 import type { ReactElement } from 'react'
 
 const { Header, Content } = Layout
 
-// ── Route registry ────────────────────────────────────────────────────────────
-// Register new pages here: { path: '/my-page', component: <MyPage /> }
-interface RouteDefinition {
-  path: string
-  component: ReactElement
-}
-
-const ROUTES: RouteDefinition[] = [
-  { path: '/',                 component: <HomePage />           },
-  { path: '/category-groups', component: <CategoryGroupsPage /> },
-  { path: '/capex-dossier',   component: <FormList />           },
-]
-
-const renderContent = (currentPath: string): ReactElement => {
-  const route = ROUTES.find((r) => r.path === currentPath)
-  return route ? route.component : <HomePage />
-}
-
 // ── App ───────────────────────────────────────────────────────────────────────
 const App: React.FC = () => {
   const [currentPath, setCurrentPath]           = useState('/')
+  const [navParams, setNavParams]               = useState<Record<string, string>>({})
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const navigate = (path: string, params: Record<string, string> = {}) => {
+    setCurrentPath(path)
+    setNavParams(params)
+  }
+
+  const renderContent = (): ReactElement => {
+    if (currentPath === '/category-groups') return <CategoryGroupsPage />
+    if (currentPath === '/capex-dossier')   return <FormList onNavigate={navigate} />
+    if (currentPath === '/capex-dossier/detail') {
+      return <FormDetail mode={navParams.mode as 'new' | 'edit' | 'view'} recordId={navParams.id ?? null} onNavigate={navigate} />
+    }
+    return <HomePage />
+  }
+
   const { authenticated, loading, user, login, logout } = useAuth()
   const { isLoading: menusLoading }             = usePermissions()
   const { t: translate, i18n }                  = useTranslation()
@@ -85,7 +83,7 @@ const App: React.FC = () => {
         collapsed={sidebarCollapsed}
         onCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
         currentPath={currentPath}
-        onMenuClick={(path) => setCurrentPath(path)}
+        onMenuClick={(path) => navigate(path)}
       />
 
       <Layout
@@ -143,7 +141,7 @@ const App: React.FC = () => {
             minHeight: 280,
           }}
         >
-          {renderContent(currentPath)}
+          {renderContent()}
         </Content>
       </Layout>
     </Layout>
