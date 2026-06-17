@@ -4,7 +4,7 @@ Count token usage from Claude Code JSONL session files.
 
 Usage:
     python3 count_tokens.py <directory>
-    python3 count_tokens.py ~/.claude/projects/-home-hungnv256-Documents-code
+    python3 count_tokens.py ~/.claude-work/projects/-home-hungnv256-Documents-code
 """
 
 import json
