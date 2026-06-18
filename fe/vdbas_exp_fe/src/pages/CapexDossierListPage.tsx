@@ -1,11 +1,32 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
+import { message } from 'antd'
 import './CapexDossierListPage.css'
-import { MOCK_DATA, type MockDossierRecord } from './CapexDossierListPage.mock'
 import { useNavigation } from '@/contexts/NavigationContext'
+import { DossierHooks } from '@/hooks/useDossier'
+import { getDossier, exportDossiers, newIdempotencyKey } from '@/services/dossierService'
+import type {
+  DossierSummary, DossierListParams, DossierStatus, DataSourceCode,
+  DossierSortBy, SortDir, DossierDateField, ExportDossiersParams,
+} from '@/types/index'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
-type DossierRecord = MockDossierRecord
+// Hàng hiển thị trên grid — adapter map từ DossierSummary (camelCase) sang
+// các field UPPER_SNAKE mà render code đang dùng (giữ nguyên UI prototype).
+interface DossierRecord {
+  id: string
+  DOSSIER_CODE: string
+  PROJECT_CODE: string
+  PROJECT_NAME: string
+  DATA_SOURCE_CODE: string
+  SEND_DATE: string
+  F_STATUS: string
+  ASSIGN_USER: string
+  CREATED_BY: string
+  CREATED_DATE: string
+  DOCUMENT_COUNT: number
+  TOTAL_LOCAL_AMOUNT: number
+}
 
 type BtnState = 'show' | 'hide' | 'disable'
 
@@ -39,12 +60,21 @@ interface FilterInputs {
   createdBy: string
 }
 
+interface CommittedFilters {
+  filters: FilterInputs
+  status: string[]
+  source: string[]
+}
+
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 20 // contract: pageSize ∈ [20,50,100,200]
 const COL_STORAGE_KEY = 'CHI_CAPEX_DOSSIER_COL_CONFIG'
 const COL_VERSION = 'v1'
 const FILTER_STATE_KEY = 'CHI_CAPEX_DOSSIER_FILTER_STATE'
+
+// nhãn TV (UI) → code enum contract
+const SOURCE_LABEL_TO_CODE: Record<string, DataSourceCode> = { 'Thủ công': 'THU_CONG', 'DVC': 'DVC' }
 
 const DEFAULT_FILTERS: FilterInputs = {
   docId: '', projectId: '', search: '',
@@ -65,6 +95,15 @@ const DEFAULT_COLUMNS: ColConfig[] = [
   { key: 'TOTAL_LOCAL_AMOUNT', label: 'Tổng tiền VND',    width: 150, sortable: true,  hideable: true,  visible: true },
   { key: 'ACTIONS',            label: 'Thao tác',         width: 200, sortable: false, hideable: false, frozen: true, visible: true },
 ]
+
+// Cột grid (UPPER_SNAKE) → sortBy enum contract
+const SORT_FIELD_MAP: Record<string, DossierSortBy> = {
+  DOSSIER_CODE: 'DOSSIER_CODE',
+  PROJECT_CODE: 'PROJECT_CODE',
+  SEND_DATE: 'SEND_DATE',
+  CREATED_DATE: 'CREATED_DATE',
+  F_STATUS: 'F_STATUS',
+}
 
 const STATUS_DEF: Record<string, { label: string; cls: string }> = {
   DRAFT:     { label: 'Lưu nháp',         cls: 'bd' },
@@ -103,13 +142,38 @@ const BTN_MATRIX: Record<string, BtnRule> = {
 
 // ── Pure helpers (outside component) ─────────────────────────────────────────
 
+/** yyyy-MM-dd hoặc ISO date-time → dd/mm/yyyy để hiển thị. */
+function isoToDisplay(s: string | null | undefined): string {
+  if (!s) return ''
+  const datePart = String(s).split('T')[0]
+  const p = datePart.split('-')
+  if (p.length < 3) return String(s)
+  return `${p[2]}/${p[1]}/${p[0]}`
+}
+
+/** DossierSummary (contract) → DossierRecord (UI). */
+function toRow(s: DossierSummary): DossierRecord {
+  return {
+    id: s.id,
+    DOSSIER_CODE: s.dossierCode,
+    PROJECT_CODE: s.projectCode,
+    PROJECT_NAME: s.projectName,
+    DATA_SOURCE_CODE: s.dataSourceName || s.dataSourceCode,
+    SEND_DATE: isoToDisplay(s.sendDate),
+    F_STATUS: s.fStatus,
+    ASSIGN_USER: '', // không có trong summary — sub-state APPROVED chỉ dựa F_STATUS
+    CREATED_BY: s.createdBy,
+    CREATED_DATE: isoToDisplay(s.createdDate),
+    DOCUMENT_COUNT: s.documentCount,
+    TOTAL_LOCAL_AMOUNT: s.totalBaseAmount,
+  }
+}
+
 function uiStatus(r: DossierRecord): { label: string; cls: string } {
-  if (r.F_STATUS === 'APPROVED' && r.ASSIGN_USER === 'Approver') return { label: 'Đã kiểm soát', cls: 'bo' }
   return STATUS_DEF[r.F_STATUS] ?? { label: r.F_STATUS, cls: 'bd' }
 }
 
 function btnRule(r: DossierRecord): BtnRule {
-  if (r.F_STATUS === 'APPROVED' && r.ASSIGN_USER === 'Approver') return BTN_MATRIX.SUBMITTED
   return BTN_MATRIX[r.F_STATUS] ?? BTN_MATRIX.DRAFT
 }
 
@@ -117,50 +181,15 @@ function fmtAmt(n: number | null | undefined): string {
   return n != null ? n.toLocaleString('vi-VN') : '—'
 }
 
-function parseDisplayDate(s: string | null | undefined): Date | null {
-  if (!s) return null
-  const parts = String(s).split(' ')[0].split('/')
-  if (parts.length < 3) return null
-  const d = new Date(+parts[2], +parts[1] - 1, +parts[0])
-  return isNaN(d.getTime()) ? null : d
-}
-
-function parseISO(s: string): Date | null {
-  if (!s) return null
-  const parts = String(s).split('-')
-  if (parts.length < 3) return null
-  const d = new Date(+parts[0], +parts[1] - 1, +parts[2])
-  return isNaN(d.getTime()) ? null : d
-}
-
-function computeFiltered(
-  records: DossierRecord[],
-  f: FilterInputs,
-  ms: { status: string[]; source: string[] },
-): DossierRecord[] {
-  const from = parseISO(f.fromDate)
-  const to = parseISO(f.toDate)
-  if (to) to.setHours(23, 59, 59, 999)
-  return records.filter(r => {
-    if (ms.source.length > 0 && !ms.source.includes(r.DATA_SOURCE_CODE)) return false
-    if (ms.status.length > 0 && !ms.status.includes(r.F_STATUS)) return false
-    if (f.docId && !(r.DOSSIER_CODE ?? '').toLowerCase().includes(f.docId.toLowerCase())) return false
-    if (f.projectId && !(r.PROJECT_CODE ?? '').toLowerCase().includes(f.projectId.toLowerCase())) return false
-    if (from || to) {
-      const rd = parseDisplayDate(r[f.dateField as keyof DossierRecord] as string)
-      if (rd) {
-        if (from && rd < from) return false
-        if (to && rd > to) return false
-      }
-    }
-    if (f.createdBy && !(r.CREATED_BY ?? '').toLowerCase().includes(f.createdBy.toLowerCase())) return false
-    if (f.search) {
-      const hay = [r.CREATED_BY, r.PROJECT_NAME, r.DOSSIER_CODE, r.PROJECT_CODE]
-        .filter(Boolean).join(' ').toLowerCase()
-      if (!hay.includes(f.search.toLowerCase())) return false
-    }
-    return true
-  })
+function downloadBlob(blob: Blob, fileName: string) {
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = fileName
+  document.body.appendChild(a)
+  a.click()
+  a.remove()
+  URL.revokeObjectURL(url)
 }
 
 function loadColConfig(): ColConfig[] {
@@ -181,18 +210,46 @@ function loadColConfig(): ColConfig[] {
       })
       return merged
     }
-  } catch {}
+  } catch { /* ignore malformed config */ void 0 }
   return DEFAULT_COLUMNS.map(c => ({ ...c, visible: true }))
+}
+
+/** Commit filter (UI) → query params contract. */
+function buildListParams(
+  committed: CommittedFilters | null,
+  page: number,
+  sortField: string,
+  sortDir: 'asc' | 'desc',
+): DossierListParams {
+  const p: DossierListParams = {
+    page,                         // 1-based theo contract
+    pageSize: PAGE_SIZE,
+    sortBy: SORT_FIELD_MAP[sortField] ?? 'CREATED_DATE',
+    sortDir: sortDir.toUpperCase() as SortDir,
+  }
+  if (!committed) return p
+  const { filters: f, status, source } = committed
+  if (f.docId) p.dossierCode = f.docId
+  if (f.projectId) p.projectCode = f.projectId
+  if (f.search) p.search = f.search
+  if (f.createdBy) p.createdBy = f.createdBy
+  if (f.fromDate || f.toDate) {
+    p.dateField = f.dateField as DossierDateField
+    if (f.fromDate) p.fromDate = f.fromDate
+    if (f.toDate) p.toDate = f.toDate
+  }
+  if (status.length) p.fStatus = status as DossierStatus[]
+  if (source.length) p.dataSourceCode = source.map(s => SOURCE_LABEL_TO_CODE[s] ?? (s as DataSourceCode))
+  return p
 }
 
 // ── Component ─────────────────────────────────────────────────────────────────
 
 const CapexDossierListPage: React.FC = () => {
   const { navigate } = useNavigation()
-  const [allRecords] = useState<DossierRecord[]>(MOCK_DATA.records)
 
   const [hasSearched, setHasSearched] = useState(false)
-  const [filteredRecords, setFilteredRecords] = useState<DossierRecord[]>([])
+  const [committed, setCommitted] = useState<CommittedFilters | null>(null)
   const [currentPage, setCurrentPage] = useState(1)
 
   const [sortField, setSortField] = useState('CREATED_DATE')
@@ -221,6 +278,21 @@ const CapexDossierListPage: React.FC = () => {
     filterStateRef.current = { hasSearched, inputFilters, multiSelect, advOpen, currentPage }
   }, [hasSearched, inputFilters, multiSelect, advOpen, currentPage])
 
+  // ── Server query ─────────────────────────────────────────────────────────────
+  const queryParams = useMemo(
+    () => buildListParams(committed, currentPage, sortField, sortDir),
+    [committed, currentPage, sortField, sortDir],
+  )
+  const { data, isLoading, isError } = DossierHooks.useList(queryParams, hasSearched)
+
+  const rows = useMemo(() => (data?.items ?? []).map(toRow), [data])
+  const totalRecords = data?.pagination?.totalRecords ?? 0
+  const totalPages = Math.max(1, data?.pagination?.totalPages ?? 1)
+  const pageData = useMemo(() => ({ rows, start: (currentPage - 1) * PAGE_SIZE }), [rows, currentPage])
+
+  // ── Mutations ────────────────────────────────────────────────────────────────
+  const submitMutation = DossierHooks.useSubmit()
+
   // ── showToast ──────────────────────────────────────────────────────────────
   const showToast = useCallback((msg: string) => {
     setToastMsg(msg)
@@ -243,6 +315,7 @@ const CapexDossierListPage: React.FC = () => {
     }
     document.addEventListener('keydown', handler)
     return () => document.removeEventListener('keydown', handler)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   // ── Close multi-select on outside click ───────────────────────────────────
@@ -328,12 +401,10 @@ const CapexDossierListPage: React.FC = () => {
       setInputFilters(restoredFilters)
       setMultiSelect(restoredMs)
       if (s.advOpen) setAdvOpen(true)
-      const result = computeFiltered(allRecords, restoredFilters, restoredMs)
-      setFilteredRecords(result)
+      setCommitted({ filters: restoredFilters, status: restoredMs.status, source: restoredMs.source })
       setHasSearched(true)
       setCurrentPage(s.currentPage ?? 1)
-    } catch {}
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    } catch { /* ignore malformed sessionStorage */ void 0 }
   }, [])
 
   // ── Search ────────────────────────────────────────────────────────────────
@@ -343,8 +414,7 @@ const CapexDossierListPage: React.FC = () => {
       return
     }
     setDateRangeError(false)
-    const result = computeFiltered(allRecords, inputFilters, multiSelect)
-    setFilteredRecords(result)
+    setCommitted({ filters: inputFilters, status: multiSelect.status, source: multiSelect.source })
     setHasSearched(true)
     setCurrentPage(1)
   }
@@ -354,47 +424,35 @@ const CapexDossierListPage: React.FC = () => {
     setMultiSelect({ status: [], source: [] })
     setDateRangeError(false)
     setHasSearched(false)
-    setFilteredRecords([])
+    setCommitted(null)
   }
   // Keep ref up to date so the keydown handler always calls the latest version
   handleResetFilterRef.current = handleResetFilter
 
-  // ── Sort ──────────────────────────────────────────────────────────────────
+  // ── Sort (server-side) ──────────────────────────────────────────────────────
   function handleSort(field: string) {
+    if (!SORT_FIELD_MAP[field]) return
     if (sortField === field) setSortDir(d => (d === 'asc' ? 'desc' : 'asc'))
     else { setSortField(field); setSortDir('asc') }
+    setCurrentPage(1)
   }
 
   // ── Pagination ────────────────────────────────────────────────────────────
-  const totalPages = Math.max(1, Math.ceil(filteredRecords.length / PAGE_SIZE))
-
   function goPage(p: number) {
     if (p < 1 || p > totalPages) return
     setCurrentPage(p)
   }
 
-  // ── Sorted + paged data ───────────────────────────────────────────────────
-  const pageData = useMemo(() => {
-    const sorted = [...filteredRecords].sort((a, b) => {
-      const va = (a[sortField as keyof DossierRecord] ?? '') as string
-      const vb = (b[sortField as keyof DossierRecord] ?? '') as string
-      return sortDir === 'asc' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0)
-    })
-    const start = (currentPage - 1) * PAGE_SIZE
-    return { rows: sorted.slice(start, start + PAGE_SIZE), start }
-  }, [filteredRecords, sortField, sortDir, currentPage])
-
-  // ── Stats ─────────────────────────────────────────────────────────────────
+  // ── Stats (từ statusCounts + totalBaseAmount server) ────────────────────────
   const stats = useMemo(() => {
     const groups: Record<string, { count: number; cls: string }> = {}
-    filteredRecords.forEach(r => {
-      const u = uiStatus(r)
-      if (!groups[u.label]) groups[u.label] = { count: 0, cls: u.cls }
-      groups[u.label].count++
+    ;(data?.statusCounts ?? []).forEach(sc => {
+      const def = STATUS_DEF[sc.status]
+      const label = sc.statusName || def?.label || sc.status
+      groups[label] = { count: sc.count, cls: def?.cls ?? 'bd' }
     })
-    const totalVnd = filteredRecords.reduce((s, r) => s + (r.TOTAL_LOCAL_AMOUNT ?? 0), 0)
-    return { groups, totalVnd, total: filteredRecords.length }
-  }, [filteredRecords])
+    return { groups, totalVnd: data?.totalBaseAmount ?? 0, total: totalRecords }
+  }, [data, totalRecords])
 
   // ── Column config ─────────────────────────────────────────────────────────
   function saveColConfig() {
@@ -457,13 +515,16 @@ const CapexDossierListPage: React.FC = () => {
     navigate('/capex-dossiers/detail', { id, mode: 'view' })
   }
 
-  function handleConfirmSubmit(id: string, e: React.MouseEvent) {
+  // Gửi kiểm soát từ grid: fetch detail để lấy version → submit (optimistic lock).
+  async function handleConfirmSubmit(id: string, e: React.MouseEvent) {
     e.stopPropagation()
-    if (window.confirm('Xác nhận gửi kiểm soát hồ sơ này?')) {
-      setFilteredRecords(prev =>
-        prev.map(r => r.id === id ? { ...r, F_STATUS: 'SUBMITTED', ASSIGN_USER: 'Checker' } : r)
-      )
-      window.alert('[VDBAS-CHI-0001] Hồ sơ đã được gửi kiểm soát thành công')
+    if (!window.confirm('Xác nhận gửi kiểm soát hồ sơ này?')) return
+    try {
+      const detail = await getDossier(id)
+      await submitMutation.mutateAsync({ id, body: { version: detail.version }, idemKey: newIdempotencyKey() })
+    } catch (error: unknown) {
+      if ((error as Record<string, unknown>)._handled) return
+      message.error('Gửi kiểm soát thất bại')
     }
   }
 
@@ -472,8 +533,22 @@ const CapexDossierListPage: React.FC = () => {
     navigate('/capex-dossiers/detail', { copy: id, mode: 'new' })
   }
 
-  function handleExport() {
-    window.alert('⚠️ [Prototype] Chức năng Xuất (Excel/PDF/CSV) sẽ được kết nối API backend.\nEvent ID: EXP.CAPEX_DOSSIER.LIST.EXPORT')
+  async function handleExport() {
+    try {
+      const base = buildListParams(committed, 1, sortField, sortDir)
+      const params: ExportDossiersParams = { format: 'EXCEL' }
+      if (base.dossierCode) params.dossierCode = base.dossierCode
+      if (base.projectCode) params.projectCode = base.projectCode
+      if (base.fromDate) params.fromDate = base.fromDate
+      if (base.toDate) params.toDate = base.toDate
+      if (base.fStatus) params.fStatus = base.fStatus
+      if (base.dataSourceCode) params.dataSourceCode = base.dataSourceCode
+      const blob = await exportDossiers(params)
+      downloadBlob(blob, 'capex-dossiers.xlsx')
+    } catch (error: unknown) {
+      if ((error as Record<string, unknown>)._handled) return
+      message.error('Xuất dữ liệu thất bại')
+    }
   }
 
   // ── Multi-select label ────────────────────────────────────────────────────
@@ -557,7 +632,7 @@ const CapexDossierListPage: React.FC = () => {
           {rule.SUBMIT !== 'hide' && (
             <button
               className="btn btn-ghost"
-              disabled={rule.SUBMIT === 'disable'}
+              disabled={rule.SUBMIT === 'disable' || submitMutation.isPending}
               onClick={e => handleConfirmSubmit(r.id, e)}
               data-event-id="EXP.CAPEX_DOSSIER.NEW.SUBMIT"
             >📤 Gửi PD</button>
@@ -629,8 +704,8 @@ const CapexDossierListPage: React.FC = () => {
   }
 
   function renderPagination() {
-    const s = (currentPage - 1) * PAGE_SIZE + 1
-    const e = Math.min(currentPage * PAGE_SIZE, filteredRecords.length)
+    const s = totalRecords === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1
+    const e = Math.min(currentPage * PAGE_SIZE, totalRecords)
     const buttons: React.ReactNode[] = []
     buttons.push(
       <button key="prev" className="pg-btn" onClick={() => goPage(currentPage - 1)} disabled={currentPage === 1}>‹</button>
@@ -651,13 +726,15 @@ const CapexDossierListPage: React.FC = () => {
     )
     return (
       <div className="pagination" id="pagination">
-        <div className="pg-info" id="pg-info">Hiển thị {s}–{e} / {filteredRecords.length} bản ghi</div>
+        <div className="pg-info" id="pg-info">Hiển thị {s}–{e} / {totalRecords} bản ghi</div>
         <div className="pg-btns" id="pg-btns">{buttons}</div>
       </div>
     )
   }
 
-  const viewMode = !hasSearched ? 'initial' : filteredRecords.length === 0 ? 'no-result' : 'table'
+  const viewMode = !hasSearched
+    ? 'initial'
+    : (!isLoading && rows.length === 0 ? 'no-result' : 'table')
 
   // ── JSX ───────────────────────────────────────────────────────────────────
   return (
@@ -672,6 +749,8 @@ const CapexDossierListPage: React.FC = () => {
           <button
             className="btn-header-default"
             onClick={handleExport}
+            disabled
+            title="BE chưa hỗ trợ endpoint export (GET /exp/capex/dossiers/export) — tạm khóa"
             data-testid="btn-export"
             data-event-id="EXP.CAPEX_DOSSIER.LIST.EXPORT"
           >
@@ -940,7 +1019,7 @@ const CapexDossierListPage: React.FC = () => {
             {/* Table toolbar */}
             {viewMode === 'table' && (
               <div className="table-toolbar" id="table-toolbar">
-                <span className="text-muted" id="result-count">Tổng kết quả: {filteredRecords.length} bản ghi</span>
+                <span className="text-muted" id="result-count">Tổng kết quả: {totalRecords} bản ghi</span>
                 <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
                   <div className="col-config-wrap" ref={colConfigRef}>
                     <button
@@ -987,8 +1066,25 @@ const CapexDossierListPage: React.FC = () => {
               </div>
             )}
 
+            {/* Loading */}
+            {hasSearched && isLoading && (
+              <div className="empty-state" id="state-loading">
+                <div className="icon">⏳</div>
+                <p>Đang tải dữ liệu...</p>
+              </div>
+            )}
+
+            {/* Error */}
+            {hasSearched && isError && !isLoading && (
+              <div className="empty-state" id="state-error">
+                <div className="icon">⚠️</div>
+                <p>Không tải được danh sách hồ sơ</p>
+                <small>Vui lòng thử lại</small>
+              </div>
+            )}
+
             {/* No result */}
-            {viewMode === 'no-result' && (
+            {viewMode === 'no-result' && !isError && (
               <div className="empty-state" id="state-no-result">
                 <div className="icon">📭</div>
                 <p>Không tìm thấy bản ghi phù hợp</p>
@@ -997,7 +1093,7 @@ const CapexDossierListPage: React.FC = () => {
             )}
 
             {/* Table */}
-            {viewMode === 'table' && (
+            {viewMode === 'table' && !isLoading && (
               <div style={{ overflowX: 'auto' }} id="table-wrap">
                 <table id="data-table">
                   <thead id="data-thead">{renderTableHeader()}</thead>
@@ -1013,7 +1109,7 @@ const CapexDossierListPage: React.FC = () => {
             )}
 
             {/* Pagination */}
-            {viewMode === 'table' && renderPagination()}
+            {viewMode === 'table' && !isLoading && renderPagination()}
 
           </div>
         </div>

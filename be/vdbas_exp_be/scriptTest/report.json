@@ -1,0 +1,318 @@
+{
+  "summary": {
+    "PASS": 30,
+    "FAIL": 0,
+    "SKIP": 0,
+    "WARN": 3
+  },
+  "hasFailures": false,
+  "results": [
+    {
+      "name": "BE health /actuator/health",
+      "phase": "health",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": "UP"
+    },
+    {
+      "name": "Danh sách hồ sơ",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "Danh sách hồ sơ [schema DossierListResponse]",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "LOV dự án",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "LOV dự án [schema ProjectLovResponse]",
+      "phase": "smoke",
+      "status": "WARN",
+      "expected": null,
+      "actual": null,
+      "detail": "(root): [{'hasSpecific': False, 'organizationCode': '1056333', 'projectCode': '7004686', 'projectName': 'Dự án Cải tạo, nâng cấp trụ sở làm việc', 'projectTypeCode': 'N"
+    },
+    {
+      "name": "LOV kho bạc",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "LOV kho bạc [schema TreasuryLovResponse]",
+      "phase": "smoke",
+      "status": "WARN",
+      "expected": null,
+      "actual": null,
+      "detail": "(root): [{'treasuryCode': '0001', 'treasuryName': 'Kho bạc Nhà nước (KBNN TW)'}, {'treasuryCode': '0003', 'treasuryName': 'KBNN — Ban Giao dịch'}, {'treasuryCode': '001"
+    },
+    {
+      "name": "LOV đơn vị (tổ chức)",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "LOV đơn vị (tổ chức) [schema OrganizationLovResponse]",
+      "phase": "smoke",
+      "status": "WARN",
+      "expected": null,
+      "actual": null,
+      "detail": "Không tìm thấy schema 'OrganizationLovResponse' trong contract"
+    },
+    {
+      "name": "LOV nguồn gốc",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "LOV loại chứng từ",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "LOV loại đính kèm",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "1. Tạo hồ sơ (SAVED)",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        201
+      ],
+      "actual": 201,
+      "detail": ""
+    },
+    {
+      "name": "1. Tạo hồ sơ [schema DossierCreateResponse]",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "1b. Lưu nháp gắn hồ sơ",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        201
+      ],
+      "actual": 201,
+      "detail": ""
+    },
+    {
+      "name": "2. Xem chi tiết",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "2. Xem chi tiết [schema DossierDetailResponse]",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "3. Cập nhật (version+1)",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "3. Cập nhật [schema DossierUpdateResponse]",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "3b. Version tăng sau update",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": 1,
+      "actual": 1,
+      "detail": ""
+    },
+    {
+      "name": "4. Thêm chứng từ",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        201
+      ],
+      "actual": 201,
+      "detail": ""
+    },
+    {
+      "name": "4. Thêm chứng từ [schema DocumentDetailResponse]",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "5. Gửi kiểm soát (SUBMITTED)",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "5. Gửi kiểm soát [schema WorkflowActionResponse]",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "6. Checker duyệt (APPROVED)",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "6. Checker duyệt [schema WorkflowActionResponse]",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "7. Approver duyệt (COMPLETED)",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "7. Approver duyệt [schema WorkflowActionResponse]",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "401 thiếu token",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        401
+      ],
+      "actual": 401,
+      "detail": ""
+    },
+    {
+      "name": "404 id không tồn tại",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        404
+      ],
+      "actual": 404,
+      "detail": ""
+    },
+    {
+      "name": "400/422 create thiếu field required",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        400,
+        422
+      ],
+      "actual": 400,
+      "detail": ""
+    },
+    {
+      "name": "409 optimistic lock (version cũ)",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        409
+      ],
+      "actual": 409,
+      "detail": ""
+    },
+    {
+      "name": "Approve sai trạng thái → 400 (SoD/403 out-of-scope)",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        400
+      ],
+      "actual": 400,
+      "detail": ""
+    }
+  ]
+}

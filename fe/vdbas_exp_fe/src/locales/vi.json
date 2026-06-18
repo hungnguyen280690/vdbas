@@ -83,8 +83,27 @@
     "placeholder_code": "Nhập mã nhóm...",
     "placeholder_name": "Nhập tên nhóm..."
   },
+  "dossier": {
+    "save_draft_success": "Lưu nháp hồ sơ thành công",
+    "submit_success": "Đã gửi hồ sơ để kiểm soát/phê duyệt",
+    "approve_success": "Phê duyệt hồ sơ thành công",
+    "reject_success": "Đã từ chối hồ sơ",
+    "upload_success": "Tải file đính kèm thành công"
+  },
   "error": {
-    "internal_server_error": "Lỗi hệ thống (500). Vui lòng liên hệ quản trị viên."
+    "internal_server_error": "Lỗi hệ thống (500). Vui lòng liên hệ quản trị viên.",
+    "vdbas-exp-suc01": "Lưu hồ sơ thành công",
+    "vdbas-exp-suc02": "Đã gửi hồ sơ để kiểm soát/phê duyệt",
+    "vdbas-exp-suc03": "Xoá hồ sơ thành công",
+    "vdbas-exp-0002": "Đã tồn tại bản ghi có mã hồ sơ trùng lặp",
+    "vdbas-exp-0003": "Hồ sơ đang ở trạng thái không cho phép Sửa/Xoá",
+    "vdbas-exp-0005": "Bản ghi đã bị thay đổi từ phiên khác. Vui lòng tải lại trước khi tiếp tục",
+    "vdbas-exp-0016": "Không dành được dự toán cho hồ sơ này",
+    "vdbas-val-0002": "Dữ liệu đầu vào không hợp lệ",
+    "vdbas-val-0014": "Dung lượng file vượt quá 10MB",
+    "vdbas-val-0015": "Định dạng file không được hỗ trợ",
+    "vdbas-aut-0001": "Bạn không có quyền thực hiện thao tác này",
+    "vdbas-aut-0002": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại"
   },
   "api_error": {
     "400": "Dữ liệu không hợp lệ (400)",

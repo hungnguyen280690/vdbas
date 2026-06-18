@@ -19,7 +19,7 @@ function normaliseUrl(raw: string | undefined, fallback: string): string {
   return fallback
 }
 
-const API_BASE_URL     = normaliseUrl(import.meta.env.VITE_API_BASE_URL, 'http://localhost:8080/api')
+const API_BASE_URL     = normaliseUrl(import.meta.env.VITE_API_BASE_URL, 'http://localhost:8080/api/v1')
 const ACL_API_BASE_URL = normaliseUrl(import.meta.env.VITE_ACL_API_BASE_URL, API_BASE_URL)
 
 function makeClient(baseURL: string): AxiosInstance {

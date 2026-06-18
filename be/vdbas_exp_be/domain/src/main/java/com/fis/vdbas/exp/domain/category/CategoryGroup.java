@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import com.fis.vdbas.common.domain.AbstractAuditing;
+import com.fis.vdbas.exp.domain.base.ExpAuditing;
 
 @Entity
 @Table(name = "category_groups")
@@ -19,7 +19,7 @@ import com.fis.vdbas.common.domain.AbstractAuditing;
 @Setter
 @ToString
 @NoArgsConstructor
-public class CategoryGroup extends AbstractAuditing<String> {// implements Persistable<String> {
+public class CategoryGroup extends ExpAuditing<String> {// implements Persistable<String> {
 
     @Id
     @Column(name = "group_code", length = 50)

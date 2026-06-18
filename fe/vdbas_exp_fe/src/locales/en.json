@@ -83,8 +83,27 @@
     "placeholder_code": "Enter group code...",
     "placeholder_name": "Enter group name..."
   },
+  "dossier": {
+    "save_draft_success": "Dossier draft saved successfully",
+    "submit_success": "Dossier submitted for review/approval",
+    "approve_success": "Dossier approved successfully",
+    "reject_success": "Dossier rejected",
+    "upload_success": "Attachment uploaded successfully"
+  },
   "error": {
-    "internal_server_error": "System error (500). Please contact administrator."
+    "internal_server_error": "System error (500). Please contact administrator.",
+    "vdbas-exp-suc01": "Dossier saved successfully",
+    "vdbas-exp-suc02": "Dossier submitted for review/approval",
+    "vdbas-exp-suc03": "Dossier deleted successfully",
+    "vdbas-exp-0002": "A dossier with a duplicate code already exists",
+    "vdbas-exp-0003": "Dossier status does not allow Edit/Delete",
+    "vdbas-exp-0005": "The record was changed by another session. Please reload before continuing",
+    "vdbas-exp-0016": "Could not reserve budget for this dossier",
+    "vdbas-val-0002": "Invalid input data",
+    "vdbas-val-0014": "File size exceeds 10MB",
+    "vdbas-val-0015": "Unsupported file format",
+    "vdbas-aut-0001": "You do not have permission to perform this action",
+    "vdbas-aut-0002": "Your session has expired, please sign in again"
   },
   "api_error": {
     "400": "Invalid data (400)",

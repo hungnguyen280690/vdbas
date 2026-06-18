@@ -9,7 +9,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import com.fis.vdbas.common.domain.AbstractAuditing;
+import com.fis.vdbas.exp.domain.base.ExpAuditing;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,7 +24,7 @@ import java.util.UUID;
 @Setter
 @ToString
 @NoArgsConstructor
-public class Category extends AbstractAuditing<UUID> {
+public class Category extends ExpAuditing<UUID> {
 
     @Id
     @GeneratedValue
