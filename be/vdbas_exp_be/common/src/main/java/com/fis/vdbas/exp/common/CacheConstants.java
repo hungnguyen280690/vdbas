@@ -18,4 +18,11 @@ public final class CacheConstants {
 
     // DOSSIER_TYPE_CODE mặc định cho hồ sơ CAPEX (DB hiện chỉ dùng 'CAPEX')
     public static final String CAPEX_DOSSIER_TYPE_CODE = "CAPEX";
+
+    // ── OPEX Dossier domain (biến thể cô lập) ──────────────────────────────────
+    // WORKFLOW_CODE hardcode cho OPEX MVP (seed EXP_WORKFLOW.WORKFLOW_CODE='OPEX_STANDARD')
+    public static final String OPEX_WORKFLOW_CODE = "OPEX_STANDARD";
+
+    // DOSSIER_TYPE_CODE cố định cho hồ sơ OPEX (immutable VAL-17)
+    public static final String OPEX_DOSSIER_TYPE_CODE = "OPEX";
 }

@@ -103,7 +103,39 @@
     "vdbas-val-0014": "File size exceeds 10MB",
     "vdbas-val-0015": "Unsupported file format",
     "vdbas-aut-0001": "You do not have permission to perform this action",
-    "vdbas-aut-0002": "Your session has expired, please sign in again"
+    "vdbas-aut-0002": "Your session has expired, please sign in again",
+    "msg-err-required": "Please fill in all required fields",
+    "msg-err-format": "Invalid data format",
+    "msg-err-lookup": "Invalid lookup value",
+    "msg-err-session": "Your session has expired, please sign in again",
+    "msg-err-permission": "You do not have permission to perform this action",
+    "msg-err-maker": "Only the original Maker may Edit/Delete",
+    "msg-err-lock": "The record was changed by another session. Please reload before continuing",
+    "msg-err-status": "Dossier status does not allow this action",
+    "msg-err-amount-mismatch": "Total document amount does not match the dossier total",
+    "msg-err-file": "File exceeds 10MB or has an unsupported format (pdf/jpg/png/docx)"
+  },
+  "opexDossier": {
+    "ok": {
+      "save": "Dossier saved successfully",
+      "submit": "Dossier submitted for control",
+      "delete": "Dossier deleted successfully",
+      "check": "Dossier checked",
+      "approve": "Dossier approved successfully",
+      "return": "Dossier returned to maker",
+      "cancel": "Approval cancelled, returned to checker"
+    },
+    "info": {
+      "checkReject": "Rejected by checker, maker notified",
+      "approvalReject": "Rejected by approver, checker notified"
+    },
+    "error": {
+      "required": "Please fill in all required fields",
+      "amountMismatch": "Total document amount does not match the dossier total",
+      "file": "File exceeds 10MB or has an unsupported format",
+      "deleteReason": "Delete reason must be at least 10 characters",
+      "noDocument": "At least one document is required before submitting for control"
+    }
   },
   "api_error": {
     "400": "Invalid data (400)",

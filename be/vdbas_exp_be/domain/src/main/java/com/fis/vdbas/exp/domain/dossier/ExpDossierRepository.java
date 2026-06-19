@@ -16,9 +16,18 @@ public interface ExpDossierRepository
 
     boolean existsByDossierCode(String dossierCode);
 
-    /** Soft-delete: STATUS=0, F_STATUS=CANCELLED (xem service set fStatus). */
+    /** Soft-delete CAPEX: STATUS=0, F_STATUS=CANCELLED (xem service set fStatus). */
     @Modifying
     @Query("UPDATE ExpDossier d SET d.status = 0, d.fStatus = com.fis.vdbas.exp.common.enums.DossierStatus.CANCELLED "
             + "WHERE d.id = :id")
     void softDelete(@Param("id") UUID id);
+
+    /**
+     * Soft-delete OPEX: STATUS=0, F_STATUS=DELETED (GAP-07).
+     * <p>Method riêng — KHÔNG đụng {@link #softDelete(UUID)} của CAPEX (vẫn set CANCELLED).</p>
+     */
+    @Modifying
+    @Query("UPDATE ExpDossier d SET d.status = 0, d.fStatus = com.fis.vdbas.exp.common.enums.DossierStatus.DELETED "
+            + "WHERE d.id = :id")
+    void softDeleteOpex(@Param("id") UUID id);
 }

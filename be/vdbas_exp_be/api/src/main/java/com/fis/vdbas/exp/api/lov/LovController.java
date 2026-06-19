@@ -1,8 +1,10 @@
 package com.fis.vdbas.exp.api.lov;
 
 import com.fis.vdbas.exp.application.lov.dto.AttachmentTypeItem;
+import com.fis.vdbas.exp.application.lov.dto.CurrencyItem;
 import com.fis.vdbas.exp.application.lov.dto.DataSourceItem;
 import com.fis.vdbas.exp.application.lov.dto.DocumentTypeItem;
+import com.fis.vdbas.exp.application.lov.dto.DossierTypeItem;
 import com.fis.vdbas.exp.application.lov.dto.OrganizationLovItem;
 import com.fis.vdbas.exp.application.lov.dto.ProjectLovItem;
 import com.fis.vdbas.exp.application.lov.dto.ProjectSpecificLovItem;
@@ -61,5 +63,17 @@ public class LovController {
     @GetMapping("/attachment-types")
     public List<AttachmentTypeItem> attachmentTypes() {
         return service.attachmentTypes();
+    }
+
+    /** GAP-11: Loại hồ sơ (CAPEX/OPEX). */
+    @GetMapping("/dossier-types")
+    public List<DossierTypeItem> dossierTypes() {
+        return service.dossierTypes();
+    }
+
+    /** GAP-08/11: Loại tiền (tĩnh VND/USD). */
+    @GetMapping("/currencies")
+    public List<CurrencyItem> currencies(@RequestParam(required = false) String search) {
+        return service.currencies(search);
     }
 }

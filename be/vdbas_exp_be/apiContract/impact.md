@@ -32,20 +32,32 @@
 | **Files cần tạo mới (NEW)** | **~22** |
 | **Rủi ro regression HIGH / MEDIUM** | **3 / 5** |
 
+## ✅ QUYẾT ĐỊNH ĐÃ CHỐT (2026-06-19)
+
+| # | Quyết định | Chọn |
+|---|-----------|------|
+| **D1/D3/D4** | Chiến lược OPEX | 🟢 **Cô lập hoàn toàn (NEW)** — controller/service/DTO OPEX mới dưới `/exp/opex`; KHÔNG đụng CAPEX; tái dùng entity/repo/LOV |
+| **D2** | Enum `DossierStatus` | 🟢 **Mở rộng union + seed** — thêm 9 hằng OPEX (additive) + case `labelOf()` + seed `COMMON_STATUS` + try-catch converter |
+| **MVP** | Phạm vi | 🟢 **Chỉ CRUD + Workflow + LOV** — KHÔNG làm: upload/download file, attachment cấp chứng từ, export (để MVP+1) |
+| **D4** | `documentNo` / `DOSSIER_CODE` | 🟢 **Backend sinh** — bỏ `@NotBlank documentNo`, sinh `[code]-[type]-[####]`; DOSSIER_CODE generator OPEX (bỏ stub CAPEX/TEMP) |
+| **D7** | Soft-delete OPEX | 🟢 **`softDeleteOpex()` set `DELETED`** — không sửa `softDelete()` CAPEX (giữ CANCELLED) |
+| **GAP-09** | `originalAmount` | 🟢 **Bắt buộc (NOT NULL)** — validate ở DTO/service OPEX |
+| **GAP-08** | `currencyCode` | 🟢 **Không persist** — `/lov/currencies` trả tĩnh VND/USD |
+
 ## Checklist trước khi sinh code
 
-- [ ] Đã review Scope / Out-of-Scope
-- [ ] Đã chạy 7 detector ngữ nghĩa (STEP 1C) — không còn `EXISTS_REUSE_RISKY` chưa giải quyết
-- [ ] **Đã chốt namespace D1** (tách controller OPEX, KHÔNG đổi CAPEX)
-- [ ] **Đã chốt enum D2** (mở rộng `DossierStatus` thành union hay tách enum OPEX riêng)
-- [ ] **Đã chốt state machine D3** (xây `OpexDossierWorkflowService` 7 transition mới)
-- [ ] Tất cả CRITICAL gaps đã có quyết định
-- [ ] Tất cả DECISION_NEEDED gaps đã có quyết định
-- [ ] Đã review danh sách EXISTS_REUSE / EXISTS_REUSE_RISKY / EXISTS_MODIFY / NEW (STEP 1B)
-- [ ] Đã review mục Tác động lên code & chức năng cũ (STEP 7B)
-- [ ] Có kế hoạch re-test cho mọi rủi ro HIGH / MEDIUM (đặc biệt: smoke test toàn bộ luồng CAPEX)
-- [ ] Đã xác nhận `AuditorAware` có trả non-null `createdBy` không (GAP-06)
-- [ ] Package gốc đã xác nhận (`com.fis.vdbas.exp`)
+- [x] Đã review Scope / Out-of-Scope
+- [x] Đã chạy 7 detector ngữ nghĩa (STEP 1C) — `EXISTS_REUSE_RISKY` được giải quyết bằng hướng cô lập (không reuse, tạo NEW)
+- [x] **Đã chốt namespace D1** → tách controller OPEX, KHÔNG đổi CAPEX
+- [x] **Đã chốt enum D2** → mở rộng `DossierStatus` thành union + seed
+- [x] **Đã chốt state machine D3** → xây `OpexDossierWorkflowService` 7 transition mới
+- [x] Tất cả CRITICAL gaps đã có quyết định (GAP-01..07 — xem block trên + Q&A)
+- [x] Tất cả DECISION_NEEDED gaps đã có quyết định (GAP-08..12)
+- [x] Đã review danh sách EXISTS_REUSE / EXISTS_REUSE_RISKY / EXISTS_MODIFY / NEW (STEP 1B)
+- [x] Đã review mục Tác động lên code & chức năng cũ (STEP 7B)
+- [x] Có kế hoạch re-test cho mọi rủi ro MEDIUM (smoke test toàn bộ luồng CAPEX sau khi mở rộng enum/DTO)
+- [ ] ⚠️ **CÒN LẠI: xác nhận `AuditorAware` trả non-null `createdBy`** (GAP-06) — phải kiểm tra trong module chạy trước POST đầu tiên; tạm fallback `"SYSTEM"` nếu chưa có JWT
+- [x] Package gốc đã xác nhận (`com.fis.vdbas.exp`)
 
 ---
 
@@ -103,7 +115,7 @@ Controller hiện có map `@RequestMapping("/api/v1/exp/capex/dossiers...")`. Co
 **Recommendation:**
 Tạo **controller OPEX mới** (`OpexDossierController`, `OpexWorkflowController`, ...) dưới `/api/v1/exp/opex/dossiers`. **Không** đổi `@RequestMapping` của CAPEX (sẽ phá API CAPEX đang chạy → HIGH). Reuse service ở tầng dưới chỉ khi nghiệp vụ trùng; với workflow thì tách (GAP-03).
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — Cô lập hoàn toàn (NEW).** Controller/service/DTO OPEX mới dưới `/exp/opex`; KHÔNG đổi CAPEX. Tái dùng entity/repo/LOV.
 
 ---
 
@@ -130,7 +142,7 @@ Vì entity + cột `F_STATUS` dùng chung → chọn **(a) mở rộng enum cộ
 3. Không bắt buộc nhưng nên: bọc try-catch trong converter trả null/UNKNOWN để chống crash dữ liệu lạ.
 Tránh đổi/xoá giá trị enum cũ (CAPEX phụ thuộc).
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — (a) Mở rộng enum union + seed.** Thêm 9 hằng OPEX (additive), thêm case `labelOf()`, seed `COMMON_STATUS`, bọc try-catch converter. KHÔNG đổi/xoá hằng CAPEX.
 
 ---
 
@@ -150,7 +162,7 @@ Tránh đổi/xoá giá trị enum cũ (CAPEX phụ thuộc).
 Tạo **`OpexDossierWorkflowService` mới** (cô lập). Map đúng:
 `submit`: DRAFT/REJECTED_BY_CHECKER→PENDING_CHECKER (+HASH_INFO) · `check`: PENDING_CHECKER→CHECKED/APPROVAL_PENDING · `check-reject`: PENDING_CHECKER→CHECK_REJECTED · `check-return`: PENDING_CHECKER→DRAFT · `approve`: CHECKED/APPROVAL_PENDING→APPROVED · `approve-reject`: CHECKED→APPROVAL_REJECTED · `approve-cancel`: APPROVAL_PENDING→CHECKED. **Không** sửa `approve()`/`reject()` CAPEX (HIGH regression). Mỗi transition ghi `EXP_APPROVAL_LOG`.
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — Xây `OpexDossierWorkflowService` mới (7 transition).** KHÔNG sửa `DossierWorkflowService` CAPEX.
 
 ---
 
@@ -173,7 +185,7 @@ Tạo **`OpexDossierWorkflowService` mới** (cô lập). Map đúng:
 **Recommendation:**
 Vì DTO đang dùng cho CAPEX (sửa required có thể phá CAPEX) → **tạo DTO OPEX mới** đúng `required` của contract, hoặc nếu dùng chung thì chỉ **thêm field nullable** (additive). `documentNo`/`documentName`: **backend sinh** (bỏ `@NotBlank`, đánh read-only). `ApproveRequest.reason`: với OPEX để optional.
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — Tạo DTO OPEX mới** (`OpexDossierCreateRequest/UpdateRequest/DraftRequest`, `OpexAddDocumentRequest`) đúng `required` contract. `documentNo` & `DOSSIER_CODE` **backend sinh** (bỏ `@NotBlank`). `ApproveRequest` OPEX để `reason` optional.
 
 ---
 
@@ -192,7 +204,7 @@ DDL `EXP_DOSSIER_SLA` có NOT NULL: `ACTION_ROLE, ACTION_USER, SLA, IS_NOTIFY`. 
 **Recommendation:**
 SLA là Out-of-Scope MVP (xem Scope). Nếu vào scope: sửa `ExpDossierSla` map đúng `ACTION_ROLE/ACTION_USER/IS_NOTIFY/SLA`, bỏ field thừa. Entity này hiện **không** được feature khác dùng → sửa an toàn (LOW/MEDIUM).
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — Out-of-Scope MVP** (MVP chỉ CRUD+Workflow+LOV). Không chạm `ExpDossierSla` lần này; xử lý ở MVP+1 khi làm SLA timer.
 
 ---
 
@@ -211,7 +223,7 @@ SLA là Out-of-Scope MVP (xem Scope). Nếu vào scope: sửa `ExpDossierSla` ma
 **Recommendation:**
 Xác nhận/khai báo `AuditorAware` trả user hiện tại (tạm `"SYSTEM"` nếu chưa có JWT). Đảm bảo `@EnableJpaAuditing` bật. Kiểm tra mapping `created_at/updated_at` (drift) — nếu Hibernate ddl-validate sẽ fail.
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ⚠️ **CẦN XÁC NHẬN trước POST đầu tiên** — khai báo `AuditConfig` + `AuditorAware<String>` (fallback `"SYSTEM"` nếu chưa tích hợp JWT) và `@EnableJpaAuditing`. Đây là item checklist còn lại duy nhất.
 
 ---
 
@@ -230,7 +242,7 @@ Xác nhận/khai báo `AuditorAware` trả user hiện tại (tạm `"SYSTEM"` n
 **Recommendation:**
 Thêm **method mới** `softDeleteWithStatus(id, status)` hoặc `softDeleteOpex(id)` set `DELETED` (additive, không đụng `softDelete()` cũ). Cần seed `DELETED` vào `COMMON_STATUS` (GAP-02).
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — Thêm `softDeleteOpex()` set `DELETED`.** Giữ nguyên `softDelete()` CAPEX (CANCELLED). Seed `DELETED` vào `COMMON_STATUS`.
 
 ---
 
@@ -249,7 +261,7 @@ Thêm **method mới** `softDeleteWithStatus(id, status)` hoặc `softDeleteOpex
 
 **Recommendation:** MVP: bỏ qua persist `currencyCode` (chỉ nhận-bỏ hoặc loại khỏi DTO OPEX). `/lov/currencies` trả tĩnh VND/USD. Nếu cần lưu → ALTER `EXP_DOCUMENT ADD CURRENCY_CODE`.
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — Không persist `currencyCode`** (loại khỏi DTO OPEX). `/lov/currencies` trả tĩnh VND/USD. Không ALTER bảng.
 
 ---
 
@@ -265,7 +277,7 @@ Thêm **method mới** `softDeleteWithStatus(id, status)` hoặc `softDeleteOpex
 
 **Recommendation:** Với OPEX theo contract → bắt buộc `originalAmount` (NOT NULL). Validate ở DTO OPEX. Không đổi entity (để CAPEX giữ nullable nếu cần), enforce ở tầng service/DTO.
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — `originalAmount` bắt buộc (NOT NULL) cho OPEX.** Enforce `@NotNull` ở `OpexAddDocumentRequest`/service. Không đổi entity dùng chung.
 
 ---
 
@@ -281,7 +293,7 @@ Thêm **method mới** `softDeleteWithStatus(id, status)` hoặc `softDeleteOpex
 
 **Recommendation:** MVP: đánh `@Transient` (suy ra qua LOV user) để khỏi drift; hoặc ALTER bảng nếu cần persist tên hiển thị.
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — đánh `@Transient`** (suy ra runtime), tránh schema-drift. Không ALTER bảng ở MVP.
 
 ---
 
@@ -297,7 +309,7 @@ Thêm **method mới** `softDeleteWithStatus(id, status)` hoặc `softDeleteOpex
 
 **Recommendation:** Thêm `lovDossierTypes` (đọc `EXP_DOSSIER_TYPE` — có entity `ExpDossierType`? nếu chưa, tạo). `currencies` trả tĩnh. `users` Out-of-Scope (IDP) — stub/đợi tích hợp.
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — Thêm `lovDossierTypes` (đọc `EXP_DOSSIER_TYPE`) + `lovCurrencies` (tĩnh VND/USD)** vào `LovController`/`LovService` (additive). `lovUsers` Out-of-Scope (đợi IDP).
 
 ---
 
@@ -311,7 +323,7 @@ Thêm **method mới** `softDeleteWithStatus(id, status)` hoặc `softDeleteOpex
 
 **Recommendation:** Giữ `LocalDateTime` cho SLA/actionDate (cần giờ). Không đổi.
 
-**Decision:** ☐ Chưa quyết định
+**Decision:** ☑ **CHỐT — Giữ nguyên `LocalDateTime`.** Không đổi (Oracle DATE chứa cả giờ).
 
 ---
 
@@ -472,7 +484,7 @@ Thêm **method mới** `softDeleteWithStatus(id, status)` hoặc `softDeleteOpex
 | `ExpAuditLog.java` | domain/audit | ✅ EXISTS_REUSE | |
 | `ExpDossierSla.java` | domain/dossier | ⚠️ EXISTS_REUSE_RISKY | GAP-05 map sai — sửa nếu vào scope |
 | `ExpDigitalSigned.java` | domain/dossier | ⚠️ EXISTS_REUSE_RISKY | thiếu cột NOT NULL + audit; out-of-scope |
-| `ExpDocumentAttachment.java` | domain/dossier | 🆕 NEW | DDL có `EXP_DOCUMENT_ATTACHMENT`, chưa có entity (khi vào scope) |
+| `ExpDocumentAttachment.java` | domain/dossier | 🆕 NEW | ⏭️ **MVP+1** (ngoài scope lần này) — DDL có `EXP_DOCUMENT_ATTACHMENT`, chưa có entity |
 | `ExpDossierType.java` (nếu chưa có) | domain/lov | 🆕 NEW | cho `/lov/dossier-types` |
 | LOV entities (Organization/Treasury/DataSource/DocumentType/AttachmentType/Project*) | domain/lov | ✅ EXISTS_REUSE | |
 
@@ -517,9 +529,9 @@ Thêm **method mới** `softDeleteWithStatus(id, status)` hoặc `softDeleteOpex
 | `OpexDossierController.java` | api/dossier | 🆕 NEW | `/api/v1/exp/opex/dossiers` CRUD + draft + copy + delete (GAP-01) |
 | `OpexWorkflowController.java` | api/dossier | 🆕 NEW | submit/check/check-reject/check-return/approve/approve-reject/approve-cancel |
 | `OpexDocumentController.java` | api/dossier | 🆕 NEW | `/exp/opex/dossiers/{id}/documents/**` |
-| `OpexAttachmentController.java` | api/dossier | 🆕 NEW | dossier + document attachments (upload/download out-of-scope) |
+| `OpexAttachmentController.java` | api/dossier | 🆕 NEW | **MVP: chỉ list/delete metadata dossier**. Upload/download + doc-attachment ⏭️ MVP+1 |
 | `OpexAuditController.java` | api/audit | 🆕 NEW | approval-log + audit-log dưới `/exp/opex` |
-| `OpexExportController.java` | api/dossier | 🆕 NEW | export (out-of-scope impl) |
+| `OpexExportController.java` | api/dossier | 🆕 NEW | ⏭️ **MVP+1** (export ngoài scope lần này) |
 | `*Controller` (CAPEX) | api/dossier·audit | ⚠️ EXISTS_REUSE_RISKY | **KHÔNG** đổi path CAPEX |
 | `LovController.java` | api/lov | 🔧 EXISTS_MODIFY | thêm 3 LOV endpoint |
 

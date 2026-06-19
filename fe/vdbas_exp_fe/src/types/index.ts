@@ -513,3 +513,268 @@ export interface AttachmentTypeItem {
   attachmentTypeCode: AttachmentTypeCode
   attachmentTypeName: string
 }
+
+// ════════════════════════════════════════════════════════════════════════════
+// EXP OPEX Dossier (EXP.OPEX.DOSSIER) — types song song với CAPEX.
+// Envelope/enum/field khớp ĐÚNG API-contract.yaml (OPEX). KHÔNG đụng type CAPEX ở trên.
+// ════════════════════════════════════════════════════════════════════════════
+
+// ── OPEX — Enums ────────────────────────────────────────────────────────────
+export type OpexDossierStatus =
+  | 'DRAFT' | 'PENDING_CHECKER' | 'CHECKED' | 'APPROVAL_PENDING'
+  | 'APPROVED' | 'APPROVAL_REJECTED' | 'CHECK_REJECTED' | 'CHECK_CANCELLED'
+  | 'APPROVAL_CANCELLED' | 'REJECTED_BY_CHECKER' | 'DELETED'
+
+export type OpexActionRole = 'MAKER' | 'CHECKER' | 'APPROVER'
+export type OpexDossierType = 'OPEX' | 'CAPEX'
+export type OpexDateField = 'CREATED_DATE' | 'RECEIVED_DATE' | 'CHECKED_DATE' | 'APPROVED_DATE'
+export type OpexSize = 20 | 50 | 100 | 200
+
+// ── OPEX — Request types (read-only BE-managed KHÔNG đưa vào Request) ─────────
+export interface OpexDossierCreateRequest {
+  organizationCode: string
+  treasuryCode: string
+  sendDate: string
+  dataSourceCode: string
+  dossierTypeCode?: OpexDossierType // cố định OPEX; immutable sau create (VAL-17)
+}
+
+export interface OpexDossierDraftRequest {
+  organizationCode?: string
+  treasuryCode?: string
+  dossierTypeCode?: OpexDossierType
+  dataSourceCode?: string
+  sendDate?: string
+}
+
+export interface OpexDossierUpdateRequest {
+  version: number // optimistic lock (VAL-15) — bắt buộc
+  organizationCode: string
+  treasuryCode: string
+  sendDate: string
+}
+
+export interface DeleteOpexDossierRequest {
+  deleteReason: string // ≥ 10 ký tự (VAL-16)
+  confirmReviewed: boolean // bắt buộc = true
+}
+
+export interface OpexApproveRequest {
+  reason?: string
+  digitalSign?: DigitalSignInfo
+}
+
+export interface OpexRejectRequest {
+  reason: string // ≥ 10, ≤ 500
+}
+
+export interface OpexDocumentCreateRequest {
+  documentTypeCode: string
+  treasuryCode: string
+  documentDate: string
+  accountingDate: string
+  originalAmount: number
+  baseAmount: number
+  currencyCode?: string // VERIFY: chưa có cột trong DDL — có thể không persist
+}
+
+export type OpexDocumentUpdateRequest = OpexDocumentCreateRequest
+
+export interface OpexAttachmentUploadRequest {
+  attachmentTypeCode: string
+  description?: string | null
+}
+
+// ── OPEX — Params ────────────────────────────────────────────────────────────
+export interface OpexDossierListParams {
+  dossierCode?: string
+  fromDate?: string
+  toDate?: string
+  dateField?: OpexDateField
+  fStatus?: OpexDossierStatus[]
+  dataSourceCode?: string
+  createdBy?: string
+  checkedBy?: string
+  approvedBy?: string
+  page?: number // 0-based (contract)
+  size?: OpexSize
+  sort?: string // 'createdDate,desc'
+  [key: string]: unknown
+}
+
+export interface ExportOpexParams {
+  format: ExportFormat
+  dossierCode?: string
+  fromDate?: string
+  toDate?: string
+  fStatus?: OpexDossierStatus[]
+  [key: string]: unknown
+}
+
+// ── OPEX — Envelope & response data ─────────────────────────────────────────
+export interface OpexPagination {
+  page: number // 0-based
+  size: number
+  totalElements: number
+  totalPages: number
+}
+
+export interface OpexDossierSummary {
+  id: string
+  treasuryCode: string
+  treasuryName: string
+  dossierCode: string
+  sendDate: string
+  dataSourceCode: string
+  fStatus: OpexDossierStatus
+  createdBy: string
+  createdDate: string
+  updatedBy?: string
+  updatedDate?: string
+}
+
+export interface OpexDocumentDetail {
+  id: string
+  dossierId: string
+  treasuryCode: string
+  treasuryName: string
+  documentTypeCode: string
+  documentName: string
+  documentNo: string
+  documentDate: string
+  accountingDate: string
+  originalAmount: number
+  baseAmount: number
+  currencyCode?: string
+  status: 0 | 1
+  createdBy: string
+  createdDate: string
+  updatedBy: string
+  updatedDate: string
+}
+
+export interface OpexAttachment {
+  id: string
+  attachmentTypeCode: string
+  fileName: string
+  fileType: string
+  fileSize: number
+  description?: string | null
+  createdBy: string
+  createdDate: string
+}
+
+export interface OpexDossierDetail {
+  id: string
+  treasuryCode: string
+  treasuryName: string
+  dossierTypeCode: OpexDossierType
+  dossierCode: string
+  version: number
+  sendDate: string
+  projectCode?: string | null
+  projectName?: string | null
+  projectSpecificCode?: string | null
+  projectSpecificName?: string | null
+  organizationCode: string
+  organizationName: string
+  status: 0 | 1
+  fStatus: OpexDossierStatus
+  workflowCode?: string
+  dataSourceCode: string
+  assignUser?: string
+  sla?: string
+  hashInfo?: string | null
+  completedDate?: string | null
+  createdBy: string
+  createdDate: string
+  updatedBy: string
+  updatedDate: string
+  documents: OpexDocumentDetail[]
+  attachments: OpexAttachment[]
+}
+
+export interface OpexDossierListResponse {
+  items: OpexDossierSummary[]
+  pagination: OpexPagination
+  statusCounts: Record<string, number>
+}
+
+// Sau adapter service — giữ envelope contract (không ép vào PagedResponse<T>).
+export interface OpexDossierListResult {
+  items: OpexDossierSummary[]
+  pagination: OpexPagination
+  statusCounts: Record<string, number>
+}
+
+export interface OpexDossierCreateResponse {
+  id: string
+  dossierCode: string
+  fStatus: OpexDossierStatus
+  version: number
+}
+
+export interface OpexDossierUpdateResponse {
+  id: string
+  dossierCode: string
+  fStatus: OpexDossierStatus
+  version: number
+}
+
+export interface OpexWorkflowActionResponse {
+  id: string
+  fStatus: OpexDossierStatus
+  fStatusName?: string
+  assignUser?: string
+}
+
+export interface OpexApprovalLogEntry {
+  id: string
+  dossierId: string
+  dossierCode: string
+  actionUser: string
+  actionRole: OpexActionRole
+  actionDate: string
+  reason?: string
+  stateCode: string
+  parentId?: string | null
+  createdBy: string
+  createdDate: string
+}
+
+export interface OpexAuditLogEntry {
+  id: string
+  tableName: string
+  recordId: string
+  actionType: AuditActionType
+  oldValue?: string | null
+  newValue: string
+  userId: string
+  actionTimestamp: string
+  ipAddress: string
+}
+
+export interface ExportJob {
+  jobId: string
+  status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED'
+  format: ExportFormat
+  downloadUrl?: string | null
+  pollUrl: string
+}
+
+// ── OPEX — LOV (envelope {items,pagination} — KHÁC flat-array của CAPEX) ──────
+export interface LovItem {
+  code: string
+  name: string
+  description?: string | null
+}
+
+export interface LovListResponse {
+  items: LovItem[]
+  pagination?: OpexPagination
+}
+
+export interface LovUsersParams {
+  search?: string
+  activeStatus?: 'ACTIVE' | 'INACTIVE' | 'ALL'
+}

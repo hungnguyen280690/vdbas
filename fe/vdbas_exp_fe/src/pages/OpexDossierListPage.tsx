@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import './OpexDossierListPage.css'
-import { MOCK_DATA, type OpexDossierRecord } from './OpexDossierListPage.mock'
+import { type OpexDossierRecord } from './OpexDossierListPage.mock'
 import { useNavigation } from '@/contexts/NavigationContext'
+import { OpexDossierHooks } from '@/hooks/useOpexDossier'
+import { exportOpexDossiers } from '@/services/opexDossierService'
+import type { OpexDossierListParams, OpexDossierStatus, OpexDossierSummary, ExportOpexParams } from '@/types/index'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 
@@ -59,8 +62,14 @@ const DEFAULT_WIDTHS: Record<string, number> = Object.fromEntries(
 
 // ── Constants ─────────────────────────────────────────────────────────────────
 
-const PAGE_SIZE = 10
+const PAGE_SIZE = 20 // contract size enum ∈ [20,50,100,200]
 const STORAGE_KEY = 'vdbas_opex_list_cols'
+
+// Map cột UI (UPPER_SNAKE) → field sort contract (camelCase, chuỗi 'field,dir')
+const SORT_FIELD_MAP: Record<string, string> = {
+  DOSSIER_CODE: 'dossierCode', SEND_DATE: 'sendDate', DATA_SOURCE_CODE: 'dataSourceCode',
+  F_STATUS: 'fStatus', CREATED_DATE: 'createdDate', CREATED_BY: 'createdBy',
+}
 
 const SOURCE_LABEL: Record<string, string> = {
   MANUAL: 'Thủ công', DVKB: 'Dịch vụ kho bạc', AUTO: 'Tự động', TREASURY_SERVICE: 'Dịch vụ KBNN',
@@ -75,66 +84,55 @@ const SOURCE_OPTIONS: MsOption[] = [
   { value: 'AUTO',   label: 'Tự động',   dot: '#1677ff' },
 ]
 
+// Trạng thái 11-state OPEX (A11) — thay enum 8-state cũ của mock.
 const STATUS_OPTIONS: MsOption[] = [
-  { value: 'DRAFT',     label: 'Lưu nháp',          dot: '#9e9e9e' },
-  { value: 'SAVED',     label: 'Đã lưu',             dot: '#8c8c8c' },
-  { value: 'VALIDATED', label: 'Đã kiểm tra',        dot: '#13c2c2' },
-  { value: 'SUBMITTED', label: 'Đã gửi kiểm soát',   dot: '#1677ff' },
-  { value: 'APPROVED',  label: 'Đã phê duyệt',       dot: '#389e0d' },
-  { value: 'REJECTED',  label: 'Đã từ chối',         dot: '#cf1322' },
-  { value: 'COMPLETED', label: 'Đã hoàn thành',      dot: '#237804' },
-  { value: 'CANCELLED', label: 'Đã huỷ',             dot: '#fa8c16' },
+  { value: 'DRAFT',               label: 'Lưu nháp',            dot: '#9e9e9e' },
+  { value: 'PENDING_CHECKER',     label: 'Chờ kiểm soát',        dot: '#1677ff' },
+  { value: 'CHECKED',             label: 'Đã kiểm soát',         dot: '#13c2c2' },
+  { value: 'APPROVAL_PENDING',    label: 'Chờ phê duyệt',        dot: '#2f54eb' },
+  { value: 'APPROVED',            label: 'Đã phê duyệt',         dot: '#389e0d' },
+  { value: 'CHECK_REJECTED',      label: 'Từ chối kiểm soát',    dot: '#cf1322' },
+  { value: 'REJECTED_BY_CHECKER', label: 'Trả lại người lập',    dot: '#fa541c' },
+  { value: 'APPROVAL_REJECTED',   label: 'Từ chối phê duyệt',    dot: '#cf1322' },
+  { value: 'CHECK_CANCELLED',     label: 'Huỷ kiểm soát',        dot: '#fa8c16' },
+  { value: 'APPROVAL_CANCELLED',  label: 'Huỷ phê duyệt',        dot: '#fa8c16' },
+  { value: 'DELETED',             label: 'Đã xoá',               dot: '#8c8c8c' },
 ]
 
 const STATS_DEF = [
-  { status: 'DRAFT',     label: 'Lưu nháp',          cls: 'st-draft'     },
-  { status: 'SUBMITTED', label: 'Đã gửi kiểm soát',  cls: 'st-submitted' },
-  { status: 'APPROVED',  label: 'Đã phê duyệt',      cls: 'st-approved'  },
-  { status: 'REJECTED',  label: 'Đã từ chối',        cls: 'st-rejected'  },
-  { status: 'COMPLETED', label: 'Đã hoàn thành',     cls: 'st-completed' },
-  { status: 'CANCELLED', label: 'Đã huỷ',            cls: 'st-cancelled' },
+  { status: 'DRAFT',            label: 'Lưu nháp',         cls: 'st-draft'     },
+  { status: 'PENDING_CHECKER',  label: 'Chờ kiểm soát',     cls: 'st-submitted' },
+  { status: 'CHECKED',          label: 'Đã kiểm soát',      cls: 'st-checked'   },
+  { status: 'APPROVED',         label: 'Đã phê duyệt',      cls: 'st-approved'  },
+  { status: 'CHECK_REJECTED',   label: 'Từ chối kiểm soát', cls: 'st-rejected'  },
+  { status: 'APPROVAL_REJECTED', label: 'Từ chối phê duyệt', cls: 'st-rejected' },
 ]
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function toISO(s: string | null): string {
-  if (!s) return ''
-  const str = String(s).trim()
-  if (/^\d{4}-\d{2}-\d{2}$/.test(str)) return str
-  const m = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/)
-  if (!m) return ''
-  return `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`
-}
-
-function uiStatus(status: string, assignUser: string): { label: string; cls: string } {
+// Nhãn + class hiển thị cho 11-state OPEX (tái dùng class CSS có sẵn).
+function uiStatus(status: string): { label: string; cls: string } {
   switch (status) {
-    case 'DRAFT':     return { label: 'Lưu nháp',          cls: 'st-draft'     }
-    case 'SAVED':     return { label: 'Đã lưu',             cls: 'st-saved'     }
-    case 'VALIDATED': return { label: 'Đã kiểm tra',        cls: 'st-validated' }
-    case 'SUBMITTED': return { label: 'Đã gửi kiểm soát',   cls: 'st-submitted' }
-    case 'APPROVED':
-      return assignUser === 'Done'
-        ? { label: 'Đã phê duyệt', cls: 'st-approved' }
-        : { label: 'Đã kiểm soát', cls: 'st-checked'  }
-    case 'REJECTED':
-      return assignUser === 'Checker'
-        ? { label: 'Từ chối phê duyệt', cls: 'st-rejected' }
-        : { label: 'Từ chối kiểm soát', cls: 'st-rejected' }
-    case 'COMPLETED': return { label: 'Đã hoàn thành', cls: 'st-completed' }
-    case 'CANCELLED': return { label: 'Đã huỷ',         cls: 'st-cancelled' }
-    default:          return { label: status || '—',    cls: 'st-draft'     }
+    case 'DRAFT':               return { label: 'Lưu nháp',          cls: 'st-draft'     }
+    case 'PENDING_CHECKER':     return { label: 'Chờ kiểm soát',      cls: 'st-submitted' }
+    case 'CHECKED':             return { label: 'Đã kiểm soát',       cls: 'st-checked'   }
+    case 'APPROVAL_PENDING':    return { label: 'Chờ phê duyệt',      cls: 'st-submitted' }
+    case 'APPROVED':            return { label: 'Đã phê duyệt',       cls: 'st-approved'  }
+    case 'CHECK_REJECTED':      return { label: 'Từ chối kiểm soát',  cls: 'st-rejected'  }
+    case 'REJECTED_BY_CHECKER': return { label: 'Trả lại người lập',  cls: 'st-rejected'  }
+    case 'APPROVAL_REJECTED':   return { label: 'Từ chối phê duyệt',  cls: 'st-rejected'  }
+    case 'CHECK_CANCELLED':     return { label: 'Huỷ kiểm soát',      cls: 'st-cancelled' }
+    case 'APPROVAL_CANCELLED':  return { label: 'Huỷ phê duyệt',      cls: 'st-cancelled' }
+    case 'DELETED':             return { label: 'Đã xoá',             cls: 'st-cancelled' }
+    default:                    return { label: status || '—',       cls: 'st-draft'     }
   }
 }
 
-function canEdit(r: OpexDossierRecord): boolean {
-  return r.F_STATUS === 'DRAFT' || r.F_STATUS === 'SAVED' || (r.F_STATUS === 'REJECTED' && r.ASSIGN_USER === 'Maker')
-}
-function canDelete(r: OpexDossierRecord): boolean {
-  return r.F_STATUS === 'DRAFT' || r.F_STATUS === 'SAVED' || (r.F_STATUS === 'REJECTED' && r.ASSIGN_USER === 'Maker')
-}
-function canSubmit(r: OpexDossierRecord): boolean {
-  return r.F_STATUS === 'DRAFT' || r.F_STATUS === 'SAVED' || (r.F_STATUS === 'REJECTED' && r.ASSIGN_USER === 'Maker')
-}
+// Hồ sơ ở trạng thái Maker còn thao tác được (BTN_MATRIX §7). SoD/ownership do BE chốt.
+const MAKER_EDITABLE = new Set<string>(['DRAFT', 'REJECTED_BY_CHECKER', 'CHECK_REJECTED'])
+function canEdit(r: OpexDossierRecord): boolean   { return MAKER_EDITABLE.has(r.F_STATUS) }
+function canDelete(r: OpexDossierRecord): boolean { return MAKER_EDITABLE.has(r.F_STATUS) }
+function canSubmit(r: OpexDossierRecord): boolean { return MAKER_EDITABLE.has(r.F_STATUS) }
 
 function clampOrder(order: string[]): string[] {
   const mid = order.filter(k => k !== 'STT' && k !== 'ACTIONS')
@@ -299,31 +297,49 @@ const OpexDossierListPage: React.FC = () => {
     [visibleCols, colWidth]
   )
 
-  const filtered = useMemo(() => {
-    if (!searched) return []
-    const { dossierCode, quick, sources, statuses, createdBy, fromDate, toDate } = committedFilters
-    const result = MOCK_DATA.records.filter(r => {
-      const mCode   = !dossierCode || r.DOSSIER_CODE.toLowerCase().includes(dossierCode)
-      const mQuick  = !quick || (r.CREATED_BY ?? '').toLowerCase().includes(quick) || r.BUDGET_UNIT_NAME.toLowerCase().includes(quick)
-      const mStatus = !statuses.length || statuses.includes(r.F_STATUS)
-      const mSource = !sources.length  || sources.includes(r.DATA_SOURCE_CODE)
-      const mCb     = !createdBy || (r.CREATED_BY ?? '').toLowerCase().includes(createdBy)
-      const iso     = toISO(r.SEND_DATE)
-      const mFrom   = !fromDate || iso >= fromDate
-      const mTo     = !toDate   || iso <= toDate
-      return mCode && mQuick && mStatus && mSource && mCb && mFrom && mTo
-    })
-    return result.sort((a, b) => {
-      const av = String(a[sortField as keyof OpexDossierRecord] ?? '')
-      const bv = String(b[sortField as keyof OpexDossierRecord] ?? '')
-      return av.localeCompare(bv) * sortDir
-    })
-  }, [searched, committedFilters, sortField, sortDir])
+  // Query params contract: page 0-based, size enum, sort là chuỗi 'field,dir', fStatus[] explode.
+  const queryParams = useMemo<OpexDossierListParams>(() => {
+    const { dossierCode, statuses, sources, createdBy, fromDate, toDate } = committedFilters
+    return {
+      page: currentPage - 1,
+      size: PAGE_SIZE,
+      sort: `${SORT_FIELD_MAP[sortField] ?? 'createdDate'},${sortDir < 0 ? 'desc' : 'asc'}`,
+      ...(dossierCode ? { dossierCode } : {}),
+      ...(createdBy ? { createdBy } : {}),
+      ...(statuses.length ? { fStatus: statuses as OpexDossierStatus[] } : {}),
+      ...(sources.length ? { dataSourceCode: sources[0] } : {}), // contract: 1 dataSourceCode
+      ...(fromDate ? { fromDate, dateField: 'CREATED_DATE' as const } : {}),
+      ...(toDate ? { toDate } : {}),
+    }
+  }, [committedFilters, currentPage, sortField, sortDir])
 
-  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
-  const pageData   = filtered.slice((currentPage - 1) * PAGE_SIZE, currentPage * PAGE_SIZE)
-  const pageStart  = filtered.length ? (currentPage - 1) * PAGE_SIZE + 1 : 0
-  const pageEnd    = Math.min(currentPage * PAGE_SIZE, filtered.length)
+  const { data, isLoading } = OpexDossierHooks.useList(queryParams, searched)
+
+  // Adapter: OpexDossierSummary (camelCase) → shape render UI (UPPER_SNAKE).
+  // GAP: summary contract KHÔNG có organizationName/checkedBy/approvedBy → các cột đó để trống.
+  const mapSummary = useCallback((s: OpexDossierSummary): OpexDossierRecord => ({
+    id: s.id,
+    DOSSIER_CODE: s.dossierCode ?? '',
+    BUDGET_UNIT_CODE: '',
+    BUDGET_UNIT_NAME: s.treasuryName ?? '',
+    SEND_DATE: s.sendDate ?? '',
+    CREATED_BY: s.createdBy ?? '',
+    CREATED_DATE: s.createdDate ?? '',
+    DATA_SOURCE_CODE: s.dataSourceCode ?? '',
+    CHECKED_BY: null, CHECKED_DATE: null, APPROVED_BY: null, APPROVED_DATE: null,
+    CHECK_REJECTED_REASON: null, APPROVAL_REJECTED_REASON: null,
+    TREASURY_CODE: s.treasuryCode ?? '', TREASURY_NAME: s.treasuryName ?? '',
+    F_VER: 0,
+    F_STATUS: s.fStatus,
+    ASSIGN_USER: '',
+  }), [])
+
+  const pageData      = useMemo(() => (data?.items ?? []).map(mapSummary), [data, mapSummary])
+  const totalRecords  = data?.pagination?.totalElements ?? 0
+  const totalPages    = Math.max(1, data?.pagination?.totalPages ?? 1)
+  const statusCounts  = data?.statusCounts ?? {}
+  const pageStart     = totalRecords ? (currentPage - 1) * PAGE_SIZE + 1 : 0
+  const pageEnd       = Math.min(currentPage * PAGE_SIZE, totalRecords)
 
   // ── Handlers ───────────────────────────────────────────────────────────────
 
@@ -340,6 +356,33 @@ const OpexDossierListPage: React.FC = () => {
       toDate:      inputToDate,
     })
   }, [inputDossierCode, inputQuick, selectedSources, selectedStatuses, inputCreatedBy, inputFromDate, inputToDate])
+
+  async function handleExport() {
+    const { dossierCode, statuses, fromDate, toDate } = committedFilters
+    const params: ExportOpexParams = {
+      format: 'EXCEL',
+      ...(dossierCode ? { dossierCode } : {}),
+      ...(statuses.length ? { fStatus: statuses as OpexDossierStatus[] } : {}),
+      ...(fromDate ? { fromDate } : {}),
+      ...(toDate ? { toDate } : {}),
+    }
+    try {
+      // GAP: contract có thể trả 202 + jobId (≥50k dòng) — hiện xử lý nhánh 200 Blob.
+      const blob = await exportOpexDossiers(params)
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = `opex-dossiers-${new Date().toISOString().slice(0, 10)}.xlsx`
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+      showToast('✅ Đã xuất danh sách')
+    } catch (error: unknown) {
+      if ((error as Record<string, unknown>)._handled) return
+      showToast('⚠ Xuất danh sách thất bại')
+    }
+  }
 
   function handleReset() {
     setInputDossierCode(''); setInputQuick(''); setInputCreatedBy('')
@@ -458,7 +501,7 @@ const OpexDossierListPage: React.FC = () => {
         )
 
       case 'F_STATUS': {
-        const { label, cls } = uiStatus(r.F_STATUS, r.ASSIGN_USER)
+        const { label, cls } = uiStatus(r.F_STATUS)
         return <span className={`badge ${cls}`} data-testid={`badge-status-${r.F_STATUS}`}>{label}</span>
       }
 
@@ -568,7 +611,7 @@ const OpexDossierListPage: React.FC = () => {
           <button
             className="btn-header-default"
             data-event-id="EXP.OPEX_DOSSIER.LIST.EXPORT"
-            onClick={() => alert('Export chức năng prototype — Ctrl+Shift+E')}
+            onClick={handleExport}
             data-testid="btn-export"
           >
             📧 Xuất
@@ -716,11 +759,11 @@ const OpexDossierListPage: React.FC = () => {
 
             {/* STATS BAR */}
             <div className="stats-bar" id="stats-bar">
-              <span className="stats-total">Tổng hồ sơ: <b>{filtered.length}</b></span>
+              <span className="stats-total">Tổng hồ sơ: <b>{totalRecords}</b></span>
               {STATS_DEF.map(d => (
                 <span key={d.status} className="stat-chip">
                   <span className={`badge ${d.cls}`}>{d.label}</span>{' '}
-                  <b>{filtered.filter(r => r.F_STATUS === d.status).length}</b>
+                  <b>{statusCounts[d.status] ?? 0}</b>
                 </span>
               ))}
             </div>
@@ -729,7 +772,7 @@ const OpexDossierListPage: React.FC = () => {
             <div className="toolbar">
               <div className="toolbar-left">
                 <span id="record-count-info" style={{ fontSize: 12, color: 'var(--muted)' }}>
-                  Tổng kết quả: {filtered.length} bản ghi
+                  Tổng kết quả: {totalRecords} bản ghi
                 </span>
               </div>
               <div className="toolbar-right" style={{ gap: 6 }}>
@@ -828,7 +871,7 @@ const OpexDossierListPage: React.FC = () => {
                     <tr>
                       <td colSpan={visibleCols.length}>
                         <div className="empty-state">
-                          <p>Không có bản ghi phù hợp bộ lọc.</p>
+                          <p>{isLoading ? 'Đang tải dữ liệu…' : 'Không có bản ghi phù hợp bộ lọc.'}</p>
                         </div>
                       </td>
                     </tr>
@@ -861,7 +904,7 @@ const OpexDossierListPage: React.FC = () => {
             {/* PAGINATION */}
             <div className="pagination-bar">
               <div id="pagination-info" data-testid="pagination-info">
-                Hiển thị {pageStart}–{pageEnd} / {filtered.length} bản ghi
+                Hiển thị {pageStart}–{pageEnd} / {totalRecords} bản ghi
               </div>
               <div className="pagination-controls">
                 <button

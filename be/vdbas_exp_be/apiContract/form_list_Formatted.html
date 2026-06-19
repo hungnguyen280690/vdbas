@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Danh sách hồ sơ chi thường xuyên</title>
+<style>
+:root {
+  /* ==== VDBAS standard tokens (palette áp chuẩn) ==== */
+  --primary: #195295;
+  --primary-dark: #1565c0;
+  --primary-hover: #1565c0;
+  --accent: #FF4D4F;
+  --danger: #FF4D4F;
+  --danger-hover: #e53935;
+  --success: #389e0d;
+  --warning: #D97706;
+  --warning-bg: #FFF7E6;
+  --warning-color: #D97706;
+  --info: #0958d9;
+  --muted: #8c8c8c;
+  --text-dark: #262626;
+  --text-muted: #8c8c8c;
+  --border: #d9d9d9;
+  --bg: #f5f7fa;
+  --bg-light: #f5f7fa;
+  --white: #fff;
+  --disabled-bg: #f5f5f5;
+  --disabled-color: #595959;
+  --error-color: #cf1322;
+  --error-bg: #fff2f0;
+  --error-border: #ffa39e;
+  --radius: 6px;
+  --font: 'Segoe UI', Arial, sans-serif;
+  --font-size: 13px;
+  --shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font); font-size: var(--font-size); background: #f0f2f5; color: #222; }
+
+/* ---- HEADER ---- */
+.app-header {
+  background: var(--primary);
+  color: #fff;
+  padding: 0 20px;
+  height: 46px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: var(--shadow);
+}
+.app-header .logo { font-size: 16px; font-weight: 700; letter-spacing: .5px; }
+.app-header .breadcrumb { font-size: 12px; opacity: .8; }
+
+/* ---- MAIN ---- */
+.page-wrap { padding: 16px; max-width: 1600px; margin: 0 auto; }
+.page-title { font-size: 15px; font-weight: 600; color: var(--primary); margin-bottom: 12px; }
+
+/* ---- FILTER PANEL ---- */
+.filter-panel {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+}
+.filter-panel h4 { font-size: 12px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+.filter-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 10px;
+  align-items: end;
+}
+.filter-group label { display: block; font-size: 11px; font-weight: 600; color: #555; margin-bottom: 4px; }
+.filter-group input, .filter-group select {
+  width: 100%; padding: 5px 8px; border: 1px solid var(--border); border-radius: 4px;
+  font-size: 12px; font-family: var(--font); background: #fff;
+}
+.filter-group input:focus, .filter-group select:focus { outline: none; border-color: var(--primary); }
+.filter-actions { display: flex; gap: 8px; padding-top: 4px; }
+.filter-actions button { padding: 5px 14px; border-radius: 4px; font-size: 12px; cursor: pointer; border: 1px solid; font-family: var(--font); }
+.btn-search { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-search:hover { background: var(--primary-dark); }
+.btn-reset { background: #fff; color: var(--muted); border-color: var(--border); }
+.btn-reset:hover { background: var(--bg-light); }
+
+/* ---- STATS BAR ---- */
+.stats-bar {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  box-shadow: var(--shadow);
+}
+.stat-item { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.stat-label { color: var(--muted); }
+.stat-value { font-weight: 700; font-size: 14px; }
+.stat-item.total .stat-value { color: var(--primary); }
+.stat-item.draft .stat-value { color: var(--muted); }
+.stat-item.pending .stat-value { color: #007bff; }
+.stat-item.approved .stat-value { color: var(--success); }
+.stat-item.rejected .stat-value { color: var(--accent); }
+
+/* ---- TOOLBAR ---- */
+.toolbar {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  padding: 8px 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.toolbar-left { display: flex; gap: 6px; }
+.toolbar-right { display: flex; gap: 6px; align-items: center; font-size: 12px; color: var(--muted); }
+
+/* ---- BUTTONS ---- */
+.btn { padding: 5px 12px; border-radius: 4px; font-size: 12px; cursor: pointer; border: 1px solid transparent; font-family: var(--font); font-weight: 500; transition: .15s; display: inline-flex; align-items: center; gap: 4px; text-decoration: none; }
+.btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover { background: var(--primary-dark); }
+.btn-secondary { background: #fff; color: #333; border-color: var(--border); }
+.btn-secondary:hover { background: var(--bg-light); }
+.btn-danger { background: var(--accent); color: #fff; border-color: var(--accent); }
+.btn-danger:hover { background: #b02a37; }
+.btn-sm { padding: 3px 8px; font-size: 11px; }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+
+/* ---- TABLE ---- */
+.table-wrap {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  overflow: auto;
+  box-shadow: var(--shadow);
+}
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+thead th {
+  background: #f1f4f8;
+  padding: 8px 10px;
+  text-align: left;
+  font-weight: 600;
+  color: #444;
+  border-bottom: 2px solid var(--border);
+  white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+thead th.sortable { cursor: pointer; }
+thead th.sortable:hover { background: #e4e9f0; }
+tbody tr { border-bottom: 1px solid #f0f0f0; transition: background .1s; }
+tbody tr:hover { background: #f5f8ff; cursor: pointer; }
+tbody td { padding: 7px 10px; vertical-align: middle; }
+tbody td .dossier-link { color: var(--primary); text-decoration: none; font-weight: 600; }
+tbody td .dossier-link:hover { text-decoration: underline; }
+
+/* ---- BADGES ---- */
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 12px; font-size: 10px;
+  font-weight: 700; text-transform: uppercase; letter-spacing: .3px; white-space: nowrap;
+}
+.badge-DRAFT { background: #e9ecef; color: #495057; }
+.badge-PENDING_CHECKER { background: #cce5ff; color: #004085; }
+.badge-PENDING_APPROVAL { background: #fff3cd; color: #856404; }
+.badge-CHECKED { background: #d1ecf1; color: #0c5460; }
+.badge-APPROVED { background: #d4edda; color: #155724; }
+.badge-APPROVAL_REJECTED { background: #f8d7da; color: #721c24; }
+.badge-CHECK_REJECTED { background: #ffe5cc; color: #7a3000; }
+.badge-REJECTED_BY_CHECKER { background: #ffe5cc; color: #7a3000; }
+.badge-DELETED { background: #343a40; color: #fff; }
+
+/* ---- PAGINATION ---- */
+.pagination-bar {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-top: 1px solid var(--border);
+  border-radius: 0 0 6px 6px;
+  padding: 8px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: var(--muted);
+}
+.pagination-controls { display: flex; gap: 4px; align-items: center; }
+.page-btn {
+  padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px;
+  background: #fff; font-size: 12px; cursor: pointer; font-family: var(--font);
+}
+.page-btn:hover:not(:disabled) { background: var(--bg-light); }
+.page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+.page-btn:disabled { opacity: .4; cursor: not-allowed; }
+
+/* ---- EMPTY STATE ---- */
+.empty-state { text-align: center; padding: 40px; color: var(--muted); }
+.empty-state svg { margin-bottom: 12px; opacity: .3; }
+.empty-state p { font-size: 13px; }
+
+/* ---- ACTION ICONS ---- */
+.action-group { display: flex; gap: 4px; white-space: nowrap; }
+.icon-btn {
+  width: 26px; height: 26px; border: 1px solid var(--border); border-radius: 4px;
+  background: #fff; cursor: pointer; font-size: 13px; display: inline-flex;
+  align-items: center; justify-content: center; text-decoration: none; color: #333;
+  transition: .15s;
+}
+.icon-btn:hover { background: var(--bg-light); border-color: #aaa; }
+.icon-btn.view:hover { color: var(--info); border-color: var(--info); }
+.icon-btn.edit:hover { color: var(--primary); border-color: var(--primary); }
+.icon-btn.del:hover { color: var(--accent); border-color: var(--accent); }
+</style>
+
+<style id="vdbas-standard-skin">
+/* ============================================================
+   VDBAS STANDARD SKIN — áp chuẩn UI/UX từ bộ *_Formatted mẫu
+   (override các component dùng chung; giữ nguyên popup riêng của đích)
+   ============================================================ */
+html, body { background: var(--bg-light); color: var(--text-dark); }
+
+/* Header primary chuẩn */
+.app-header {
+  background: var(--primary); color: #fff;
+  padding: 10px 24px; height: auto;
+  display: flex; align-items: center; gap: 12px; justify-content: flex-start;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+.app-header .logo { font-size: 15px; font-weight: 700; letter-spacing: .5px; color: #fff; }
+.app-header .breadcrumb { font-size: 11px; opacity: .85; color: #fff; }
+
+/* Tiêu đề trang */
+.page-title { color: var(--primary); font-weight: 600; }
+
+/* Card chuẩn */
+.card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.card-header { background: #fff; padding: 12px 20px; border-bottom: 1px solid var(--border); }
+.card-header h3, .card-header h4 { color: var(--primary); font-weight: 600; font-size: 13px; text-transform: none; letter-spacing: 0; }
+.card-body { padding: 16px 20px; }
+
+/* Hệ nút chuẩn */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 8px 16px; border-radius: var(--radius); font-size: 13px; font-weight: 500;
+  border: 1px solid transparent; cursor: pointer; transition: all .2s; white-space: nowrap; text-decoration: none;
+}
+.btn-primary, .btn-success { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-primary:hover, .btn-success:hover { background: var(--primary-hover); }
+.btn-secondary, .btn-default, .btn-info { background: #fff; color: var(--text-dark); border-color: var(--border); }
+.btn-secondary:hover, .btn-default:hover, .btn-info:hover { border-color: var(--primary); color: var(--primary); background: #fff; }
+.btn-danger { background: var(--danger); color: #fff; border-color: var(--danger); }
+.btn-danger:hover { background: var(--danger-hover); }
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-sm { padding: 4px 10px; font-size: 12px; }
+
+/* Form group chuẩn */
+.form-group label { font-size: 12px; color: var(--text-muted); font-weight: 500; }
+.req { color: var(--danger); font-weight: 700; }
+.form-group input, .form-group select, .form-group textarea {
+  padding: 7px 10px; border: 1px solid var(--border); border-radius: var(--radius); font-size: 13px; color: var(--text-dark);
+}
+.form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+  outline: none; border-color: var(--primary); box-shadow: 0 0 0 2px rgba(25,82,149,0.1);
+}
+.form-group input:disabled, .form-group select:disabled, .form-group textarea:disabled {
+  background: var(--disabled-bg); color: var(--disabled-color);
+}
+
+/* Tabs chuẩn */
+.tab-bar, .tabs { border-bottom: 2px solid var(--border); }
+.tab-btn { color: var(--text-muted); font-weight: 500; }
+.tab-btn:hover { color: var(--primary); }
+.tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); font-weight: 600; }
+
+/* Bảng chuẩn */
+thead th, table thead th, .doc-grid th, .history-table th {
+  background: #f0f4f8; color: #444; border-bottom: 2px solid var(--border);
+}
+.page-btn.active { background: var(--primary); color: #fff; border-color: var(--primary); }
+
+/* Badge pill chuẩn (KHÔNG uppercase) */
+.badge { display: inline-block; padding: 3px 12px; border-radius: 12px; font-size: 12px; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.badge-DRAFT { background: #f5f5f5; color: #595959; border: 1px solid #d9d9d9; }
+.badge-PENDING_CHECKER, .badge-PENDING_APPROVAL { background: #e6f4ff; color: #0958d9; border: 1px solid #91caff; }
+.badge-CHECKED { background: #e6f4ff; color: #0958d9; border: 1px solid #91caff; }
+.badge-APPROVED { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+.badge-APPROVAL_REJECTED, .badge-CHECK_REJECTED, .badge-REJECTED_BY_CHECKER { background: #fff2f0; color: #cf1322; border: 1px solid #ffa39e; }
+.badge-DELETED { background: #fff7e6; color: #d46b08; border: 1px solid #ffd591; }
+.badge-CHECK_CANCELLED, .badge-APPROVAL_CANCELLED { background: #fff7e6; color: #d46b08; border: 1px solid #ffd591; }
+
+/* Footer hành động chuẩn */
+.footer-bar { background: #fff; border-top: 1px solid var(--border); padding: 14px 24px; box-shadow: 0 -2px 8px rgba(0,0,0,0.06); }
+
+/* Filter card / stats / toolbar (màn list) */
+.filter-panel { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+.filter-panel h4 { color: var(--text-muted); }
+.stats-bar, .toolbar, .table-wrap, .pagination-bar { border-color: var(--border); }
+.btn-search { background: var(--primary); color: #fff; border-color: var(--primary); }
+.btn-search:hover { background: var(--primary-hover); }
+.btn-reset { background: #fff; color: var(--muted); border-color: var(--border); }
+
+/* Header các popup/dialog -> primary chuẩn */
+.dialog-header, .lov-header, .doc-form-header, .doc-iframe-header { background: var(--primary); color: #fff; }
+
+/* ===== Header (tiêu đề + nút Xuất/Tạo mới) ===== */
+.app-header{justify-content:space-between;}
+.app-header .ah-left{display:flex;flex-direction:column;gap:2px;}
+.app-header .ah-left h1{font-size:16px;font-weight:700;color:#fff;margin:0;}
+.app-header-actions{display:flex;gap:10px;align-items:center;}
+.btn-header-default{background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.5);color:#fff;padding:8px 16px;border-radius:6px;font-size:13px;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;}
+.btn-header-default:hover{background:rgba(255,255,255,.28);}
+.btn-header-primary{background:#fff;border:1px solid #fff;color:var(--primary);padding:8px 16px;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);display:inline-flex;align-items:center;gap:6px;text-decoration:none;}
+.btn-header-primary:hover{opacity:.92;}
+
+/* ===== Filter card ===== */
+.filter-section-label{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;border-bottom:1px dashed var(--border);padding-bottom:6px;margin:4px 0 14px;}
+.collapse-toggle{color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;user-select:none;margin-top:10px;display:inline-block;}
+.filter-actions-bar{display:flex;justify-content:flex-end;gap:8px;margin-top:14px;}
+.input-search-wrap{position:relative;}
+.input-search-wrap .si{position:absolute;right:8px;top:50%;transform:translateY(-50%);color:var(--text-muted);font-size:13px;}
+
+/* ===== Stats bar ===== */
+.stats-bar{display:flex;gap:16px;align-items:center;flex-wrap:wrap;padding:10px 16px;}
+.stats-total{font-size:13px;color:var(--text-dark);}
+.stats-total b{font-size:15px;color:var(--primary);}
+.stat-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;}
+.stat-chip b{font-size:13px;}
+.stats-spacer{margin-left:auto;}
+
+/* ===== Row action buttons ===== */
+.action-group{display:flex;gap:6px;white-space:nowrap;}
+.row-btn{display:inline-flex;align-items:center;gap:4px;padding:3px 9px;font-size:12px;border-radius:4px;border:1px solid var(--primary);color:var(--primary);background:#fff;cursor:pointer;text-decoration:none;font-family:var(--font);}
+.row-btn:hover{background:rgba(25,82,149,.06);}
+.row-btn.danger{border-color:var(--danger);color:var(--danger);}
+.row-btn.danger:hover{background:rgba(255,77,79,.06);}
+
+/* ===== Column customize popover ===== */
+.colcfg-wrap{position:relative;display:inline-block;}
+.colcfg-panel{position:absolute;right:0;top:calc(100% + 4px);background:#fff;border:1px solid var(--border);border-radius:6px;box-shadow:0 4px 16px rgba(0,0,0,.16);padding:8px;z-index:60;min-width:210px;}
+.colcfg-panel .cc-title{font-size:11px;font-weight:700;color:var(--text-muted);text-transform:uppercase;padding:4px 6px;}
+.colcfg-panel label{display:flex;align-items:center;gap:6px;padding:5px 6px;font-size:12px;cursor:pointer;}
+.colcfg-panel label:hover{background:var(--bg-light);}
+
+/* ===== Searchable dropdown ===== */
+.ssel{position:relative;width:100%;}
+.ssel-control{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 9px;border:1px solid var(--border);border-radius:4px;background:#fff;font-size:13px;color:var(--text-dark);cursor:pointer;min-height:34px;}
+.ssel.open .ssel-control{border-color:var(--primary);box-shadow:0 0 0 2px rgba(25,82,149,.1);}
+.ssel-disabled .ssel-control{background:var(--disabled-bg);color:var(--disabled-color);cursor:default;}
+.ssel-disabled .ssel-caret{display:none;}
+.ssel-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ssel-text.placeholder{color:var(--text-muted);}
+.ssel-caret{color:var(--text-muted);font-size:10px;}
+.ssel-panel{position:absolute;z-index:9999;top:calc(100% + 2px);left:0;right:0;min-width:200px;background:#fff;border:1px solid var(--border);border-radius:4px;box-shadow:0 4px 16px rgba(0,0,0,.16);overflow:hidden;}
+.ssel-search{padding:6px;border-bottom:1px solid var(--border);}
+.ssel-search input{width:100%;padding:6px 8px;border:1px solid var(--border);border-radius:4px;font-size:13px;font-family:var(--font);}
+.ssel-search input:focus{outline:none;border-color:var(--primary);}
+.ssel-list{max-height:240px;overflow-y:auto;padding:4px 0;}
+.ssel-opt{padding:7px 12px;font-size:13px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ssel-opt:hover{background:#e6f4ff;color:var(--primary);}
+.ssel-opt.selected{font-weight:600;color:var(--primary);}
+.ssel-empty{padding:10px 12px;text-align:center;color:var(--text-muted);font-size:12px;}
+
+/* ===== Search prompt ===== */
+.search-prompt{background:#fff;border:1px dashed var(--border);border-radius:var(--radius);box-shadow:var(--shadow);padding:40px;text-align:center;color:var(--text-muted);font-size:13px;}
+.search-prompt .sp-icon{font-size:34px;opacity:.4;margin-bottom:8px;}
+
+/* ===== Dynamic table (resize + reorder + freeze) ===== */
+#data-table{table-layout:fixed;}
+#data-table th{position:relative;-webkit-user-select:none;user-select:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#data-table td{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#data-table th.dragging{opacity:.4;}
+#data-table th.drag-over{background:#dbe7f3;}
+#data-table th .th-label{cursor:pointer;display:inline-block;max-width:calc(100% - 10px);overflow:hidden;text-overflow:ellipsis;vertical-align:middle;}
+#data-table th.movable{cursor:grab;}
+.col-resizer{position:absolute;top:0;right:0;width:6px;height:100%;cursor:col-resize;z-index:2;}
+.col-resizer:hover{background:var(--primary);opacity:.5;}
+#data-table th.col-actions, #data-table td.col-actions{position:sticky;right:0;background:#fff;z-index:3;box-shadow:-4px 0 6px -4px rgba(0,0,0,.25);}
+#data-table thead th.col-actions{background:#f0f4f8;z-index:4;}
+
+/* toast */
+.col-toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:#262626;color:#fff;padding:10px 18px;border-radius:6px;font-size:13px;box-shadow:0 4px 16px rgba(0,0,0,.25);z-index:10000;}
+
+
+/* ===== Multi-select (Nguồn / Trạng thái) ===== */
+.ms{position:relative;width:100%;}
+.ms-control{display:flex;align-items:center;justify-content:space-between;gap:6px;padding:6px 9px;border:1px solid var(--border);border-radius:4px;background:#fff;font-size:13px;color:var(--text-dark);cursor:pointer;min-height:34px;}
+.ms.open .ms-control{border-color:var(--primary);box-shadow:0 0 0 2px rgba(25,82,149,.1);}
+.ms-text{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.ms-text.placeholder{color:var(--text-muted);}
+.ms-caret{color:var(--text-muted);font-size:10px;}
+.ms-panel{position:absolute;z-index:9999;top:calc(100% + 2px);left:0;right:0;min-width:230px;background:#fff;border:1px solid var(--primary);border-radius:6px;box-shadow:0 6px 20px rgba(0,0,0,.16);overflow:hidden;padding:4px 0;}
+.ms-opt{display:flex;align-items:center;gap:10px;padding:8px 16px;font-size:13px;cursor:pointer;}
+.ms-opt:hover{background:#f5f8ff;}
+.ms-panel input[type=checkbox]{width:16px !important;height:16px;min-width:16px;flex:0 0 auto;margin:0;padding:0;border:1px solid #8c8c8c;border-radius:3px;background:#fff;cursor:pointer;}
+.ms-dot{width:11px;height:11px;border-radius:50%;display:inline-block;flex:0 0 auto;border:1px solid rgba(0,0,0,.2);}
+.ms-opt > span:last-child{flex:1 1 auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ms-clear{text-align:right;padding:9px 16px;border-top:1px solid var(--border);color:var(--primary);font-size:12px;cursor:pointer;}
+.ms-clear:hover{text-decoration:underline;}
+.ms-selectall{text-align:left;padding:9px 16px;border-bottom:1px solid var(--border);color:var(--primary);font-size:12px;font-weight:600;cursor:pointer;}
+.ms-selectall:hover{text-decoration:underline;}
+.filter-grid .filter-group > label{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.filter-grid{align-items:end;}
+.input-search-wrap input{padding-right:28px;}
+
+
+/* ===== Badge trạng thái theo mục D ===== */
+.badge.st-draft{background:#f5f5f5;color:#595959;border:1px solid #d9d9d9;}
+.badge.st-saved{background:#fafafa;color:#595959;border:1px solid #d9d9d9;}
+.badge.st-validated{background:#e6fffb;color:#08979c;border:1px solid #87e8de;}
+.badge.st-submitted{background:#e6f4ff;color:#0958d9;border:1px solid #91caff;}
+.badge.st-checked{background:#e6f4ff;color:#0958d9;border:1px solid #91caff;}
+.badge.st-approved{background:#f6ffed;color:#389e0d;border:1px solid #b7eb8f;}
+.badge.st-rejected{background:#fff2f0;color:#cf1322;border:1px solid #ffa39e;}
+.badge.st-completed{background:#f6ffed;color:#237804;border:1px solid #95de64;}
+.badge.st-cancelled{background:#fff7e6;color:#d46b08;border:1px solid #ffd591;}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="app-header">
+  <div class="ah-left">
+    <span class="breadcrumb">Quản lý chi &rsaquo; Quản lý chi thường xuyên</span>
+    <h1>EXP.OPEX_DOSSIER — Danh sách hồ sơ chi thường xuyên</h1>
+  </div>
+  <div class="app-header-actions">
+    <button class="btn-header-default" data-event-id="EXP.OPEX_DOSSIER.LIST.EXPORT"
+            onclick="alert('Export chức năng prototype — Ctrl+Shift+E')" data-testid="btn-export">📧 Xuất</button>
+    <a class="btn-header-primary" href="../../../../../../../../0.%20Common/form_detail_Formatted.html?mode=new"
+       data-event-id="EXP.OPEX_DOSSIER.NEW.OPEN" data-testid="btn-create-new">+ Tạo mới hồ sơ</a>
+  </div>
+</div>
+
+<!-- INLINE SAMPLE DATA -->
+<script type="application/json" id="sample-data">
+{
+  "meta": {
+    "functionCode": "EXP.OPEX.DOSSIER"
+  },
+  "records": [
+    {
+      "id": "REC-001",
+      "DOSSIER_CODE": "T.MX1X2.001.01-260601-0001",
+      "BUDGET_UNIT_CODE": "1171277",
+      "BUDGET_UNIT_NAME": "Cơ quan Báo và phát thanh, truyền hình Hà Nội",
+      "SEND_DATE": "01/06/2026",
+      "CREATED_BY": "nguyen.van.an",
+      "CREATED_DATE": "01/06/2026 08:30:00",
+      "DATA_SOURCE_CODE": "MANUAL",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0001",
+      "TREASURY_NAME": "Kho bạc Nhà nước (KBNN TW)",
+      "F_VER": 1,
+      "F_STATUS": "DRAFT",
+      "ASSIGN_USER": "Maker"
+    },
+    {
+      "id": "REC-002",
+      "DOSSIER_CODE": "T.MX2X3.002.01-260530-0002",
+      "BUDGET_UNIT_CODE": "1170918",
+      "BUDGET_UNIT_NAME": "Văn phòng Sở Du lịch thành phố Hà Nội",
+      "SEND_DATE": "30/05/2026",
+      "CREATED_BY": "tran.thi.bich",
+      "CREATED_DATE": "30/05/2026 09:15:22",
+      "DATA_SOURCE_CODE": "MANUAL",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0003",
+      "TREASURY_NAME": "KBNN — Ban Giao dịch",
+      "F_VER": 2,
+      "F_STATUS": "DRAFT",
+      "ASSIGN_USER": "Maker"
+    },
+    {
+      "id": "REC-003",
+      "DOSSIER_CODE": "T.MX3X4.003.01-260520-0003",
+      "BUDGET_UNIT_CODE": "1059441",
+      "BUDGET_UNIT_NAME": "Trường Trung học Công nghiệp Hà Nội",
+      "SEND_DATE": "20/05/2026",
+      "CREATED_BY": "le.hong.phuc",
+      "CREATED_DATE": "20/05/2026 10:00:00",
+      "DATA_SOURCE_CODE": "MANUAL",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0011",
+      "TREASURY_NAME": "KBNN Khu vực I (Hà Nội)",
+      "F_VER": 3,
+      "F_STATUS": "SAVED",
+      "ASSIGN_USER": "Maker"
+    },
+    {
+      "id": "REC-004",
+      "DOSSIER_CODE": "T.MX4X5.004.01-260515-0004",
+      "BUDGET_UNIT_CODE": "1058252",
+      "BUDGET_UNIT_NAME": "Sở Du lịch Hà Nội",
+      "SEND_DATE": "15/05/2026",
+      "CREATED_BY": "pham.quoc.hung",
+      "CREATED_DATE": "15/05/2026 14:00:00",
+      "DATA_SOURCE_CODE": "AUTO",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0015",
+      "TREASURY_NAME": "KBNN Đống Đa — Hà Nội",
+      "F_VER": 4,
+      "F_STATUS": "VALIDATED",
+      "ASSIGN_USER": "Maker"
+    },
+    {
+      "id": "REC-005",
+      "DOSSIER_CODE": "T.MX1X2.001.01-260510-0005",
+      "BUDGET_UNIT_CODE": "1056333",
+      "BUDGET_UNIT_NAME": "Văn phòng Kho bạc Nhà nước",
+      "SEND_DATE": "10/05/2026",
+      "CREATED_BY": "vu.thi.lan",
+      "CREATED_DATE": "10/05/2026 08:00:00",
+      "DATA_SOURCE_CODE": "MANUAL",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0001",
+      "TREASURY_NAME": "Kho bạc Nhà nước (KBNN TW)",
+      "F_VER": 5,
+      "F_STATUS": "SUBMITTED",
+      "ASSIGN_USER": "Checker"
+    },
+    {
+      "id": "REC-006",
+      "DOSSIER_CODE": "T.MX2X3.002.01-260505-0006",
+      "BUDGET_UNIT_CODE": "1122826",
+      "BUDGET_UNIT_NAME": "Trung tâm Y tế huyện Ia H'Drai, Kon Tum",
+      "SEND_DATE": "05/05/2026",
+      "CREATED_BY": "hoang.minh.duc",
+      "CREATED_DATE": "05/05/2026 11:30:00",
+      "DATA_SOURCE_CODE": "MANUAL",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0003",
+      "TREASURY_NAME": "KBNN — Ban Giao dịch",
+      "F_VER": 6,
+      "F_STATUS": "SUBMITTED",
+      "ASSIGN_USER": "Checker"
+    },
+    {
+      "id": "REC-007",
+      "DOSSIER_CODE": "T.MX3X4.003.01-260428-0007",
+      "BUDGET_UNIT_CODE": "1122899",
+      "BUDGET_UNIT_NAME": "Đài Phát thanh và Truyền hình tỉnh Hà Giang",
+      "SEND_DATE": "28/04/2026",
+      "CREATED_BY": "nguyen.van.an",
+      "CREATED_DATE": "28/04/2026 13:45:00",
+      "DATA_SOURCE_CODE": "MANUAL",
+      "CHECKED_BY": "vu.thi.mai",
+      "CHECKED_DATE": "30/04/2026 10:30:00",
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0011",
+      "TREASURY_NAME": "KBNN Khu vực I (Hà Nội)",
+      "F_VER": 7,
+      "F_STATUS": "APPROVED",
+      "ASSIGN_USER": "Approver"
+    },
+    {
+      "id": "REC-008",
+      "DOSSIER_CODE": "T.MX4X5.004.01-260425-0008",
+      "BUDGET_UNIT_CODE": "1122910",
+      "BUDGET_UNIT_NAME": "BQL Dự án Xử lý chất thải bệnh viện AG",
+      "SEND_DATE": "25/04/2026",
+      "CREATED_BY": "tran.thi.bich",
+      "CREATED_DATE": "25/04/2026 09:00:00",
+      "DATA_SOURCE_CODE": "DVKB",
+      "CHECKED_BY": "nguyen.ba.long",
+      "CHECKED_DATE": "25/04/2026 10:30:00",
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0015",
+      "TREASURY_NAME": "KBNN Đống Đa — Hà Nội",
+      "F_VER": 8,
+      "F_STATUS": "APPROVED",
+      "ASSIGN_USER": "Approver"
+    },
+    {
+      "id": "REC-009",
+      "DOSSIER_CODE": "T.MX1X2.001.01-260420-0009",
+      "BUDGET_UNIT_CODE": "1121333",
+      "BUDGET_UNIT_NAME": "Trường Tiểu học Long Hưng",
+      "SEND_DATE": "20/04/2026",
+      "CREATED_BY": "le.hong.phuc",
+      "CREATED_DATE": "20/04/2026 10:30:00",
+      "DATA_SOURCE_CODE": "DVKB",
+      "CHECKED_BY": "tran.xuan.thinh",
+      "CHECKED_DATE": "20/04/2026 10:30:00",
+      "APPROVED_BY": "le.quoc.viet",
+      "APPROVED_DATE": "20/04/2026 14:00:00",
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0001",
+      "TREASURY_NAME": "Kho bạc Nhà nước (KBNN TW)",
+      "F_VER": 9,
+      "F_STATUS": "APPROVED",
+      "ASSIGN_USER": "Done"
+    },
+    {
+      "id": "REC-010",
+      "DOSSIER_CODE": "T.MX2X3.002.01-260415-0010",
+      "BUDGET_UNIT_CODE": "7499089",
+      "BUDGET_UNIT_NAME": "Đường An Phú 4 — Hòa Bình 3",
+      "SEND_DATE": "15/04/2026",
+      "CREATED_BY": "pham.quoc.hung",
+      "CREATED_DATE": "15/04/2026 08:15:00",
+      "DATA_SOURCE_CODE": "DVKB",
+      "CHECKED_BY": "vu.thi.mai",
+      "CHECKED_DATE": "15/04/2026 10:30:00",
+      "APPROVED_BY": "nguyen.thi.hoa",
+      "APPROVED_DATE": "15/04/2026 14:00:00",
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0003",
+      "TREASURY_NAME": "KBNN — Ban Giao dịch",
+      "F_VER": 10,
+      "F_STATUS": "APPROVED",
+      "ASSIGN_USER": "Done"
+    },
+    {
+      "id": "REC-011",
+      "DOSSIER_CODE": "T.MX3X4.003.01-260410-0011",
+      "BUDGET_UNIT_CODE": "1121624",
+      "BUDGET_UNIT_NAME": "Trường Mầm non xã Hương Nhượng, Hòa Bình",
+      "SEND_DATE": "10/04/2026",
+      "CREATED_BY": "vu.thi.lan",
+      "CREATED_DATE": "10/04/2026 14:00:00",
+      "DATA_SOURCE_CODE": "DVKB",
+      "CHECKED_BY": "nguyen.ba.long",
+      "CHECKED_DATE": "12/04/2026 10:30:00",
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": "Checker từ chối: thiếu chứng từ/sai thông tin, đề nghị bổ sung và gửi lại.",
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0011",
+      "TREASURY_NAME": "KBNN Khu vực I (Hà Nội)",
+      "F_VER": 11,
+      "F_STATUS": "REJECTED",
+      "ASSIGN_USER": "Maker"
+    },
+    {
+      "id": "REC-012",
+      "DOSSIER_CODE": "T.MX4X5.004.01-260405-0012",
+      "BUDGET_UNIT_CODE": "1122831",
+      "BUDGET_UNIT_NAME": "Trường TH&THCS xã Tân Mai, Mai Châu, Hòa Bình",
+      "SEND_DATE": "05/04/2026",
+      "CREATED_BY": "hoang.minh.duc",
+      "CREATED_DATE": "05/04/2026 09:30:00",
+      "DATA_SOURCE_CODE": "DVKB",
+      "CHECKED_BY": "tran.xuan.thinh",
+      "CHECKED_DATE": "07/04/2026 10:30:00",
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": "Checker từ chối: thiếu chứng từ/sai thông tin, đề nghị bổ sung và gửi lại.",
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0015",
+      "TREASURY_NAME": "KBNN Đống Đa — Hà Nội",
+      "F_VER": 12,
+      "F_STATUS": "REJECTED",
+      "ASSIGN_USER": "Maker"
+    },
+    {
+      "id": "REC-013",
+      "DOSSIER_CODE": "T.MX1X2.001.01-260401-0013",
+      "BUDGET_UNIT_CODE": "1121625",
+      "BUDGET_UNIT_NAME": "Câu lạc bộ Truyền thống kháng chiến Cần Giờ",
+      "SEND_DATE": "01/04/2026",
+      "CREATED_BY": "nguyen.van.an",
+      "CREATED_DATE": "01/04/2026 07:45:00",
+      "DATA_SOURCE_CODE": "DVKB",
+      "CHECKED_BY": "vu.thi.mai",
+      "CHECKED_DATE": "03/04/2026 10:30:00",
+      "APPROVED_BY": "hoang.van.duc",
+      "APPROVED_DATE": "05/04/2026 09:15:00",
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": "Approver từ chối: vượt hạn mức/dự toán, trả lại Checker xử lý.",
+      "TREASURY_CODE": "0001",
+      "TREASURY_NAME": "Kho bạc Nhà nước (KBNN TW)",
+      "F_VER": 13,
+      "F_STATUS": "REJECTED",
+      "ASSIGN_USER": "Checker"
+    },
+    {
+      "id": "REC-014",
+      "DOSSIER_CODE": "T.MX2X3.002.01-260328-0014",
+      "BUDGET_UNIT_CODE": "1122834",
+      "BUDGET_UNIT_NAME": "Quỹ Hỗ trợ phụ nữ phát triển tỉnh Quảng Bình",
+      "SEND_DATE": "28/03/2026",
+      "CREATED_BY": "tran.thi.bich",
+      "CREATED_DATE": "28/03/2026 13:00:00",
+      "DATA_SOURCE_CODE": "DVKB",
+      "CHECKED_BY": "nguyen.ba.long",
+      "CHECKED_DATE": "30/03/2026 10:30:00",
+      "APPROVED_BY": "le.quoc.viet",
+      "APPROVED_DATE": "01/04/2026 09:15:00",
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": "Approver từ chối: vượt hạn mức/dự toán, trả lại Checker xử lý.",
+      "TREASURY_CODE": "0003",
+      "TREASURY_NAME": "KBNN — Ban Giao dịch",
+      "F_VER": 14,
+      "F_STATUS": "REJECTED",
+      "ASSIGN_USER": "Checker"
+    },
+    {
+      "id": "REC-015",
+      "DOSSIER_CODE": "T.MX3X4.003.01-260325-0015",
+      "BUDGET_UNIT_CODE": "1122896",
+      "BUDGET_UNIT_NAME": "Ban quản lý Bến xe khách huyện Ngọc Hồi",
+      "SEND_DATE": "25/03/2026",
+      "CREATED_BY": "le.hong.phuc",
+      "CREATED_DATE": "25/03/2026 10:00:00",
+      "DATA_SOURCE_CODE": "AUTO",
+      "CHECKED_BY": "tran.xuan.thinh",
+      "CHECKED_DATE": "27/03/2026 10:30:00",
+      "APPROVED_BY": "nguyen.thi.hoa",
+      "APPROVED_DATE": "29/03/2026 09:15:00",
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0011",
+      "TREASURY_NAME": "KBNN Khu vực I (Hà Nội)",
+      "F_VER": 15,
+      "F_STATUS": "COMPLETED",
+      "ASSIGN_USER": "Done"
+    },
+    {
+      "id": "REC-016",
+      "DOSSIER_CODE": "T.MX4X5.004.01-260320-0016",
+      "BUDGET_UNIT_CODE": "7506106",
+      "BUDGET_UNIT_NAME": "Xây dựng tường rào UBND xã Giang Ly, Khánh Vĩnh",
+      "SEND_DATE": "20/03/2026",
+      "CREATED_BY": "pham.quoc.hung",
+      "CREATED_DATE": "20/03/2026 08:30:00",
+      "DATA_SOURCE_CODE": "AUTO",
+      "CHECKED_BY": "vu.thi.mai",
+      "CHECKED_DATE": "20/03/2026 10:30:00",
+      "APPROVED_BY": "nguyen.thi.hoa",
+      "APPROVED_DATE": "20/03/2026 14:00:00",
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0015",
+      "TREASURY_NAME": "KBNN Đống Đa — Hà Nội",
+      "F_VER": 16,
+      "F_STATUS": "COMPLETED",
+      "ASSIGN_USER": "Done"
+    },
+    {
+      "id": "REC-T01",
+      "DOSSIER_CODE": "T.MX2X3.002.01-260601-T001",
+      "BUDGET_UNIT_CODE": "01701001",
+      "BUDGET_UNIT_NAME": "Văn phòng Kho bạc Nhà nước",
+      "SEND_DATE": "01/06/2026",
+      "CREATED_BY": "he.thong.kbnn",
+      "CREATED_DATE": "01/06/2026 08:30:00",
+      "DATA_SOURCE_CODE": "TREASURY_SERVICE",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0011",
+      "TREASURY_NAME": "KBNN Trung ương",
+      "F_VER": 1,
+      "F_STATUS": "DRAFT",
+      "ASSIGN_USER": "Maker"
+    },
+    {
+      "id": "REC-T02",
+      "DOSSIER_CODE": "T.MX3X4.003.01-260528-T002",
+      "BUDGET_UNIT_CODE": "01701001",
+      "BUDGET_UNIT_NAME": "Văn phòng Kho bạc Nhà nước",
+      "SEND_DATE": "28/05/2026",
+      "CREATED_BY": "he.thong.kbnn",
+      "CREATED_DATE": "28/05/2026 14:00:00",
+      "DATA_SOURCE_CODE": "TREASURY_SERVICE",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0011",
+      "TREASURY_NAME": "KBNN Trung ương",
+      "F_VER": 2,
+      "F_STATUS": "SUBMITTED",
+      "ASSIGN_USER": "Checker"
+    },
+    {
+      "id": "REC-T03",
+      "DOSSIER_CODE": "T.MX1X2.001.01-260520-T003",
+      "BUDGET_UNIT_CODE": "01701001",
+      "BUDGET_UNIT_NAME": "Văn phòng Kho bạc Nhà nước",
+      "SEND_DATE": "20/05/2026",
+      "CREATED_BY": "he.thong.kbnn",
+      "CREATED_DATE": "20/05/2026 09:45:00",
+      "DATA_SOURCE_CODE": "TREASURY_SERVICE",
+      "CHECKED_BY": "vu.thi.mai",
+      "CHECKED_DATE": "20/05/2026 10:30:00",
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "TREASURY_CODE": "0011",
+      "TREASURY_NAME": "KBNN Trung ương",
+      "F_VER": 1,
+      "F_STATUS": "APPROVED",
+      "ASSIGN_USER": "Approver"
+    },
+    {
+      "id": "REC-017",
+      "DOSSIER_CODE": "T.MX1X2.001.01-260318-0017",
+      "BUDGET_UNIT_CODE": "1058252",
+      "BUDGET_UNIT_NAME": "Sở Du lịch Hà Nội",
+      "SEND_DATE": "18/03/2026",
+      "CREATED_BY": "tran.thi.bich",
+      "CREATED_DATE": "18/03/2026 09:00:00",
+      "DATA_SOURCE_CODE": "MANUAL",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "CANCEL_REASON": "Người lập thu hồi hồ sơ ở bước kiểm soát để điều chỉnh chứng từ.",
+      "TREASURY_CODE": "0011",
+      "TREASURY_NAME": "KBNN Khu vực I (Hà Nội)",
+      "F_VER": 17,
+      "F_STATUS": "CANCELLED",
+      "ASSIGN_USER": ""
+    },
+    {
+      "id": "REC-018",
+      "DOSSIER_CODE": "T.MX2X3.002.01-260315-0018",
+      "BUDGET_UNIT_CODE": "1056333",
+      "BUDGET_UNIT_NAME": "Văn phòng Kho bạc Nhà nước",
+      "SEND_DATE": "15/03/2026",
+      "CREATED_BY": "le.hong.phuc",
+      "CREATED_DATE": "15/03/2026 08:30:00",
+      "DATA_SOURCE_CODE": "DVKB",
+      "CHECKED_BY": null,
+      "CHECKED_DATE": null,
+      "APPROVED_BY": null,
+      "APPROVED_DATE": null,
+      "CHECK_REJECTED_REASON": null,
+      "APPROVAL_REJECTED_REASON": null,
+      "CANCEL_REASON": "Hồ sơ được thu hồi ở bước phê duyệt theo đề nghị của đơn vị.",
+      "TREASURY_CODE": "0001",
+      "TREASURY_NAME": "Kho bạc Nhà nước (KBNN TW)",
+      "F_VER": 18,
+      "F_STATUS": "CANCELLED",
+      "ASSIGN_USER": ""
+    }
+  ]
+}
+</script>
+
+<div class="page-wrap">
+
+  <!-- FILTER CARD -->
+  <div class="filter-panel">
+    <h4>🔍 Bộ lọc tìm kiếm</h4>
+    <div class="filter-section-label">Điều kiện chính</div>
+    <div class="filter-grid">
+      <div class="filter-group">
+        <label>Nguồn</label>
+        <div id="ms-source" data-testid="filter-source"></div>
+      </div>
+      <div class="filter-group">
+        <label>Trạng thái</label>
+        <div id="ms-status" data-testid="filter-status"></div>
+      </div>
+      <div class="filter-group">
+        <label>Mã hồ sơ</label>
+        <input type="text" id="search-input" data-testid="search-input" placeholder="Nhập mã hồ sơ...">
+      </div>
+      <div class="filter-group">
+        <label>Tìm nhanh (người lập/đơn vị)</label>
+        <div class="input-search-wrap">
+          <input type="text" id="filter-quick" placeholder="Nhập để tìm kiếm...">
+          <span class="si">🔍</span>
+        </div>
+      </div>
+    </div>
+
+    <span class="collapse-toggle" id="adv-toggle" onclick="toggleAdvanced()">▶ Điều kiện nâng cao ▶</span>
+    <div id="filter-advanced" hidden style="margin-top:12px">
+      <div class="filter-grid">
+        <div class="filter-group">
+          <label>Người lập</label>
+          <input type="text" id="filter-created-by" placeholder="Nhập user...">
+        </div>
+        <div class="filter-group">
+          <label>Từ ngày (gửi hồ sơ)</label>
+          <input type="date" id="filter-from-date" data-testid="filter-from-date">
+        </div>
+        <div class="filter-group">
+          <label>Đến ngày (gửi hồ sơ)</label>
+          <input type="date" id="filter-to-date" data-testid="filter-to-date">
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-actions-bar">
+      <button class="btn btn-reset" data-event-id="EXP.OPEX_DOSSIER.LIST.RESET" onclick="resetFilters()">↺ Đặt lại</button>
+      <button class="btn btn-search" data-event-id="EXP.OPEX_DOSSIER.LIST.SEARCH" onclick="doSearch()">🔍 Tìm kiếm</button>
+    </div>
+  </div>
+
+  <!-- PROMPT -->
+  <div class="search-prompt" id="search-prompt">
+    <div class="sp-icon">🔎</div>
+    <p>Nhập điều kiện và nhấn <strong>“Tìm kiếm”</strong> để hiển thị danh sách hồ sơ.</p>
+  </div>
+
+  <!-- RESULTS -->
+  <div id="results-area" hidden>
+    <div class="stats-bar" id="stats-bar"></div>
+
+    <div class="toolbar">
+      <div class="toolbar-left">
+        <span id="record-count-info" style="font-size:12px;color:var(--muted)">Tổng kết quả: 0 bản ghi</span>
+      </div>
+      <div class="toolbar-right" style="gap:6px">
+        <div class="colcfg-wrap">
+          <button class="btn btn-secondary btn-sm" onclick="toggleColCfg(event)" data-event-id="EXP.OPEX_DOSSIER.LIST.COL_CONFIG">⚙ Tùy chỉnh cột</button>
+          <div class="colcfg-panel" id="colcfg-panel" hidden></div>
+        </div>
+        <button class="btn btn-secondary btn-sm" data-event-id="EXP.OPEX_DOSSIER.LIST.SAVE_COLS" onclick="saveColConfig()">💾 Lưu cấu hình</button>
+        <button class="btn btn-secondary btn-sm" data-event-id="EXP.OPEX_DOSSIER.LIST.RESET_COLS" onclick="resetColConfig()">↺ Mặc định</button>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="data-table">
+        <colgroup id="data-colgroup"></colgroup>
+        <thead><tr id="head-row"></tr></thead>
+        <tbody id="list-tbody" data-testid="list-tbody"></tbody>
+      </table>
+    </div>
+
+    <div class="pagination-bar">
+      <div id="pagination-info" data-testid="pagination-info">Hiển thị 0–0 / 0 bản ghi</div>
+      <div class="pagination-controls">
+        <button class="page-btn" data-testid="pagination-prev" id="btn-prev" onclick="changePage(-1)">&#8249; Trước</button>
+        <span id="page-indicator" style="font-size:12px; padding: 0 8px;"></span>
+        <button class="page-btn" data-testid="pagination-next" id="btn-next" onclick="changePage(1)">Tiếp &#8250;</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="col-toast" class="col-toast" hidden></div>
+
+<script>
+/* ====== Searchable dropdown ====== */
+(function(){
+  function build(sel){
+    if(sel.dataset.ssBound) return; sel.dataset.ssBound='1';
+    sel.style.display='none';
+    var wrap=document.createElement('div'); wrap.className='ssel';
+    var ctrl=document.createElement('div'); ctrl.className='ssel-control'; ctrl.tabIndex=0;
+    var txt=document.createElement('span'); txt.className='ssel-text';
+    var car=document.createElement('span'); car.className='ssel-caret'; car.textContent='\u25BE';
+    ctrl.appendChild(txt); ctrl.appendChild(car);
+    var panel=document.createElement('div'); panel.className='ssel-panel'; panel.hidden=true;
+    var sb=document.createElement('div'); sb.className='ssel-search';
+    var inp=document.createElement('input'); inp.type='text'; inp.placeholder='T\u00ecm...'; sb.appendChild(inp);
+    var list=document.createElement('div'); list.className='ssel-list';
+    panel.appendChild(sb); panel.appendChild(list);
+    sel.parentNode.insertBefore(wrap, sel); wrap.appendChild(sel); wrap.appendChild(ctrl); wrap.appendChild(panel);
+    function opts(){ return Array.prototype.slice.call(sel.options); }
+    function syncLabel(){ var o=sel.options[sel.selectedIndex]; txt.textContent=o?o.text:''; txt.classList.toggle('placeholder', !o||o.value===''); wrap.classList.toggle('ssel-disabled', sel.disabled); }
+    function renderList(q){ q=(q||'').toLowerCase(); list.innerHTML='';
+      opts().forEach(function(o){ if(q && o.text.toLowerCase().indexOf(q)<0) return;
+        var d=document.createElement('div'); d.className='ssel-opt'+(o.selected?' selected':''); d.textContent=o.text;
+        d.onclick=function(){ sel.value=o.value; sel.dispatchEvent(new Event('change',{bubbles:true})); syncLabel(); close(); };
+        list.appendChild(d); });
+      if(!list.children.length){ var e=document.createElement('div'); e.className='ssel-empty'; e.textContent='Kh\u00f4ng c\u00f3 k\u1ebft qu\u1ea3'; list.appendChild(e); } }
+    function open(){ if(sel.disabled) return; panel.hidden=false; wrap.classList.add('open'); renderList(''); inp.value=''; setTimeout(function(){inp.focus();},0); }
+    function close(){ panel.hidden=true; wrap.classList.remove('open'); }
+    ctrl.addEventListener('click', function(){ panel.hidden?open():close(); });
+    ctrl.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){e.preventDefault(); panel.hidden?open():close();} });
+    inp.addEventListener('input', function(){ renderList(inp.value); });
+    document.addEventListener('click', function(e){ if(!wrap.contains(e.target)) close(); });
+    sel.addEventListener('change', syncLabel);
+    sel._ssSync=syncLabel; syncLabel();
+  }
+  window.SS={
+    init:function(root){ (root||document).querySelectorAll('select[data-searchable]').forEach(build); },
+    syncAll:function(){ document.querySelectorAll('select[data-searchable]').forEach(function(s){ if(s._ssSync) s._ssSync(); }); }
+  };
+  if(document.readyState!=='loading') SS.init(); else document.addEventListener('DOMContentLoaded', function(){SS.init();});
+})();
+
+/* ====== Date helper ====== */
+function toISO(s){ if(!s) return ''; s=String(s).trim(); if(/^\d{4}-\d{2}-\d{2}$/.test(s)) return s; var m=s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/); if(!m) return ''; return m[3]+'-'+('0'+m[2]).slice(-2)+'-'+('0'+m[1]).slice(-2); }
+
+/* ====== Data & state ====== */
+const SAMPLE = JSON.parse(document.getElementById('sample-data').textContent);
+const PAGE_SIZE = 10;
+let currentPage = 1, filtered = [], searched = false;
+let sortField = 'CREATED_DATE', sortDir = -1;
+
+const SOURCE_LABEL = { MANUAL:'Th\u1ee7 c\u00f4ng', DVKB:'D\u1ecbch v\u1ee5 kho b\u1ea1c', AUTO:'T\u1ef1 \u0111\u1ed9ng' };
+const STATUS_LABEL = {
+  DRAFT:'Lưu nháp', SAVED:'Đã lưu', VALIDATED:'Đã kiểm tra', SUBMITTED:'Đã gửi kiểm soát',
+  APPROVED:'Đã phê duyệt', REJECTED:'Đã từ chối', COMPLETED:'Đã hoàn thành', CANCELLED:'Đã huỷ'
+};
+function uiStatus(st, assign){
+  switch(st){
+    case 'DRAFT': return {label:'Lưu nháp', cls:'st-draft'};
+    case 'SAVED': return {label:'Đã lưu', cls:'st-saved'};
+    case 'VALIDATED': return {label:'Đã kiểm tra', cls:'st-validated'};
+    case 'SUBMITTED': return {label:'Đã gửi kiểm soát', cls:'st-submitted'};
+    case 'APPROVED': return assign==='Done' ? {label:'Đã phê duyệt', cls:'st-approved'} : {label:'Đã kiểm soát', cls:'st-checked'};
+    case 'REJECTED': return assign==='Checker' ? {label:'Từ chối phê duyệt', cls:'st-rejected'} : {label:'Từ chối kiểm soát', cls:'st-rejected'};
+    case 'COMPLETED': return {label:'Đã hoàn thành', cls:'st-completed'};
+    case 'CANCELLED': return {label:'Đã huỷ', cls:'st-cancelled'};
+    default: return {label:st||'—', cls:'st-draft'};
+  }
+}
+function esc(v){ return (v==null?'':String(v)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function statusBadge(r){ var u=uiStatus(r.F_STATUS, r.ASSIGN_USER); return '<span class="badge '+u.cls+'" data-testid="badge-status-'+r.F_STATUS+'">'+u.label+'</span>'; }
+function sourceBadge(src){ var m={MANUAL:'#722ed1',DVKB:'#13c2c2',AUTO:'#1677ff'}; var c=m[src]||'#8c8c8c'; return '<span class="badge" style="background:'+c+'1a;color:'+c+';border:1px solid '+c+'66">'+(SOURCE_LABEL[src]||src||'\u2014')+'</span>'; }
+function canEdit(r){ return r.F_STATUS==='DRAFT'||r.F_STATUS==='SAVED'||(r.F_STATUS==='REJECTED'&&r.ASSIGN_USER==='Maker'); }
+function canDelete(r){ return r.F_STATUS==='DRAFT'||r.F_STATUS==='SAVED'||(r.F_STATUS==='REJECTED'&&r.ASSIGN_USER==='Maker'); }
+function canSubmit(r){ return r.F_STATUS==='DRAFT'||r.F_STATUS==='SAVED'||(r.F_STATUS==='REJECTED'&&r.ASSIGN_USER==='Maker'); }
+function dossierLink(r){ return '<a class="dossier-link" style="color:var(--primary);text-decoration:none;font-weight:600" href="form_detail_Formatted.html?id='+r.id+'&mode=view" onclick="event.stopPropagation()" data-testid="link-dossier-code">'+esc(r.DOSSIER_CODE)+'</a>'; }
+function actionsCell(r){
+  var h='<div class="action-group">';
+  h+='<a class="row-btn" href="form_detail_Formatted.html?id='+r.id+'&mode=view" onclick="event.stopPropagation()" title="Xem">\uD83D\uDC41 Xem</a>';
+  if(canEdit(r)) h+='<a class="row-btn" href="form_detail_Formatted.html?id='+r.id+'&mode=edit" onclick="event.stopPropagation()" title="S\u1eeda">\u270F\uFE0F S\u1eeda</a>';
+  if(canSubmit(r)) h+='<button class="row-btn" data-event-id="EXP.OPEX_DOSSIER.NEW.SUBMIT" onclick="event.stopPropagation();submitDossier(\''+r.id+'\')" title="G\u1eedi ki\u1ec3m so\u00e1t">\uD83D\uDC65 G\u1eedi KS</button>';
+  if(canDelete(r)) h+='<a class="row-btn danger" href="form_detail_Formatted.html?id='+r.id+'&mode=view&action=delete" onclick="event.stopPropagation()" title="Xo\u00e1">\uD83D\uDDD1 Xo\u00e1</a>';
+  h+='</div>'; return h;
+}
+function submitDossier(id){ alert('[VDBAS-EXP-XXXX] \u0110\u00e3 g\u1eedi h\u1ed3 s\u01a1 '+id+' \u0111\u1ec3 ki\u1ec3m so\u00e1t (prototype).'); }
+
+/* ====== Columns ====== */
+const STORAGE_KEY = 'vdbas_opex_list_cols';
+const COLS = {
+  STT:                 { label:'STT',             width:54,  fixed:true,  sortable:false, cell:function(r,i){ return String(i); } },
+  DOSSIER_CODE:        { label:'M\u00e3 h\u1ed3 s\u01a1',        width:240, sortable:true,  cell:function(r){ return dossierLink(r); } },
+  SEND_DATE:           { label:'Ng\u00e0y g\u1eedi',          width:110, sortable:true,  cell:function(r){ return esc(r.SEND_DATE)||'\u2014'; } },
+  DATA_SOURCE_CODE:              { label:'Ngu\u1ed3n g\u1ed1c',         width:130, sortable:true,  cell:function(r){ return sourceBadge(r.DATA_SOURCE_CODE); } },
+  F_STATUS: { label:'Tr\u1ea1ng th\u00e1i',        width:160, sortable:true,  cell:function(r){ return statusBadge(r); } },
+  CREATED_BY:          { label:'Ng\u01b0\u1eddi l\u1eadp',         width:130, sortable:false, cell:function(r){ return esc(r.CREATED_BY)||'\u2014'; } },
+  CREATED_DATE:        { label:'Ng\u00e0y l\u1eadp',          width:160, sortable:true,  cell:function(r){ return esc(r.CREATED_DATE)||'\u2014'; } },
+  BUDGET_UNIT_NAME:     { label:'\u0110\u01a1n v\u1ecb SDNS',        width:240, sortable:false, cell:function(r){ return esc(r.BUDGET_UNIT_NAME)||'\u2014'; } },
+  CHECKED_BY:          { label:'Ng\u01b0\u1eddi ki\u1ec3m so\u00e1t',   width:140, sortable:false, cell:function(r){ return esc(r.CHECKED_BY)||'\u2014'; } },
+  CHECKED_DATE:        { label:'Ng\u00e0y ki\u1ec3m so\u00e1t',    width:150, sortable:false, cell:function(r){ return esc(r.CHECKED_DATE)||'\u2014'; } },
+  APPROVED_BY:         { label:'Ng\u01b0\u1eddi ph\u00ea duy\u1ec7t',  width:140, sortable:false, cell:function(r){ return esc(r.APPROVED_BY)||'\u2014'; } },
+  APPROVED_DATE:       { label:'Ng\u00e0y ph\u00ea duy\u1ec7t',   width:150, sortable:false, cell:function(r){ return esc(r.APPROVED_DATE)||'\u2014'; } },
+  ACTIONS:             { label:'Thao t\u00e1c',          width:300, fixed:true,  sortable:false, cell:function(r){ return actionsCell(r); } }
+};
+const DEFAULT_ORDER = ['STT','DOSSIER_CODE','BUDGET_UNIT_NAME','DATA_SOURCE_CODE','SEND_DATE','F_STATUS','CREATED_BY','CREATED_DATE','CHECKED_BY','CHECKED_DATE','APPROVED_BY','APPROVED_DATE','ACTIONS'];
+let colOrder = DEFAULT_ORDER.slice();
+let colWidth = {}; let colVisible = {};
+DEFAULT_ORDER.forEach(function(k){ colWidth[k]=COLS[k].width; colVisible[k]=true; });
+
+function clampOrder(order){ order=order.filter(function(k){return k!=='STT'&&k!=='ACTIONS';}); return ['STT'].concat(order).concat(['ACTIONS']); }
+function visibleOrder(){ return colOrder.filter(function(k){ return colVisible[k]!==false; }); }
+function loadColConfig(){
+  try{ var raw=localStorage.getItem(STORAGE_KEY); if(!raw) return; var cfg=JSON.parse(raw);
+    if(cfg.order&&cfg.order.length){ var v=cfg.order.filter(function(k){return COLS[k];}); DEFAULT_ORDER.forEach(function(k){ if(v.indexOf(k)<0)v.push(k); }); colOrder=clampOrder(v); }
+    if(cfg.width){ Object.keys(cfg.width).forEach(function(k){ if(COLS[k]) colWidth[k]=cfg.width[k]; }); }
+    if(cfg.visible){ Object.keys(cfg.visible).forEach(function(k){ if(COLS[k]) colVisible[k]=cfg.visible[k]; }); }
+  }catch(e){}
+}
+function saveColConfig(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify({order:colOrder,width:colWidth,visible:colVisible})); toast('\u2705 \u0110\u00e3 l\u01b0u c\u1ea5u h\u00ecnh c\u1ed9t'); }catch(e){ toast('\u26A0 Kh\u00f4ng l\u01b0u \u0111\u01b0\u1ee3c (localStorage b\u1ecb ch\u1eb7n)'); } }
+function resetColConfig(){ try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+  colOrder=DEFAULT_ORDER.slice(); colWidth={}; colVisible={}; DEFAULT_ORDER.forEach(function(k){ colWidth[k]=COLS[k].width; colVisible[k]=true; });
+  buildColCfgPanel(); renderHead(); renderBody(); toast('\u21BA \u0110\u00e3 kh\u00f4i ph\u1ee5c c\u1ed9t m\u1eb7c \u0111\u1ecbnh'); }
+function toast(msg){ var t=document.getElementById('col-toast'); t.textContent=msg; t.hidden=false; clearTimeout(window._ct); window._ct=setTimeout(function(){t.hidden=true;},2000); }
+
+/* ---- Column customize popover ---- */
+function buildColCfgPanel(){
+  var p=document.getElementById('colcfg-panel'); var h='<div class="cc-title">Hi\u1ec3n th\u1ecb c\u1ed9t</div>';
+  colOrder.forEach(function(k){ if(k==='STT'||k==='ACTIONS') return;
+    h+='<label><input type="checkbox" '+(colVisible[k]!==false?'checked':'')+' onchange="toggleColVisible(\''+k+'\', this.checked)"> '+COLS[k].label+'</label>'; });
+  p.innerHTML=h;
+}
+function toggleColCfg(e){ e.stopPropagation(); var p=document.getElementById('colcfg-panel'); p.hidden=!p.hidden; }
+function toggleColVisible(k, on){ colVisible[k]=on; renderHead(); renderBody(); }
+document.addEventListener('click', function(e){ var w=document.querySelector('.colcfg-wrap'); var p=document.getElementById('colcfg-panel'); if(p&&!p.hidden&&w&&!w.contains(e.target)) p.hidden=true; });
+
+/* ---- render head ---- */
+function renderHead(){
+  var order=visibleOrder();
+  var cg=document.getElementById('data-colgroup'); cg.innerHTML='';
+  order.forEach(function(k){ var c=document.createElement('col'); c.style.width=colWidth[k]+'px'; c.dataset.key=k; cg.appendChild(c); });
+  var total=order.reduce(function(a,k){return a+colWidth[k];},0); document.getElementById('data-table').style.minWidth=total+'px';
+  var row=document.getElementById('head-row'); row.innerHTML='';
+  order.forEach(function(k){ var col=COLS[k]; var th=document.createElement('th');
+    if(k==='ACTIONS') th.className='col-actions';
+    var movable=!col.fixed; if(movable){ th.classList.add('movable'); th.draggable=true; th.dataset.key=k; }
+    var lbl=document.createElement('span'); lbl.className='th-label';
+    lbl.textContent=col.label + (col.sortable?(sortField===k?(sortDir<0?' \u25BC':' \u25B2'):' \u21C5'):'');
+    if(col.sortable) lbl.onclick=function(e){ e.stopPropagation(); sortBy(k); };
+    th.appendChild(lbl);
+    if(k!=='ACTIONS'){ var rz=document.createElement('span'); rz.className='col-resizer'; attachResize(rz,k); th.appendChild(rz); }
+    if(movable) attachDrag(th,k);
+    row.appendChild(th);
+  });
+}
+function attachResize(handle,key){
+  handle.addEventListener('mousedown', function(e){ e.preventDefault(); e.stopPropagation();
+    var startX=e.clientX, startW=colWidth[key];
+    function mm(ev){ var w=Math.max(60, startW+(ev.clientX-startX)); colWidth[key]=w;
+      var col=document.querySelector('#data-colgroup col[data-key="'+key+'"]'); if(col) col.style.width=w+'px';
+      var total=visibleOrder().reduce(function(a,k){return a+colWidth[k];},0); document.getElementById('data-table').style.minWidth=total+'px'; }
+    function mu(){ document.removeEventListener('mousemove',mm); document.removeEventListener('mouseup',mu); document.body.style.cursor=''; }
+    document.addEventListener('mousemove',mm); document.addEventListener('mouseup',mu); document.body.style.cursor='col-resize'; });
+}
+let dragKey=null;
+function attachDrag(th,key){
+  th.addEventListener('dragstart', function(e){ dragKey=key; th.classList.add('dragging'); e.dataTransfer.effectAllowed='move'; });
+  th.addEventListener('dragend', function(){ th.classList.remove('dragging'); document.querySelectorAll('#head-row th').forEach(function(x){x.classList.remove('drag-over');}); });
+  th.addEventListener('dragover', function(e){ if(dragKey&&dragKey!==key&&!COLS[key].fixed){ e.preventDefault(); th.classList.add('drag-over'); } });
+  th.addEventListener('dragleave', function(){ th.classList.remove('drag-over'); });
+  th.addEventListener('drop', function(e){ e.preventDefault(); th.classList.remove('drag-over');
+    if(!dragKey||dragKey===key||COLS[key].fixed) return;
+    var o=colOrder.slice(); o.splice(o.indexOf(dragKey),1); o.splice(o.indexOf(key),0,dragKey);
+    colOrder=clampOrder(o); dragKey=null; renderHead(); renderBody(); });
+}
+/* ---- render body ---- */
+function renderBody(){
+  var order=visibleOrder(); var tbody=document.getElementById('list-tbody');
+  var rows=paginate(filtered,currentPage);
+  if(!rows.length){ tbody.innerHTML='<tr><td colspan="'+order.length+'"><div class="empty-state"><p>Kh\u00f4ng c\u00f3 b\u1ea3n ghi ph\u00f9 h\u1ee3p b\u1ed9 l\u1ecdc.</p></div></td></tr>'; return; }
+  var start=(currentPage-1)*PAGE_SIZE;
+  tbody.innerHTML=rows.map(function(r,i){
+    var tds=order.map(function(k){ var cls=(k==='ACTIONS')?' class="col-actions"':''; var onc=(k==='ACTIONS')?' onclick="event.stopPropagation()"':''; return '<td'+cls+onc+'>'+COLS[k].cell(r,start+i+1)+'</td>'; }).join('');
+    return '<tr data-record-id="'+r.id+'" data-testid="row-'+r.id+'" style="cursor:pointer" onclick="window.location.href=\'form_detail_Formatted.html?id='+r.id+'&mode=view\'">'+tds+'</tr>';
+  }).join('');
+}
+
+/* ====== Filter / search ====== */
+function applyFiltersData(){
+  var q=(document.getElementById('search-input').value||'').trim().toLowerCase();
+  var quick=(document.getElementById('filter-quick').value||'').trim().toLowerCase();
+  var st=MS_STATUS.values();
+  var src=MS_SOURCE.values();
+  var cb=(document.getElementById('filter-created-by').value||'').trim().toLowerCase();
+  var fromD=document.getElementById('filter-from-date').value;
+  var toD=document.getElementById('filter-to-date').value;
+  filtered=SAMPLE.records.filter(function(r){
+    var mQ=!q || r.DOSSIER_CODE.toLowerCase().indexOf(q)>=0;
+    var mQuick=!quick || (r.CREATED_BY||'').toLowerCase().indexOf(quick)>=0 || (r.BUDGET_UNIT_NAME||'').toLowerCase().indexOf(quick)>=0;
+    var mSt=!st.length || st.indexOf(r.F_STATUS)>=0;
+    var mSrc=!src.length || src.indexOf(r.DATA_SOURCE_CODE)>=0;
+    var mCb=!cb || (r.CREATED_BY||'').toLowerCase().indexOf(cb)>=0;
+    var iso=toISO(r.SEND_DATE);
+    var mFrom=!fromD || (iso && iso>=fromD);
+    var mTo=!toD || (iso && iso<=toD);
+    return mQ&&mQuick&&mSt&&mSrc&&mCb&&mFrom&&mTo;
+  });
+  filtered.sort(function(a,b){ var av=(a[sortField]||'').toString(), bv=(b[sortField]||'').toString(); return av.localeCompare(bv)*sortDir; });
+}
+function doSearch(){ searched=true; currentPage=1; document.getElementById('search-prompt').hidden=true; document.getElementById('results-area').hidden=false; applyFiltersData(); render(); }
+function resetFilters(){
+  ['search-input','filter-quick','filter-created-by','filter-from-date','filter-to-date'].forEach(function(id){ document.getElementById(id).value=''; });
+  MS_STATUS.clear(); MS_SOURCE.clear();
+  searched=false; filtered=[]; document.getElementById('results-area').hidden=true; document.getElementById('search-prompt').hidden=false;
+}
+function toggleAdvanced(){ var a=document.getElementById('filter-advanced'); var t=document.getElementById('adv-toggle'); a.hidden=!a.hidden; t.textContent=(a.hidden?'\u25B6 \u0110i\u1ec1u ki\u1ec7n n\u00e2ng cao \u25B6':'\u25BC \u0110i\u1ec1u ki\u1ec7n n\u00e2ng cao \u25BC'); }
+function sortBy(field){ if(sortField===field){ sortDir*=-1; } else { sortField=field; sortDir=-1; } if(searched){ applyFiltersData(); render(); } }
+function changePage(d){ var tp=Math.ceil(filtered.length/PAGE_SIZE)||1; currentPage=Math.max(1,Math.min(tp,currentPage+d)); render(); }
+function paginate(arr,p){ var s=(p-1)*PAGE_SIZE; return arr.slice(s,s+PAGE_SIZE); }
+
+function renderPagination(total){
+  var tp=Math.ceil(total/PAGE_SIZE)||1; var s=Math.min((currentPage-1)*PAGE_SIZE+1,total), e=Math.min(currentPage*PAGE_SIZE,total);
+  document.getElementById('pagination-info').textContent='Hi\u1ec3n th\u1ecb '+(total?s:0)+'\u2013'+e+' / '+total+' b\u1ea3n ghi';
+  document.getElementById('page-indicator').textContent='Trang '+currentPage+'/'+tp;
+  document.getElementById('btn-prev').disabled=currentPage<=1; document.getElementById('btn-next').disabled=currentPage>=tp;
+  document.getElementById('record-count-info').textContent='T\u1ed5ng k\u1ebft qu\u1ea3: '+total+' b\u1ea3n ghi';
+}
+function renderStats(){
+  var c=function(f){return filtered.filter(f).length;};
+  var html='<span class="stats-total">T\u1ed5ng h\u1ed3 s\u01a1: <b>'+filtered.length+'</b></span>';
+  var defs=[['DRAFT','Lưu nháp','st-draft'],['SUBMITTED','Đã gửi kiểm soát','st-submitted'],['APPROVED','Đã phê duyệt','st-approved'],['REJECTED','Đã từ chối','st-rejected'],['COMPLETED','Đã hoàn thành','st-completed'],['CANCELLED','Đã huỷ','st-cancelled']];
+  defs.forEach(function(d){ html+='<span class="stat-chip"><span class="badge '+d[2]+'">'+d[1]+'</span> <b>'+c(function(r){return r.F_STATUS===d[0];})+'</b></span>'; });
+  document.getElementById('stats-bar').innerHTML=html;
+}
+function render(){ renderHead(); renderBody(); renderPagination(filtered.length); renderStats(); }
+
+/* ====== Init ====== */
+/* ====== MultiSelect (checkbox + chấm màu + Bỏ chọn tất cả) ====== */
+function MultiSelect(mountId, opts, placeholder){
+  var mount=document.getElementById(mountId); var selected={};
+  var wrap=document.createElement('div'); wrap.className='ms';
+  var ctrl=document.createElement('div'); ctrl.className='ms-control'; ctrl.tabIndex=0;
+  var txt=document.createElement('span'); txt.className='ms-text';
+  var car=document.createElement('span'); car.className='ms-caret'; car.textContent='\u25BE';
+  ctrl.appendChild(txt); ctrl.appendChild(car);
+  var panel=document.createElement('div'); panel.className='ms-panel'; panel.hidden=true;
+  var sall=document.createElement('div'); sall.className='ms-selectall'; sall.textContent='\u2713 Ch\u1ecdn t\u1ea5t c\u1ea3';
+  sall.onclick=function(e){ e.stopPropagation(); selectAll(); };
+  panel.appendChild(sall);
+  opts.forEach(function(o){
+    var row=document.createElement('label'); row.className='ms-opt';
+    var cb=document.createElement('input'); cb.type='checkbox'; cb.value=o.value;
+    cb.addEventListener('change', function(){ if(cb.checked) selected[o.value]=true; else delete selected[o.value]; syncLabel(); });
+    var dot=document.createElement('span'); dot.className='ms-dot'; dot.style.background=o.dot||'#999';
+    var t=document.createElement('span'); t.textContent=o.label;
+    row.appendChild(cb); row.appendChild(dot); row.appendChild(t); panel.appendChild(row);
+  });
+  var clr=document.createElement('div'); clr.className='ms-clear'; clr.textContent='\u2715 B\u1ecf ch\u1ecdn t\u1ea5t c\u1ea3';
+  clr.onclick=function(e){ e.stopPropagation(); clearAll(); };
+  panel.appendChild(clr);
+  wrap.appendChild(ctrl); wrap.appendChild(panel); mount.appendChild(wrap);
+  function syncLabel(){ var keys=Object.keys(selected);
+    if(!keys.length){ txt.textContent=placeholder; txt.classList.add('placeholder'); }
+    else if(keys.length===1){ var o=opts.filter(function(x){return x.value===keys[0];})[0]; txt.textContent=o?o.label:keys[0]; txt.classList.remove('placeholder'); }
+    else { txt.textContent='\u0110\u00e3 ch\u1ecdn '+keys.length; txt.classList.remove('placeholder'); } }
+  function clearAll(){ selected={}; panel.querySelectorAll('input[type=checkbox]').forEach(function(c){c.checked=false;}); syncLabel(); }
+  function selectAll(){ selected={}; opts.forEach(function(o){ selected[o.value]=true; }); panel.querySelectorAll('input[type=checkbox]').forEach(function(c){c.checked=true;}); syncLabel(); }
+  ctrl.addEventListener('click', function(){ panel.hidden=!panel.hidden; wrap.classList.toggle('open', !panel.hidden); });
+  document.addEventListener('click', function(e){ if(!wrap.contains(e.target)){ panel.hidden=true; wrap.classList.remove('open'); } });
+  syncLabel();
+  return { values:function(){ return Object.keys(selected); }, clear:clearAll };
+}
+var MS_SOURCE = MultiSelect('ms-source', [
+  {value:'MANUAL', label:'Thủ công', dot:'#722ed1'},
+  {value:'DVKB', label:'DVC', dot:'#13c2c2'},
+  {value:'AUTO', label:'Tự động', dot:'#1677ff'}
+], '-- Tất cả nguồn --');
+var MS_STATUS = MultiSelect('ms-status', [
+  {value:'DRAFT', label:'Lưu nháp', dot:'#9e9e9e'},
+  {value:'SAVED', label:'Đã lưu', dot:'#8c8c8c'},
+  {value:'VALIDATED', label:'Đã kiểm tra', dot:'#13c2c2'},
+  {value:'SUBMITTED', label:'Đã gửi kiểm soát', dot:'#1677ff'},
+  {value:'APPROVED', label:'Đã phê duyệt', dot:'#389e0d'},
+  {value:'REJECTED', label:'Đã từ chối', dot:'#cf1322'},
+  {value:'COMPLETED', label:'Đã hoàn thành', dot:'#237804'},
+  {value:'CANCELLED', label:'Đã huỷ', dot:'#fa8c16'}
+], '-- Tất cả trạng thái --');
+loadColConfig(); buildColCfgPanel();
+document.addEventListener('keydown', function(e){
+  if(e.ctrlKey && (e.key==='n'||e.key==='N')){ e.preventDefault(); window.location.href='form_detail_Formatted.html?mode=new'; }
+  if(e.key==='F5'){ e.preventDefault(); doSearch(); }
+});
+</script>
+</body>
+</html>

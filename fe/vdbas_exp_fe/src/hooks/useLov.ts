@@ -2,11 +2,13 @@ import { useQuery } from '@tanstack/react-query'
 import {
   lovProjects, lovProjectSpecific, lovTreasuries, lovInvestors, lovOrganizations,
   lovProjectManagement, lovDataSources, lovDocumentTypes, lovAttachmentTypes,
+  lovDossierTypes, lovCurrencies, lovUsers,
 } from '../services/lovService'
 import type {
   ProjectLovParams, ProjectLovItem, ProjectSpecificLovItem,
   TreasuryLovItem, InvestorLovItem, OrganizationLovItem, ProjectManagementLovItem, ProjectManagementLovParams,
   DataSourceItem, DocumentTypeItem, AttachmentTypeItem,
+  LovItem, LovUsersParams,
 } from '@/types/index'
 
 const KEY = 'lov'
@@ -76,5 +78,27 @@ export const LovHooks = {
       queryKey: [KEY, 'attachment-types'],
       queryFn:  () => lovAttachmentTypes(),
       staleTime: LONG,
+    }),
+
+  // ── OPEX LOV (mới) ──────────────────────────────────────────────────────────
+  useDossierTypes: (search?: string) =>
+    useQuery<LovItem[]>({
+      queryKey: [KEY, 'dossier-types', search],
+      queryFn:  () => lovDossierTypes(search),
+      staleTime: LONG,
+    }),
+
+  useCurrencies: (search?: string) =>
+    useQuery<LovItem[]>({
+      queryKey: [KEY, 'currencies', search],
+      queryFn:  () => lovCurrencies(search),
+      staleTime: LONG,
+    }),
+
+  useUsers: (params: LovUsersParams = {}) =>
+    useQuery<LovItem[]>({
+      queryKey: [KEY, 'users', params],
+      queryFn:  () => lovUsers(params),
+      staleTime: 5 * 60 * 1000,
     }),
 }

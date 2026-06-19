@@ -238,6 +238,7 @@ public class DossierService {
             return null;
         }
         return switch (status) {
+            // ── CAPEX ──
             case DRAFT -> "Lưu nháp";
             case SAVED -> "Đã lưu";
             case VALIDATED -> "Đã kiểm tra";
@@ -246,6 +247,16 @@ public class DossierService {
             case REJECTED -> "Đã từ chối";
             case COMPLETED -> "Đã hoàn thành";
             case CANCELLED -> "Đã huỷ";
+            // ── OPEX (GAP-02) ──
+            case PENDING_CHECKER -> "Chờ kiểm soát";
+            case CHECKED -> "Đã kiểm soát";
+            case APPROVAL_PENDING -> "Chờ phê duyệt";
+            case APPROVAL_REJECTED -> "Phê duyệt từ chối";
+            case CHECK_REJECTED -> "Kiểm soát từ chối";
+            case CHECK_CANCELLED -> "Kiểm soát huỷ";
+            case APPROVAL_CANCELLED -> "Phê duyệt huỷ";
+            case REJECTED_BY_CHECKER -> "Bị kiểm soát trả lại";
+            case DELETED -> "Đã xoá";
         };
     }
 

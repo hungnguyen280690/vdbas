@@ -20,6 +20,12 @@ public class DossierStatusConverter implements AttributeConverter<DossierStatus,
         if (dbData == null || dbData.isBlank()) {
             return null;
         }
-        return DossierStatus.valueOf(dbData.trim());
+        // GAP-02: bọc try-catch để dữ liệu lạ (giá trị ngoài union CAPEX/OPEX) không làm vỡ
+        // mọi truy vấn đọc ExpDossier (entity dùng chung). Trả null thay vì ném IllegalArgumentException.
+        try {
+            return DossierStatus.valueOf(dbData.trim());
+        } catch (IllegalArgumentException ex) {
+            return null;
+        }
     }
 }

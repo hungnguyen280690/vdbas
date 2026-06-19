@@ -4,6 +4,7 @@ import com.fis.vdbas.common.mapper.BooleanIntegerMapper;
 import com.fis.vdbas.exp.application.lov.dto.AttachmentTypeItem;
 import com.fis.vdbas.exp.application.lov.dto.DataSourceItem;
 import com.fis.vdbas.exp.application.lov.dto.DocumentTypeItem;
+import com.fis.vdbas.exp.application.lov.dto.DossierTypeItem;
 import com.fis.vdbas.exp.application.lov.dto.OrganizationLovItem;
 import com.fis.vdbas.exp.application.lov.dto.ProjectLovItem;
 import com.fis.vdbas.exp.application.lov.dto.ProjectSpecificLovItem;
@@ -13,6 +14,7 @@ import com.fis.vdbas.exp.domain.lov.CommonTreasury;
 import com.fis.vdbas.exp.domain.lov.ExpAttachmentType;
 import com.fis.vdbas.exp.domain.lov.ExpDataSource;
 import com.fis.vdbas.exp.domain.lov.ExpDocumentType;
+import com.fis.vdbas.exp.domain.lov.ExpDossierType;
 import com.fis.vdbas.exp.domain.lov.ExpProject;
 import com.fis.vdbas.exp.domain.lov.ExpProjectSpecific;
 import org.mapstruct.Mapper;
@@ -52,6 +54,10 @@ public interface LovMapper extends BooleanIntegerMapper {
     DocumentTypeItem toDocumentTypeItem(ExpDocumentType entity);
 
     List<DocumentTypeItem> toDocumentTypeItemList(List<ExpDocumentType> entities);
+
+    DossierTypeItem toDossierTypeItem(ExpDossierType entity);
+
+    List<DossierTypeItem> toDossierTypeItemList(List<ExpDossierType> entities);
 
     AttachmentTypeItem toAttachmentTypeItem(ExpAttachmentType entity);
 

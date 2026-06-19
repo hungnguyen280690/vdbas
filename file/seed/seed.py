@@ -73,16 +73,26 @@ ins("COMMON_TREASURY", [dict(TREASURY_CODE=c, TREASURY_NAME=n,
     DESCRIPTION="Danh mục Kho bạc", STATUS=1, **audit()) for c, n in treasuries.items()])
 
 # ───────────────────────── 2. COMMON_STATUS ─────────────────────────
+# 8 trạng thái CAPEX + 9 trạng thái OPEX (DossierStatus enum). EXP_DOSSIER.F_STATUS
+# có FK_DOSSIER_STATUS -> COMMON_STATUS.STATUS_CODE: state machine OPEX (PENDING_CHECKER,
+# CHECKED, ...) BẮT BUỘC tồn tại, nếu không submit/check/approve OPEX vỡ ORA-02291.
 statuses = [
+    # CAPEX
     ("DRAFT", "Lưu nháp"), ("SAVED", "Đã lưu"), ("VALIDATED", "Đã kiểm tra"),
     ("SUBMITTED", "Đã gửi kiểm soát"), ("APPROVED", "Đã phê duyệt"),
     ("REJECTED", "Đã từ chối"), ("COMPLETED", "Đã hoàn thành"), ("CANCELLED", "Đã huỷ"),
+    # OPEX (additive — khớp DossierService.labelOf)
+    ("PENDING_CHECKER", "Chờ kiểm soát"), ("CHECKED", "Đã kiểm soát"),
+    ("APPROVAL_PENDING", "Chờ phê duyệt"), ("APPROVAL_REJECTED", "Phê duyệt từ chối"),
+    ("CHECK_REJECTED", "Kiểm soát từ chối"), ("CHECK_CANCELLED", "Kiểm soát huỷ"),
+    ("APPROVAL_CANCELLED", "Phê duyệt huỷ"), ("REJECTED_BY_CHECKER", "Bị kiểm soát trả lại"),
+    ("DELETED", "Đã xoá"),
 ]
 ins("COMMON_STATUS", [dict(STATUS_CODE=c, STATUS_NAME=n, SUB_SYSTEM="EXP",
-    DESCRIPTION="Trạng thái xử lý hồ sơ Chi đầu tư", STATUS=1, **audit()) for c, n in statuses])
+    DESCRIPTION="Trạng thái xử lý hồ sơ chi", STATUS=1, **audit()) for c, n in statuses])
 
 # ───────────────────────── 3. EXP_DATA_SOURCE (LOV.03) ─────────────────────────
-data_sources = [("THU_CONG", "Thủ công"), ("DVC", "DVC"), ("AUTO", "Tự động/Chuyển đổi")]
+data_sources = [("THU_CONG", "Thủ công"), ("DVC", "Dịch vụ kho bạc"), ("AUTO", "Tự động")]
 ins("EXP_DATA_SOURCE", [dict(DATA_SOURCE_CODE=c, DATA_SOURCE_NAME=n,
     DESCRIPTION="Nguồn gốc hồ sơ", STATUS=1, **audit()) for c, n in data_sources])
 
@@ -92,9 +102,17 @@ ins("EXP_DOSSIER_TYPE", [dict(DOSSIER_TYPE_CODE=c, DOSSIER_TYPE_NAME=n,
     DESCRIPTION="Loại hồ sơ chi", STATUS=1, **audit()) for c, n in dossier_types])
 
 # ───────────────────────── 5. EXP_WORKFLOW ─────────────────────────
-ins("EXP_WORKFLOW", [dict(WORKFLOW_CODE="CAPEX_STANDARD",
-    WORKFLOW_NAME="Luồng phê duyệt chuẩn Chi đầu tư (Maker–Checker–Approver)",
-    DESCRIPTION="Luồng phê duyệt 3 cấp", STATUS=1, **audit())])
+# OPEX_STANDARD: OpexDossierService hardcode workflowCode=OPEX_STANDARD
+# (CacheConstants.OPEX_WORKFLOW_CODE) -> phải có parent row, nếu không FK
+# FK_DOSSIER_WORKFLOW vỡ ORA-02291 khi tạo hồ sơ OPEX.
+ins("EXP_WORKFLOW", [
+    dict(WORKFLOW_CODE="CAPEX_STANDARD",
+         WORKFLOW_NAME="Luồng phê duyệt chuẩn Chi đầu tư (Maker–Checker–Approver)",
+         DESCRIPTION="Luồng phê duyệt 3 cấp", STATUS=1, **audit()),
+    dict(WORKFLOW_CODE="OPEX_STANDARD",
+         WORKFLOW_NAME="Luồng phê duyệt chuẩn Chi thường xuyên (Maker–Checker–Approver)",
+         DESCRIPTION="Luồng phê duyệt 3 cấp", STATUS=1, **audit()),
+])
 
 # ───────────────────────── 6. EXP_DOCUMENT_TYPE ─────────────────────────
 doc_types = [
@@ -196,8 +214,12 @@ dossiers_src = [
 CHECKER, APPROVER = "kiemsoat.vien01", "phe.duyet01"
 
 def assignee(st, maker):
+    # CAPEX + OPEX states; .get fallback=maker để an toàn cho trạng thái OPEX.
     return {"DRAFT": maker, "SAVED": maker, "VALIDATED": maker, "SUBMITTED": CHECKER,
-            "APPROVED": APPROVER, "REJECTED": maker, "COMPLETED": "SYSTEM"}[st]
+            "APPROVED": APPROVER, "REJECTED": maker, "COMPLETED": "SYSTEM",
+            "PENDING_CHECKER": CHECKER, "CHECKED": APPROVER, "APPROVAL_PENDING": APPROVER,
+            "CHECK_REJECTED": maker, "APPROVAL_REJECTED": maker,
+            "REJECTED_BY_CHECKER": maker}.get(st, maker)
 
 DOSS = {}   # code -> meta dict
 dossier_rows = []
@@ -228,6 +250,53 @@ for code, org, sd, by, tre, st, pcode, ds in dossiers_src:
         CREATED_BY=by, CREATED_DATE=cdate, UPDATED_BY=by, UPDATED_DATE=cdate,
     ))
 ins("EXP_DOSSIER", dossier_rows)
+
+# ──────────────────── 12b. EXP_DOSSIER (OPEX — Chi thường xuyên) ────────────────────
+# Hồ sơ OPEX theo mockup form_list/form_detail: DOSSIER_TYPE_CODE=OPEX,
+# WORKFLOW_CODE=OPEX_STANDARD, KHÔNG dùng field dự án (PROJECT_*). State machine OPEX
+# (DRAFT→PENDING_CHECKER→CHECKED→APPROVED, nhánh CHECK_REJECTED/APPROVAL_REJECTED).
+opex_src = [
+    # (DOSSIER_CODE, org, send_date, maker, treasury, F_STATUS, data_source)
+    ("EXP/OPEX/260601-0001", "1171277", "01/06/2026", "nguyen.van.an",  "0001", "DRAFT",            "THU_CONG"),
+    ("EXP/OPEX/260530-0002", "1170918", "30/05/2026", "tran.thi.bich",  "0003", "DRAFT",            "DVC"),
+    ("EXP/OPEX/260528-0003", "1059441", "28/05/2026", "le.hong.phuc",   "0011", "PENDING_CHECKER",  "THU_CONG"),
+    ("EXP/OPEX/260525-0004", "1058252", "25/05/2026", "pham.quoc.hung", "0015", "PENDING_CHECKER",  "DVC"),
+    ("EXP/OPEX/260520-0005", "1056333", "20/05/2026", "vu.thi.lan",     "0001", "CHECKED",          "THU_CONG"),
+    ("EXP/OPEX/260515-0006", "1122826", "15/05/2026", "hoang.minh.duc", "0003", "APPROVED",         "THU_CONG"),
+    ("EXP/OPEX/260510-0007", "1122899", "10/05/2026", "nguyen.van.an",  "0011", "APPROVED",         "DVC"),
+    ("EXP/OPEX/260505-0008", "1122910", "05/05/2026", "tran.thi.bich",  "0015", "CHECK_REJECTED",   "THU_CONG"),
+    ("EXP/OPEX/260501-0009", "1121333", "01/05/2026", "le.hong.phuc",   "0001", "APPROVAL_REJECTED","THU_CONG"),
+    ("EXP/OPEX/260428-0010", "7499089", "28/04/2026", "pham.quoc.hung", "0003", "REJECTED_BY_CHECKER","DVC"),
+]
+
+def opex_assignee(st, maker):
+    return {"DRAFT": maker, "REJECTED_BY_CHECKER": maker, "PENDING_CHECKER": CHECKER,
+            "CHECK_REJECTED": maker, "CHECKED": APPROVER, "APPROVAL_PENDING": APPROVER,
+            "APPROVED": APPROVER, "APPROVAL_REJECTED": maker}.get(st, maker)
+
+opex_rows = []
+for code, org, sd, by, tre, st, ds in opex_src:
+    did = u()
+    sdd = d(sd)
+    cdate = dt.datetime.combine(sdd, dt.time(8, 30))
+    DOSS[code] = dict(id=did, tre=tre, tre_name=treasuries[tre], pcode=None,
+                      st=st, sd=sdd, by=by)
+    opex_rows.append(dict(
+        ID=did, TREASURY_CODE=tre, TREASURY_NAME=treasuries[tre],
+        DOSSIER_TYPE_CODE="OPEX", DOSSIER_CODE=code, VERSION=1,
+        SEND_DATE=sdd,
+        ORGANIZATION_CODE=org, ORGANIZATION_NAME=orgs[org],
+        INVESTOR_CODE=org, INVESTOR_NAME=orgs[org],
+        PROJECT_MANAGEMENT_CODE=org, PROJECT_MANAGEMENT_NAME=orgs[org],
+        STATUS=1, F_STATUS=st, WORKFLOW_CODE="OPEX_STANDARD", DATA_SOURCE_CODE=ds,
+        ASSIGN_USER=opex_assignee(st, by),
+        SLA=dt.datetime.combine(sdd + dt.timedelta(days=5), dt.time(17, 0)),
+        HASH_INFO=('{"documentHash":"seedhash","algorithm":"SHA256"}'
+                   if st in ("PENDING_CHECKER", "CHECKED", "APPROVED") else None),
+        COMPLETED_DATE=(sdd + dt.timedelta(days=3) if st == "APPROVED" else None),
+        CREATED_BY=by, CREATED_DATE=cdate, UPDATED_BY=by, UPDATED_DATE=cdate,
+    ))
+ins("EXP_DOSSIER", opex_rows)
 
 # ───────────────────────── 13. EXP_DOCUMENT ─────────────────────────
 AMOUNTS = [25000000, 52500000, 48000000, 175000000, 240000000, 85500000, 64000000,

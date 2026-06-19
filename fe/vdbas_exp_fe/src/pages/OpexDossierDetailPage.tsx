@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import './OpexDossierDetailPage.css'
-import { MOCK_DATA, type DossierRecord, type DocumentRecord } from './OpexDossierDetailPage.mock'
+import { type DossierRecord, type DocumentRecord } from './OpexDossierDetailPage.mock'
 import { useNavigation } from '@/contexts/NavigationContext'
+import { OpexDossierHooks } from '@/hooks/useOpexDossier'
+import { newIdempotencyKey } from '@/services/opexDossierService'
+import type { OpexDossierDetail } from '@/types/index'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
 type PageMode = 'new' | 'edit' | 'view'
@@ -65,17 +68,28 @@ const DOC_TYPES: DocTypeItem[] = [
   { code: 'C2-10/NS',       name: 'Giấy đề nghị điều chỉnh số liệu ngân sách (Mẫu số 09) C2-10/NS',                                mod: 'EXP.OPEX.DOC.MANAGE.3'  },
 ]
 
+// BTN_MATRIX theo 11-state OPEX (§7). Lưu ý: nút "approve" được tái dùng cho cả
+// Kiểm soát (PENDING_CHECKER→check) lẫn Phê duyệt (CHECKED/APPROVAL_PENDING→approve);
+// nút "cancel" tái dùng cho Trả lại (check-return) và Huỷ duyệt (approve-cancel).
+// SoD/role (MAKER/CHECKER/APPROVER) do BE chốt — UI chưa gate theo claim JWT (GAP).
 const C_MATRIX: Record<string, CMatrixEntry> = {
-  DRAFT:     { edit:'show',    del:'show',    submit:'show',    approve:'hide', reject:'hide', cancel:'show',    copy:'show', print:'disable' },
-  SAVED:     { edit:'show',    del:'show',    submit:'show',    approve:'hide', reject:'hide', cancel:'show',    copy:'show', print:'show'    },
-  SUBMITTED: { edit:'hide',    del:'hide',    submit:'hide',    approve:'show', reject:'show', cancel:'hide',    copy:'hide', print:'disable' },
-  APPROVED:  { edit:'hide',    del:'hide',    submit:'hide',    approve:'hide', reject:'hide', cancel:'hide',    copy:'show', print:'show'    },
-  REJECTED:  { edit:'show',    del:'show',    submit:'show',    approve:'hide', reject:'hide', cancel:'hide',    copy:'show', print:'show'    },
-  COMPLETED: { edit:'hide',    del:'hide',    submit:'hide',    approve:'hide', reject:'hide', cancel:'hide',    copy:'show', print:'show'    },
-  CANCELLED: { edit:'hide',    del:'disable', submit:'hide',    approve:'hide', reject:'hide', cancel:'hide',    copy:'show', print:'show'    },
+  DRAFT:               { edit:'show', del:'show', submit:'show', approve:'hide', reject:'hide', cancel:'hide', copy:'show', print:'disable' },
+  REJECTED_BY_CHECKER: { edit:'show', del:'show', submit:'show', approve:'hide', reject:'hide', cancel:'hide', copy:'show', print:'show'    },
+  CHECK_REJECTED:      { edit:'show', del:'show', submit:'show', approve:'hide', reject:'hide', cancel:'hide', copy:'show', print:'show'    },
+  PENDING_CHECKER:     { edit:'hide', del:'hide', submit:'hide', approve:'show', reject:'show', cancel:'show', copy:'hide', print:'disable' },
+  CHECKED:             { edit:'hide', del:'hide', submit:'hide', approve:'show', reject:'show', cancel:'show', copy:'hide', print:'show'    },
+  APPROVAL_PENDING:    { edit:'hide', del:'hide', submit:'hide', approve:'show', reject:'show', cancel:'show', copy:'hide', print:'show'    },
+  APPROVED:            { edit:'hide', del:'hide', submit:'hide', approve:'hide', reject:'hide', cancel:'hide', copy:'show', print:'show'    },
+  APPROVAL_REJECTED:   { edit:'hide', del:'hide', submit:'hide', approve:'hide', reject:'hide', cancel:'hide', copy:'show', print:'show'    },
+  CHECK_CANCELLED:     { edit:'hide', del:'hide', submit:'hide', approve:'hide', reject:'hide', cancel:'hide', copy:'show', print:'show'    },
+  APPROVAL_CANCELLED:  { edit:'hide', del:'hide', submit:'hide', approve:'hide', reject:'hide', cancel:'hide', copy:'show', print:'show'    },
+  DELETED:             { edit:'hide', del:'hide', submit:'hide', approve:'hide', reject:'hide', cancel:'hide', copy:'hide', print:'hide'    },
 }
 
 const EXCHANGE_RATE: Record<string, number> = { VND: 1, USD: 25400, EUR: 27200 }
+
+// Trạng thái Maker còn sửa/xoá được (VAL-13). SoD/ownership do BE chốt.
+const MAKER_EDITABLE = new Set<string>(['DRAFT', 'REJECTED_BY_CHECKER', 'CHECK_REJECTED'])
 
 // ── Helpers ────────────────────────────────────────────────────────────────────
 function vdbasToISO(s: string): string {
@@ -95,21 +109,20 @@ function vdbasToDMY(s: string): string {
   return `${m[3]}/${m[2]}/${m[1]}`
 }
 
-function uiStatus(st: string, assign: string): { label: string; cls: string } {
+function uiStatus(st: string): { label: string; cls: string } {
   switch (st) {
-    case 'DRAFT':     return { label: 'Lưu nháp', cls: 'st-draft' }
-    case 'SAVED':     return { label: 'Đã lưu', cls: 'st-saved' }
-    case 'VALIDATED': return { label: 'Đã kiểm tra', cls: 'st-validated' }
-    case 'SUBMITTED': return { label: 'Đã gửi kiểm soát', cls: 'st-submitted' }
-    case 'APPROVED':  return assign === 'Done'
-      ? { label: 'Đã phê duyệt', cls: 'st-approved' }
-      : { label: 'Đã kiểm soát', cls: 'st-checked' }
-    case 'REJECTED':  return assign === 'Checker'
-      ? { label: 'Từ chối phê duyệt', cls: 'st-rejected' }
-      : { label: 'Từ chối kiểm soát', cls: 'st-rejected' }
-    case 'COMPLETED': return { label: 'Đã hoàn thành', cls: 'st-completed' }
-    case 'CANCELLED': return { label: 'Đã huỷ', cls: 'st-cancelled' }
-    default:          return { label: st || '—', cls: 'st-draft' }
+    case 'DRAFT':               return { label: 'Lưu nháp', cls: 'st-draft' }
+    case 'PENDING_CHECKER':     return { label: 'Chờ kiểm soát', cls: 'st-submitted' }
+    case 'CHECKED':             return { label: 'Đã kiểm soát', cls: 'st-checked' }
+    case 'APPROVAL_PENDING':    return { label: 'Chờ phê duyệt', cls: 'st-submitted' }
+    case 'APPROVED':            return { label: 'Đã phê duyệt', cls: 'st-approved' }
+    case 'CHECK_REJECTED':      return { label: 'Từ chối kiểm soát', cls: 'st-rejected' }
+    case 'REJECTED_BY_CHECKER': return { label: 'Trả lại người lập', cls: 'st-rejected' }
+    case 'APPROVAL_REJECTED':   return { label: 'Từ chối phê duyệt', cls: 'st-rejected' }
+    case 'CHECK_CANCELLED':     return { label: 'Huỷ kiểm soát', cls: 'st-cancelled' }
+    case 'APPROVAL_CANCELLED':  return { label: 'Huỷ phê duyệt', cls: 'st-cancelled' }
+    case 'DELETED':             return { label: 'Đã xoá', cls: 'st-cancelled' }
+    default:                    return { label: st || '—', cls: 'st-draft' }
   }
 }
 
@@ -122,15 +135,65 @@ function fmtVnd(n: number): string {
   return Number(n).toLocaleString('vi-VN')
 }
 
+// Adapter: OpexDossierDetail (camelCase contract) → shape render UI (UPPER_SNAKE).
+// GAP: contract detail KHÔNG có checkedBy/approvedBy/*Date → tab Lịch sử/Phê duyệt dùng
+// approval-log/audit-log (useApprovalLog/useAuditLog) cho dữ liệu đầy đủ — hiện để trống.
+function mapDetail(d: OpexDossierDetail): DossierRecord {
+  return {
+    id: d.id,
+    DOSSIER_CODE: d.dossierCode ?? '',
+    BUDGET_UNIT_CODE: d.organizationCode ?? '',
+    BUDGET_UNIT_NAME: d.organizationName ?? '',
+    DOSSIER_DATE: d.sendDate ?? '',
+    CREATED_BY: d.createdBy ?? '',
+    CREATED_DATE: d.createdDate ?? '',
+    DATA_SOURCE_CODE: d.dataSourceCode ?? '',
+    CHECKED_BY: null, CHECKED_DATE: null, APPROVED_BY: null, APPROVED_DATE: null,
+    CHECK_REJECTED_REASON: null, APPROVAL_REJECTED_REASON: null,
+    TREASURY_CODE: d.treasuryCode ?? '', TREASURY_NAME: d.treasuryName ?? '',
+    F_VER: d.version ?? 1,
+    documents: (d.documents ?? []).map((doc, i): DocumentRecord => ({
+      SEQ: i + 1,
+      DOC_TYPE_CODE: doc.documentTypeCode,
+      DOC_NUMBER: doc.documentNo,
+      DOC_NAME: doc.documentName,
+      DOC_DATE: doc.documentDate ?? '',
+      POSTING_DATE: doc.accountingDate ?? '',
+      AMOUNT: doc.originalAmount ?? 0,
+      CURRENCY_CODE: doc.currencyCode ?? 'VND',
+      VND_AMOUNT: doc.baseAmount ?? 0,
+    })),
+    STATE_CODE: d.fStatus,
+    ASSIGN_USER: d.assignUser ?? '',
+  }
+}
+
 // ── Component ──────────────────────────────────────────────────────────────────
 const OpexDossierDetailPage: React.FC = () => {
   const { params, navigate } = useNavigation()
   const paramMode = (params.get('mode') || 'new') as PageMode
   const recordId  = params.get('id')
 
-  const initialRecord = useMemo<DossierRecord | null>(() => {
-    return recordId ? (MOCK_DATA.records.find(r => r.id === recordId) ?? null) : null
-  }, [recordId])
+  // Load detail từ API (thay MOCK find). Hook tự bỏ qua khi recordId rỗng (mode 'new').
+  const { data: detailData } = OpexDossierHooks.useDetail(recordId ?? undefined)
+  const initialRecord = useMemo<DossierRecord | null>(
+    () => (detailData ? mapDetail(detailData) : null),
+    [detailData],
+  )
+
+  // Mutations
+  const createMut         = OpexDossierHooks.useCreate()
+  const updateMut         = OpexDossierHooks.useUpdate()
+  const draftMut          = OpexDossierHooks.useSaveDraft()
+  const submitMut         = OpexDossierHooks.useSubmit()
+  const checkMut          = OpexDossierHooks.useCheck()
+  const approveMut        = OpexDossierHooks.useApprove()
+  const rejectByCheckerMut  = OpexDossierHooks.useRejectByChecker()
+  const rejectByApproverMut = OpexDossierHooks.useRejectByApprover()
+  const returnByCheckerMut  = OpexDossierHooks.useReturnByChecker()
+  const cancelApprovalMut   = OpexDossierHooks.useCancelApproval()
+  const deleteMut         = OpexDossierHooks.useDelete()
+  const copyMut           = OpexDossierHooks.useCopy()
 
   // ── Mode ──────────────────────────────────────────────────────────────────
   const [currentMode, setCurrentMode] = useState<PageMode>(paramMode)
@@ -162,6 +225,22 @@ const OpexDossierDetailPage: React.FC = () => {
 
   // ── Documents list ────────────────────────────────────────────────────────
   const [docs, setDocs] = useState<DocumentRecord[]>(() => initialRecord?.documents ?? [])
+
+  // Đổ form + docs khi detail tải xong (view/edit). 'new' giữ nguyên input người dùng.
+  useEffect(() => {
+    if (currentMode === 'new' || !initialRecord) return
+    setForm({
+      BUDGET_UNIT_CODE: initialRecord.BUDGET_UNIT_CODE,
+      BUDGET_UNIT_NAME: initialRecord.BUDGET_UNIT_NAME,
+      DOSSIER_CODE:     initialRecord.DOSSIER_CODE,
+      DOSSIER_DATE:     vdbasToISO(initialRecord.DOSSIER_DATE),
+      CREATED_BY:       initialRecord.CREATED_BY,
+      STATE_CODE:       initialRecord.STATE_CODE,
+      DATA_SOURCE_CODE: initialRecord.DATA_SOURCE_CODE,
+    })
+    setDocs(initialRecord.documents ?? [])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialRecord])
 
   // ── Validation errors ─────────────────────────────────────────────────────
   const [errors, setErrors] = useState({ BUDGET_UNIT_CODE: false, DOSSIER_DATE: false, DATA_SOURCE_CODE: false })
@@ -246,10 +325,10 @@ const OpexDossierDetailPage: React.FC = () => {
 
   const canEditDocState = useCallback(() => {
     const r = record
-    return !!r && (r.STATE_CODE === 'DRAFT' || r.STATE_CODE === 'SAVED' || (r.STATE_CODE === 'REJECTED' && r.ASSIGN_USER === 'Maker'))
+    return !!r && MAKER_EDITABLE.has(r.STATE_CODE)
   }, [record])
 
-  const statusUi = useMemo(() => uiStatus(form.STATE_CODE, record?.ASSIGN_USER ?? ''), [form.STATE_CODE, record?.ASSIGN_USER])
+  const statusUi = useMemo(() => uiStatus(form.STATE_CODE), [form.STATE_CODE])
 
   const matrixEntry: CMatrixEntry = useMemo(() => {
     return C_MATRIX[form.STATE_CODE] ?? C_MATRIX['DRAFT']
@@ -404,18 +483,59 @@ const OpexDossierDetailPage: React.FC = () => {
       return
     }
     setIsDirty(false)
-    alert('[VDBAS-EXP-XXXX] Lưu hồ sơ thành công!\nTrạng thái: DRAFT\nDOSSIER_CODE sẽ được sinh tự động khi thật sự lưu.')
-    if (currentMode === 'new') navigate('/opex-dossiers')
+
+    if (currentMode === 'new') {
+      // GAP: form chưa có ô nhập treasuryCode (BE create yêu cầu). Lấy từ record nếu có, else rỗng (BE 400).
+      createMut.mutate(
+        {
+          data: {
+            organizationCode: form.BUDGET_UNIT_CODE,
+            treasuryCode: record?.TREASURY_CODE ?? '', // TODO: bổ sung field Kho bạc trên form
+            sendDate: form.DOSSIER_DATE,
+            dataSourceCode: form.DATA_SOURCE_CODE,
+            dossierTypeCode: 'OPEX',
+          },
+          idemKey: newIdempotencyKey(),
+        },
+        { onSuccess: () => navigate('/opex-dossiers') },
+      )
+    } else if (recordId) {
+      updateMut.mutate(
+        {
+          id: recordId,
+          data: {
+            version: record?.F_VER ?? 1, // optimistic lock (VAL-15)
+            organizationCode: form.BUDGET_UNIT_CODE,
+            treasuryCode: record?.TREASURY_CODE ?? '',
+            sendDate: form.DOSSIER_DATE,
+          },
+          idemKey: newIdempotencyKey(),
+        },
+        { onSuccess: () => setCurrentMode('view') },
+      )
+    }
   }
 
   const handleSaveDraft = () => {
     setIsDirty(false)
-    alert('[VDBAS-EXP-XXXX] Lưu nháp thành công!\nTrạng thái: Chưa hoàn thiện')
+    draftMut.mutate(
+      {
+        data: {
+          organizationCode: form.BUDGET_UNIT_CODE || undefined,
+          treasuryCode: record?.TREASURY_CODE || undefined,
+          sendDate: form.DOSSIER_DATE || undefined,
+          dataSourceCode: form.DATA_SOURCE_CODE || undefined,
+          dossierTypeCode: 'OPEX',
+        },
+        idemKey: newIdempotencyKey(),
+      },
+      { onSuccess: () => navigate('/opex-dossiers') },
+    )
   }
 
   const handleSubmit = () => {
-    alert('[VDBAS-EXP-XXXX] Đã gửi hồ sơ để kiểm soát!\nTrạng thái chuyển sang: Chờ kiểm soát\nThông báo đã gửi đến người kiểm soát.')
-    navigate('/opex-dossiers')
+    if (!recordId) { alert('[VDBAS-VAL-0002] Vui lòng lưu hồ sơ trước khi gửi kiểm soát.'); return }
+    submitMut.mutate({ id: recordId, idemKey: newIdempotencyKey() }, { onSuccess: () => navigate('/opex-dossiers') })
   }
 
   const handleCancel = () => {
@@ -423,26 +543,48 @@ const OpexDossierDetailPage: React.FC = () => {
     else navigate('/opex-dossiers')
   }
 
+  // Nút "Phê duyệt" tái dùng: PENDING_CHECKER → kiểm soát (check); CHECKED/APPROVAL_PENDING → phê duyệt (approve).
   const handleApprove = () => {
-    alert(`[VDBAS-EXP-XXXX] Đã phê duyệt hồ sơ ${record?.DOSSIER_CODE ?? ''} (prototype).`)
-    navigate('/opex-dossiers')
+    if (!recordId) return
+    const idemKey = newIdempotencyKey()
+    if (form.STATE_CODE === 'PENDING_CHECKER') {
+      checkMut.mutate({ id: recordId, idemKey }, { onSuccess: () => navigate('/opex-dossiers') })
+    } else {
+      approveMut.mutate({ id: recordId, idemKey }, { onSuccess: () => navigate('/opex-dossiers') })
+    }
   }
 
+  // Nút "Từ chối": Checker (PENDING_CHECKER) → check-reject; Approver (CHECKED/APPROVAL_PENDING) → approve-reject.
   const handleReject = () => {
-    const r = prompt('Nhập lý do từ chối (bắt buộc):')
+    if (!recordId) return
+    const r = prompt('Nhập lý do từ chối (tối thiểu 10 ký tự):')
     if (r === null) return
-    if (!r.trim()) { alert('[VDBAS-VAL-0002] Lý do từ chối là bắt buộc.'); return }
-    alert(`[VDBAS-EXP-XXXX] Đã từ chối hồ sơ. Lý do: ${r}`)
-    navigate('/opex-dossiers')
+    if (r.trim().length < 10) { alert('[VDBAS-VAL-0002] Lý do từ chối tối thiểu 10 ký tự.'); return }
+    const vars = { id: recordId, body: { reason: r.trim() }, idemKey: newIdempotencyKey() }
+    const opts = { onSuccess: () => navigate('/opex-dossiers') }
+    if (form.STATE_CODE === 'PENDING_CHECKER') rejectByCheckerMut.mutate(vars, opts)
+    else rejectByApproverMut.mutate(vars, opts)
   }
 
+  // Nút "Hủy bỏ" tái dùng: PENDING_CHECKER → trả về Maker (check-return); CHECKED/APPROVAL_PENDING → huỷ về Checker (approve-cancel).
   const handleCancelBiz = () => {
-    if (!confirm('Xác nhận HỦY BỎ hồ sơ? Trạng thái chuyển sang "Đã huỷ" (không hoàn tác).')) return
-    alert('[VDBAS-EXP-XXXX] Hồ sơ đã được Hủy bỏ (CANCELLED).')
-    navigate('/opex-dossiers')
+    if (!recordId) return
+    const r = prompt('Nhập lý do (tối thiểu 10 ký tự):')
+    if (r === null) return
+    if (r.trim().length < 10) { alert('[VDBAS-VAL-0002] Lý do tối thiểu 10 ký tự.'); return }
+    const vars = { id: recordId, body: { reason: r.trim() }, idemKey: newIdempotencyKey() }
+    const opts = { onSuccess: () => navigate('/opex-dossiers') }
+    if (form.STATE_CODE === 'PENDING_CHECKER') returnByCheckerMut.mutate(vars, opts)
+    else cancelApprovalMut.mutate(vars, opts)
   }
 
-  const handleCopy = () => alert('[VDBAS-EXP-XXXX] Đã tạo bản sao hồ sơ (prototype) — mở form Tạo mới với dữ liệu sao chép.')
+  const handleCopy = () => {
+    if (!recordId) return
+    copyMut.mutate(
+      { id: recordId, idemKey: newIdempotencyKey() },
+      { onSuccess: (res) => navigate('/opex-dossiers/detail', { id: res.id, mode: 'edit' }) },
+    )
+  }
 
   const handlePrint = () => window.print()
 
@@ -454,9 +596,13 @@ const OpexDossierDetailPage: React.FC = () => {
   }
 
   const handleConfirmDelete = () => {
-    setIsDeleteOpen(false)
-    alert('[VDBAS-EXP-XXXX] Xoá hồ sơ thành công!\nBản ghi ẩn khỏi danh sách nhưng vẫn truy được qua audit.')
-    navigate('/opex-dossiers')
+    if (!recordId) return
+    deleteMut.mutate(
+      { id: recordId, body: { deleteReason, confirmReviewed }, idemKey: newIdempotencyKey() },
+      {
+        onSuccess: () => { setIsDeleteOpen(false); navigate('/opex-dossiers') },
+      },
+    )
   }
 
   // ── Segment LOV ───────────────────────────────────────────────────────────

@@ -11,6 +11,9 @@ import type {
   DataSourceItem,
   DocumentTypeItem,
   AttachmentTypeItem,
+  LovItem,
+  LovListResponse,
+  LovUsersParams,
 } from '@/types/index'
 
 // BE trả body TRẦN cho mọi success (không bọc { success, data }). Lỗi mới có envelope.
@@ -50,3 +53,20 @@ export const lovDocumentTypes = async (): Promise<DocumentTypeItem[]> =>
 // LOV — Loại đính kèm
 export const lovAttachmentTypes = async (): Promise<AttachmentTypeItem[]> =>
   get<AttachmentTypeItem[]>('/lov/attachment-types')
+
+// ── OPEX LOV (envelope contract {items,pagination} → unwrap .items → LovItem[]) ──
+// Contract OPEX trả LovListResponse; chấp nhận cả 2 shape (mảng trần / {items}) cho an toàn.
+const unwrapLov = (res: LovListResponse | LovItem[] | null | undefined): LovItem[] =>
+  Array.isArray(res) ? res : (res?.items ?? [])
+
+// LOV — Loại hồ sơ (CAPEX/OPEX) — MỚI cho OPEX
+export const lovDossierTypes = async (search?: string): Promise<LovItem[]> =>
+  unwrapLov(await get<LovListResponse>('/lov/dossier-types', { params: { search } }))
+
+// LOV.01 — Loại tiền (VND/USD) — MỚI cho OPEX
+export const lovCurrencies = async (search?: string): Promise<LovItem[]> =>
+  unwrapLov(await get<LovListResponse>('/lov/currencies', { params: { search } }))
+
+// LOV — Người dùng (Maker/Checker/Approver) — MỚI cho OPEX
+export const lovUsers = async (params: LovUsersParams = {}): Promise<LovItem[]> =>
+  unwrapLov(await get<LovListResponse>('/lov/users', { params }))

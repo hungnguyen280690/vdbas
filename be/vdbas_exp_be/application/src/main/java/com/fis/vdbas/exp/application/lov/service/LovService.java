@@ -1,8 +1,10 @@
 package com.fis.vdbas.exp.application.lov.service;
 
 import com.fis.vdbas.exp.application.lov.dto.AttachmentTypeItem;
+import com.fis.vdbas.exp.application.lov.dto.CurrencyItem;
 import com.fis.vdbas.exp.application.lov.dto.DataSourceItem;
 import com.fis.vdbas.exp.application.lov.dto.DocumentTypeItem;
+import com.fis.vdbas.exp.application.lov.dto.DossierTypeItem;
 import com.fis.vdbas.exp.application.lov.dto.OrganizationLovItem;
 import com.fis.vdbas.exp.application.lov.dto.ProjectLovItem;
 import com.fis.vdbas.exp.application.lov.dto.ProjectSpecificLovItem;
@@ -14,6 +16,7 @@ import com.fis.vdbas.exp.domain.lov.CommonTreasuryRepository;
 import com.fis.vdbas.exp.domain.lov.ExpAttachmentTypeRepository;
 import com.fis.vdbas.exp.domain.lov.ExpDataSourceRepository;
 import com.fis.vdbas.exp.domain.lov.ExpDocumentTypeRepository;
+import com.fis.vdbas.exp.domain.lov.ExpDossierTypeRepository;
 import com.fis.vdbas.exp.domain.lov.ExpProject;
 import com.fis.vdbas.exp.domain.lov.ExpProjectRepository;
 import com.fis.vdbas.exp.domain.lov.ExpProjectSpecificRepository;
@@ -27,6 +30,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Service tra cứu danh mục (LOV). Kết quả cache trong {@link CacheConstants#LOV_CACHE}.
@@ -46,6 +50,7 @@ public class LovService {
     private final ExpDataSourceRepository dataSourceRepository;
     private final ExpDocumentTypeRepository documentTypeRepository;
     private final ExpAttachmentTypeRepository attachmentTypeRepository;
+    private final ExpDossierTypeRepository dossierTypeRepository;
     private final LovMapper mapper;
 
     public List<ProjectLovItem> projects(String projectCode, String projectName, String projectTypeCode) {
@@ -97,5 +102,28 @@ public class LovService {
     @Cacheable(value = CacheConstants.LOV_CACHE, key = "'attachment_types'")
     public List<AttachmentTypeItem> attachmentTypes() {
         return mapper.toAttachmentTypeItemList(attachmentTypeRepository.findAll());
+    }
+
+    /** GAP-11: LOV loại hồ sơ (CAPEX/OPEX) — đọc EXP_DOSSIER_TYPE. */
+    @Cacheable(value = CacheConstants.LOV_CACHE, key = "'dossier_types'")
+    public List<DossierTypeItem> dossierTypes() {
+        return mapper.toDossierTypeItemList(dossierTypeRepository.findByStatus(ACTIVE));
+    }
+
+    /**
+     * GAP-08/11: LOV loại tiền — trả tĩnh VND/USD theo SRS (LOV.01); không persist trong DDL.
+     * Lọc theo {@code search} (code/name) nếu có.
+     */
+    public List<CurrencyItem> currencies(String search) {
+        List<CurrencyItem> all = List.of(
+                new CurrencyItem("VND", "Việt Nam Đồng"),
+                new CurrencyItem("USD", "Đô la Mỹ"));
+        if (search == null || search.isBlank()) {
+            return all;
+        }
+        String s = search.toLowerCase();
+        return all.stream()
+                .filter(c -> c.getCode().toLowerCase().contains(s) || c.getName().toLowerCase().contains(s))
+                .collect(Collectors.toList());
     }
 }

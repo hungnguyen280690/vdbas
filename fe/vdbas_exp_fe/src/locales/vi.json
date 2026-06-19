@@ -103,7 +103,39 @@
     "vdbas-val-0014": "Dung lượng file vượt quá 10MB",
     "vdbas-val-0015": "Định dạng file không được hỗ trợ",
     "vdbas-aut-0001": "Bạn không có quyền thực hiện thao tác này",
-    "vdbas-aut-0002": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại"
+    "vdbas-aut-0002": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại",
+    "msg-err-required": "Vui lòng nhập đầy đủ thông tin bắt buộc",
+    "msg-err-format": "Định dạng dữ liệu không hợp lệ",
+    "msg-err-lookup": "Giá trị tra cứu không hợp lệ",
+    "msg-err-session": "Phiên đăng nhập đã hết hạn, vui lòng đăng nhập lại",
+    "msg-err-permission": "Bạn không có quyền thực hiện thao tác này",
+    "msg-err-maker": "Chỉ Người lập gốc mới được phép Sửa/Xoá",
+    "msg-err-lock": "Bản ghi đã bị thay đổi từ phiên khác. Vui lòng tải lại trước khi tiếp tục",
+    "msg-err-status": "Hồ sơ đang ở trạng thái không cho phép thao tác này",
+    "msg-err-amount-mismatch": "Tổng số tiền dòng chứng từ không khớp với tổng hồ sơ",
+    "msg-err-file": "File vượt quá 10MB hoặc định dạng không được hỗ trợ (pdf/jpg/png/docx)"
+  },
+  "opexDossier": {
+    "ok": {
+      "save": "Lưu hồ sơ thành công",
+      "submit": "Đã gửi hồ sơ để kiểm soát",
+      "delete": "Xoá hồ sơ thành công",
+      "check": "Đã kiểm soát hồ sơ",
+      "approve": "Phê duyệt hồ sơ thành công",
+      "return": "Đã trả hồ sơ về người lập",
+      "cancel": "Đã huỷ phê duyệt, trả về kiểm soát"
+    },
+    "info": {
+      "checkReject": "Đã từ chối kiểm soát, thông báo đến người lập",
+      "approvalReject": "Đã từ chối phê duyệt, thông báo đến người kiểm soát"
+    },
+    "error": {
+      "required": "Vui lòng nhập đầy đủ thông tin bắt buộc",
+      "amountMismatch": "Tổng số tiền dòng chứng từ không khớp với tổng hồ sơ",
+      "file": "File vượt quá 10MB hoặc định dạng không hợp lệ",
+      "deleteReason": "Lý do xoá phải có tối thiểu 10 ký tự",
+      "noDocument": "Cần có ít nhất 1 chứng từ trước khi gửi kiểm soát"
+    }
   },
   "api_error": {
     "400": "Dữ liệu không hợp lệ (400)",
