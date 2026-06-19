@@ -70,7 +70,7 @@ interface CommittedFilters {
 
 const PAGE_SIZE = 20 // contract: pageSize ∈ [20,50,100,200]
 const COL_STORAGE_KEY = 'CHI_CAPEX_DOSSIER_COL_CONFIG'
-const COL_VERSION = 'v1'
+const COL_VERSION = 'v2'
 const FILTER_STATE_KEY = 'CHI_CAPEX_DOSSIER_FILTER_STATE'
 
 // nhãn TV (UI) → code enum contract
@@ -93,7 +93,7 @@ const DEFAULT_COLUMNS: ColConfig[] = [
   { key: 'PROJECT_NAME',       label: 'Dự án/Công trình', width: 220, sortable: true,  hideable: true,  visible: true },
   { key: 'DOCUMENT_COUNT',     label: 'Số CT',            width: 70,  sortable: true,  hideable: true,  visible: true },
   { key: 'TOTAL_LOCAL_AMOUNT', label: 'Tổng tiền VND',    width: 150, sortable: true,  hideable: true,  visible: true },
-  { key: 'ACTIONS',            label: 'Thao tác',         width: 200, sortable: false, hideable: false, frozen: true, visible: true },
+  { key: 'ACTIONS',            label: 'Thao tác',         width: 390, sortable: false, hideable: false, frozen: true, visible: true },
 ]
 
 // Cột grid (UPPER_SNAKE) → sortBy enum contract
@@ -1095,7 +1095,7 @@ const CapexDossierListPage: React.FC = () => {
             {/* Table */}
             {viewMode === 'table' && !isLoading && (
               <div style={{ overflowX: 'auto' }} id="table-wrap">
-                <table id="data-table">
+                <table id="data-table" style={{ minWidth: colConfig.filter(c => c.visible).reduce((s, c) => s + c.width, 0) }}>
                   <thead id="data-thead">{renderTableHeader()}</thead>
                   <tbody id="table-body">
                     {pageData.rows.map((r, idx) => (

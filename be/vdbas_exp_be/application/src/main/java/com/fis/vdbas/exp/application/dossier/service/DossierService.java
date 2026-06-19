@@ -15,7 +15,9 @@ import com.fis.vdbas.exp.application.dossier.mapper.DocumentMapper;
 import com.fis.vdbas.exp.application.dossier.mapper.DossierMapper;
 import com.fis.vdbas.exp.common.CacheConstants;
 import com.fis.vdbas.exp.common.Constants;
+import com.fis.vdbas.exp.common.enums.ActionRole;
 import com.fis.vdbas.exp.common.enums.DossierStatus;
+import com.fis.vdbas.exp.domain.dossier.ExpApprovalLog;
 import com.fis.vdbas.exp.domain.dossier.ExpDocument;
 import com.fis.vdbas.exp.domain.dossier.ExpDocumentRepository;
 import com.fis.vdbas.exp.domain.dossier.ExpDossier;
@@ -25,7 +27,11 @@ import com.fis.vdbas.exp.domain.lov.CommonTreasuryRepository;
 import com.fis.vdbas.exp.domain.lov.ExpProjectRepository;
 import com.fis.vdbas.exp.domain.lov.ExpProjectSpecificRepository;
 import jakarta.persistence.OptimisticLockException;
+import jakarta.persistence.criteria.CriteriaBuilder;
+import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.Predicate;
+import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.Subquery;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -36,6 +42,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -303,17 +310,87 @@ public class DossierService {
             if (c.getDataSourceCode() != null && !c.getDataSourceCode().isEmpty()) {
                 predicates.add(root.get("dataSourceCode").in(c.getDataSourceCode()));
             }
-            // Lọc khoảng ngày theo SEND_DATE.
-            // TODO: dateField=CHECKED_DATE/APPROVED_DATE chưa có cột trực tiếp trên EXP_DOSSIER;
-            //       CREATED_DATE map sang createdAt cần xử lý riêng (LocalDateTime).
-            if (c.getFromDate() != null) {
-                predicates.add(cb.greaterThanOrEqualTo(root.<java.time.LocalDate>get("sendDate"), c.getFromDate()));
-            }
-            if (c.getToDate() != null) {
-                predicates.add(cb.lessThanOrEqualTo(root.<java.time.LocalDate>get("sendDate"), c.getToDate()));
-            }
+            // Lọc khoảng ngày theo loại ngày người dùng chọn (dateField).
+            applyDateRangeFilter(c, root, query, cb, predicates);
             // TODO (out-of-scope): giới hạn theo TREASURY_CODE từ JWT claim
             return cb.and(predicates.toArray(new Predicate[0]));
         };
+    }
+
+    /**
+     * Lọc khoảng ngày [fromDate, toDate] theo loại ngày {@code dateField}:
+     * <ul>
+     *   <li>{@code SEND_DATE} (mặc định) → cột {@code SEND_DATE} (LocalDate) trên EXP_DOSSIER.</li>
+     *   <li>{@code CREATED_DATE} → cột {@code CREATED_DATE} (LocalDateTime) trên EXP_DOSSIER.</li>
+     *   <li>{@code CHECKED_DATE} → ACTION_DATE của bước CHECKER trong EXP_APPROVAL_LOG.</li>
+     *   <li>{@code APPROVED_DATE} → ACTION_DATE của bước APPROVER trong EXP_APPROVAL_LOG.</li>
+     * </ul>
+     */
+    private void applyDateRangeFilter(DossierSearchDto c,
+                                      Root<ExpDossier> root,
+                                      CriteriaQuery<?> query,
+                                      CriteriaBuilder cb,
+                                      List<Predicate> predicates) {
+        LocalDate fromDate = c.getFromDate();
+        LocalDate toDate = c.getToDate();
+        if (fromDate == null && toDate == null) {
+            return;
+        }
+        String dateField = (c.getDateField() == null || c.getDateField().isBlank())
+                ? "SEND_DATE" : c.getDateField().trim().toUpperCase();
+        switch (dateField) {
+            case "CREATED_DATE" -> {
+                // LocalDateTime → so khớp trọn ngày: [from 00:00, (to+1) 00:00).
+                if (fromDate != null) {
+                    predicates.add(cb.greaterThanOrEqualTo(
+                            root.<LocalDateTime>get("createdDate"), fromDate.atStartOfDay()));
+                }
+                if (toDate != null) {
+                    predicates.add(cb.lessThan(
+                            root.<LocalDateTime>get("createdDate"), toDate.plusDays(1).atStartOfDay()));
+                }
+            }
+            case "CHECKED_DATE" -> predicates.add(
+                    approvalDateInRange(root, query, cb, ActionRole.CHECKER, fromDate, toDate));
+            case "APPROVED_DATE" -> predicates.add(
+                    approvalDateInRange(root, query, cb, ActionRole.APPROVER, fromDate, toDate));
+            default -> {
+                // SEND_DATE (LocalDate).
+                if (fromDate != null) {
+                    predicates.add(cb.greaterThanOrEqualTo(root.<LocalDate>get("sendDate"), fromDate));
+                }
+                if (toDate != null) {
+                    predicates.add(cb.lessThanOrEqualTo(root.<LocalDate>get("sendDate"), toDate));
+                }
+            }
+        }
+    }
+
+    /**
+     * EXISTS một bước phê duyệt của {@code role} trên hồ sơ có {@code ACTION_DATE}
+     * rơi vào khoảng [fromDate, toDate] (so khớp trọn ngày).
+     */
+    private Predicate approvalDateInRange(Root<ExpDossier> root,
+                                          CriteriaQuery<?> query,
+                                          CriteriaBuilder cb,
+                                          ActionRole role,
+                                          LocalDate fromDate,
+                                          LocalDate toDate) {
+        Subquery<UUID> sub = query.subquery(UUID.class);
+        Root<ExpApprovalLog> logRoot = sub.from(ExpApprovalLog.class);
+        sub.select(logRoot.get("dossierId"));
+        List<Predicate> subPredicates = new ArrayList<>();
+        subPredicates.add(cb.equal(logRoot.get("dossierId"), root.get("id")));
+        subPredicates.add(cb.equal(logRoot.get("actionRole"), role));
+        if (fromDate != null) {
+            subPredicates.add(cb.greaterThanOrEqualTo(
+                    logRoot.<LocalDateTime>get("actionDate"), fromDate.atStartOfDay()));
+        }
+        if (toDate != null) {
+            subPredicates.add(cb.lessThan(
+                    logRoot.<LocalDateTime>get("actionDate"), toDate.plusDays(1).atStartOfDay()));
+        }
+        sub.where(subPredicates.toArray(new Predicate[0]));
+        return cb.exists(sub);
     }
 }

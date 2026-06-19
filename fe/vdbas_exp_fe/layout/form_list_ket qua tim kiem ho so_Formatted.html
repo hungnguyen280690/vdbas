@@ -1,0 +1,1114 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EXP.CAPEX_DOSSIER — Danh sách hồ sơ Chi đầu tư</title>
+<style>
+  :root {
+    --primary: #195295;
+    --primary-hover: #1565c0;
+    --danger: #FF4D4F;
+    --border: #d9d9d9;
+    --bg: #f5f7fa;
+    --white: #fff;
+    --text-dark: #262626;
+    --text-muted: #8c8c8c;
+    --disabled-bg: #f5f5f5;
+    --font: 'Segoe UI', Arial, sans-serif;
+    --radius: 6px;
+    --shadow: 0 2px 8px rgba(0,0,0,0.08);
+    --error-color: #cf1322;
+    --error-border: #ffa39e;
+    --error-bg: #fff2f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: var(--font); background: var(--bg); color: var(--text-dark); font-size: 13px; }
+
+  /* Header */
+  .app-header {
+    background: var(--primary); color: #fff;
+    padding: 10px 20px;
+    display: flex; align-items: center; justify-content: space-between; gap: 16px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+  }
+  .app-header-left { display: flex; flex-direction: column; }
+  .breadcrumb { font-size: 11px; opacity: 0.75; }
+  .app-header h1 { font-size: 15px; font-weight: 600; }
+  .app-header-actions { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+
+  /* Header buttons — override base .btn for dark background context */
+  .btn-header-default {
+    background: rgba(255,255,255,0.15);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.4);
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 6px 14px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    transition: background 0.15s; white-space: nowrap; text-decoration: none;
+  }
+  .btn-header-default:hover { background: rgba(255,255,255,0.28); }
+  .btn-header-primary {
+    background: #fff;
+    color: var(--primary);
+    border: none;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 16px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 700; cursor: pointer;
+    transition: opacity 0.15s; white-space: nowrap; text-decoration: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.18);
+  }
+  .btn-header-primary:hover { opacity: 0.92; }
+
+  html, body { height: 100%; width: 100%; overflow-x: hidden; }
+  .main { padding: 16px 20px; width: 100%; }
+
+  /* Card */
+  .card { background: var(--white); border-radius: var(--radius); box-shadow: var(--shadow); margin-bottom: 16px; }
+  .card-header {
+    padding: 11px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-title { font-weight: 700; font-size: 13px; color: var(--primary); display: flex; align-items: center; gap: 6px; }
+  .card-body { padding: 16px 20px; }
+
+  /* Required star */
+  .req { color: var(--danger); font-weight: 700; }
+
+  /* Filter grid — 4 columns */
+  .filter-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px 16px;
+    align-items: start;
+  }
+  .filter-grid .span2 { grid-column: span 2; }
+  .filter-grid .span4 { grid-column: span 4; }
+
+  /* Section divider inside filter */
+  .filter-section-label {
+    grid-column: 1 / -1;
+    font-size: 11px; font-weight: 700; color: var(--primary);
+    text-transform: uppercase; letter-spacing: 0.5px;
+    padding: 8px 0 2px; border-bottom: 1px dashed var(--border); margin-bottom: 4px;
+  }
+
+  /* Form group */
+  .form-group { display: flex; flex-direction: column; gap: 4px; }
+  .form-group label {
+    font-size: 12px; color: var(--text-muted); font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .form-group input, .form-group select {
+    width: 100%; padding: 7px 10px;
+    border: 1px solid var(--border); border-radius: var(--radius);
+    font-size: 13px; color: var(--text-dark); background: var(--white);
+    font-family: var(--font);
+  }
+  .form-group input:focus, .form-group select:focus {
+    outline: none; border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(25,82,149,0.1);
+  }
+  .form-group.required-field input, .form-group.required-field select {
+    border-left: 3px solid var(--primary);
+  }
+  .form-group.has-error input, .form-group.has-error select {
+    border-color: var(--error-border); background: var(--error-bg);
+  }
+  .error-msg { font-size: 11px; color: var(--error-color); display: none; }
+  .form-group.has-error .error-msg { display: block; }
+
+  /* Multi-select status */
+  .multi-select-wrap {
+    position: relative;
+  }
+  .ms-trigger {
+    width: 100%; padding: 7px 10px; border: 1px solid var(--border);
+    border-radius: var(--radius); font-size: 13px; background: var(--white);
+    cursor: pointer; display: flex; align-items: center; justify-content: space-between;
+    user-select: none;
+  }
+  .ms-trigger:hover { border-color: var(--primary); }
+  .ms-trigger.open { border-color: var(--primary); box-shadow: 0 0 0 2px rgba(25,82,149,0.1); }
+  .ms-dropdown {
+    display: none; position: absolute; top: 100%; left: 0; z-index: 50;
+    background: var(--white); border: 1px solid var(--primary);
+    border-radius: var(--radius); box-shadow: 0 4px 12px rgba(0,0,0,0.12);
+    padding: 6px 0;
+    min-width: 100%;          /* ít nhất rộng bằng trigger */
+    width: max-content;       /* tự mở rộng theo nội dung dài nhất */
+  }
+  .ms-dropdown.open { display: block; }
+  .ms-option {
+    display: flex; align-items: center; gap: 8px; padding: 6px 14px;
+    cursor: pointer; font-size: 13px; white-space: nowrap;
+  }
+  .ms-option:hover { background: #f0f4f8; }
+  .ms-option input[type="checkbox"] {
+    cursor: pointer;
+    width: 14px; height: 14px;
+    flex-shrink: 0;
+    accent-color: var(--primary);
+  }
+  .ms-option label { cursor: pointer; display: flex; align-items: center; gap: 6px; }
+  .ms-clear {
+    padding: 5px 12px; font-size: 11px; color: var(--primary);
+    border-top: 1px solid var(--border); cursor: pointer; text-align: right;
+  }
+  .ms-clear:hover { background: #f0f4f8; }
+
+  /* Lookup input */
+  .input-lookup-wrap { position: relative; }
+  .input-lookup-wrap input { padding-right: 28px; }
+  .lookup-icon {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    color: var(--text-muted); cursor: pointer; font-size: 13px;
+  }
+  .lookup-icon:hover { color: var(--primary); }
+
+  /* Filter actions */
+  .filter-actions {
+    display: flex; gap: 8px; justify-content: flex-end;
+    padding-top: 14px; border-top: 1px solid var(--border); margin-top: 14px;
+  }
+
+  /* Collapse toggle */
+  .collapse-toggle {
+    display: flex; align-items: center; gap: 6px;
+    cursor: pointer; font-size: 12px; color: var(--primary); font-weight: 600;
+    user-select: none; padding: 2px 0;
+  }
+  .collapse-icon { font-size: 10px; transition: transform 0.2s; }
+  .collapsed .collapse-icon { transform: rotate(-90deg); }
+  .collapsible-section { overflow: hidden; transition: max-height 0.3s ease; }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 18px; border-radius: var(--radius);
+    font-size: 13px; font-weight: 500; cursor: pointer;
+    border: 1px solid transparent; transition: all 0.2s; white-space: nowrap;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--primary); color: #fff; border-color: var(--primary); }
+  .btn-primary:hover { background: var(--primary-hover); }
+  .btn-default { background: #fff; color: var(--text-dark); border-color: var(--border); }
+  .btn-default:hover { border-color: var(--primary); color: var(--primary); }
+  .btn-danger-ghost { background: transparent; color: var(--danger); border: 1px solid var(--danger); }
+  .btn-ghost { background: transparent; color: var(--primary); border: 1px solid var(--primary); padding: 4px 10px; font-size: 12px; }
+  .btn-ghost:hover { background: rgba(25,82,149,0.06); }
+  .btn-ghost.danger { color: var(--danger); border-color: var(--danger); }
+  .btn-ghost.danger:hover { background: rgba(255,77,79,0.06); }
+  .btn-link { background: none; border: none; color: var(--primary); text-decoration: underline; cursor: pointer; padding: 0; font-size: 13px; }
+
+  /* Stats bar */
+  .stats-bar {
+    display: flex; gap: 12px; flex-wrap: wrap;
+    padding: 10px 16px; background: #f0f4f8;
+    border-radius: var(--radius); margin-bottom: 12px; font-size: 12px;
+  }
+  .stat-item { display: flex; align-items: center; gap: 5px; }
+  .stat-count { font-weight: 700; font-size: 14px; }
+
+  /* Table toolbar */
+  .table-toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
+  }
+  .toolbar-right { display: flex; gap: 8px; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th {
+    background: #f0f4f8; padding: 9px 10px; text-align: left;
+    font-weight: 600; border-bottom: 2px solid var(--border);
+    white-space: nowrap; color: var(--text-dark); user-select: none;
+  }
+  th.sortable { cursor: pointer; }
+  th.sortable:hover { background: #e6ecf2; }
+  th .si { margin-left: 3px; opacity: 0.35; font-size: 10px; }
+  th.asc .si, th.desc .si { opacity: 1; color: var(--primary); }
+  td { padding: 9px 10px; border-bottom: 1px solid #f0f0f0; vertical-align: middle; }
+  tr:hover td { background: #fafcff; cursor: pointer; }
+
+  /* Badge */
+  .badge {
+    display: inline-block; padding: 2px 9px;
+    border-radius: 12px; font-size: 11px; font-weight: 600; white-space: nowrap;
+  }
+  .bd { background: #f5f5f5; color: #595959; border: 1px solid #d9d9d9; }
+  .bs { background: #e6f4ff; color: #0958d9; border: 1px solid #91caff; }
+  .bg { background: #f6ffed; color: #389e0d; border: 1px solid #b7eb8f; }
+  .br { background: #fff2f0; color: #cf1322; border: 1px solid #ffa39e; }
+  .bo { background: #fff7e6; color: #d46b08; border: 1px solid #ffd591; }
+
+  /* Source chip */
+  .src-chip { font-size: 11px; padding: 1px 7px; border-radius: 3px; white-space: nowrap; }
+  .src-m { background: #f9f0ff; color: #531dab; border: 1px solid #d3adf7; }
+  .src-a { background: #e6fffb; color: #006d75; border: 1px solid #87e8de; }
+
+  .amount { text-align: right; font-variant-numeric: tabular-nums; }
+  .text-muted { color: var(--text-muted); }
+  .cell-overflow { max-width: 140px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Pagination */
+  .pagination {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; flex-wrap: wrap; gap: 8px;
+  }
+  .pg-info { font-size: 12px; color: var(--text-muted); }
+  .pg-btns { display: flex; gap: 4px; }
+  .pg-btn {
+    width: 30px; height: 30px; border-radius: var(--radius);
+    border: 1px solid var(--border); background: #fff;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; transition: all 0.15s;
+  }
+  .pg-btn:hover:not(:disabled) { border-color: var(--primary); color: var(--primary); }
+  .pg-btn.active { background: var(--primary); border-color: var(--primary); color: #fff; }
+  .pg-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+  /* Empty state */
+  .empty-state {
+    text-align: center; padding: 48px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state .icon { font-size: 36px; margin-bottom: 8px; }
+  .empty-state p { font-size: 14px; margin-bottom: 4px; }
+  .empty-state small { font-size: 12px; }
+
+  /* Action group */
+  .action-group { display: flex; gap: 3px; }
+
+  /* ── Freeze cột Thao tác (sticky right) ── */
+  th.col-actions {
+    position: sticky; right: 0; z-index: 3;
+    background: #f0f4f8;
+    box-shadow: -3px 0 8px rgba(0,0,0,0.10);
+  }
+  td.col-actions {
+    position: sticky; right: 0; z-index: 1;
+    background: var(--white);
+    box-shadow: -3px 0 8px rgba(0,0,0,0.07);
+  }
+  tr:hover td.col-actions { background: #fafcff; }
+
+  @media (max-width: 1100px) { .filter-grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 768px)  { .filter-grid { grid-template-columns: repeat(2, 1fr); } }
+
+  /* Column resize handle */
+  th { position: relative; }
+  .col-resize-handle {
+    position: absolute; top: 0; right: 0; bottom: 0; width: 6px;
+    cursor: col-resize; z-index: 2;
+    background: transparent;
+  }
+  .col-resize-handle:hover,
+  .col-resize-handle.resizing { background: rgba(25,82,149,0.35); }
+
+  /* Column drag & drop */
+  th.dragging { opacity: 0.45; cursor: grabbing; }
+  th.drag-over-left  { border-left:  3px solid var(--primary); }
+  th.drag-over-right { border-right: 3px solid var(--primary); }
+
+  /* Toast */
+  .col-toast {
+    position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: #262626; color: #fff; padding: 8px 20px;
+    border-radius: 20px; font-size: 13px; z-index: 999;
+    opacity: 0; transition: opacity 0.2s, transform 0.2s; pointer-events: none;
+  }
+  .col-toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  /* Column config dropdown */
+  .col-config-wrap { position: relative; }
+  .col-config-dropdown {
+    display: none; position: absolute; top: calc(100% + 6px); right: 0; z-index: 200;
+    background: #fff; border: 1px solid var(--border); border-radius: var(--radius);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.14); padding: 8px 0;
+    min-width: 200px; max-height: 360px; overflow-y: auto;
+  }
+  .col-config-dropdown.open { display: block; }
+  .col-config-item {
+    display: flex; align-items: center; gap: 8px; padding: 6px 14px;
+    cursor: pointer; font-size: 13px;
+  }
+  .col-config-item:hover { background: #f0f4f8; }
+  .col-config-item input[type="checkbox"] { width: 14px; height: 14px; accent-color: var(--primary); cursor: pointer; flex-shrink: 0; }
+  .col-config-item.disabled { opacity: 0.45; cursor: default; }
+  .col-config-divider { border-top: 1px solid var(--border); margin: 4px 0; }
+</style>
+</head>
+
+<body>
+
+<!-- App header (chuẩn VDBAS) -->
+<div class="app-header">
+  <div class="app-header-left">
+    <div class="breadcrumb">Quản lý chi &rsaquo; Quản lý chi đầu tư</div>
+    <h1>EXP.CAPEX_DOSSIER — Danh sách hồ sơ Chi đầu tư</h1>
+  </div>
+  <div class="app-header-actions">
+    <button class="btn-header-default" onclick="exportData()"
+            data-testid="btn-export" data-event-id="EXP.CAPEX_DOSSIER.LIST.EXPORT">
+      📥 Xuất
+    </button>
+    <a href="../../../../../../../../../../0.%20Common/form_detail_tao%20moi%20ho%20so_Formatted.html?mode=new" class="btn-header-primary"
+       id="btn-create-new" data-testid="btn-create-new" data-event-id="EXP.CAPEX_DOSSIER.NEW.OPEN">
+      + Tạo mới hồ sơ
+    </a>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ═══ FILTER CARD ═══ -->
+  <div class="card">
+    <div class="card-header">
+      <span class="card-title">🔍 Bộ lọc tìm kiếm</span>
+    </div>
+    <div class="card-body">
+
+      <!-- ── NHÓM 1: Điều kiện cơ bản ── -->
+      <div class="filter-grid" id="filter-basic">
+
+        <div class="filter-section-label">Điều kiện chính</div>
+
+        <!-- DATA_SOURCE_CODE — multi-select -->
+        <div class="form-group" id="grp-source" data-field="DATA_SOURCE_CODE" data-spec-ref="B2.row1">
+          <label>Nguồn</label>
+          <div class="multi-select-wrap" id="ms-wrap-source">
+            <div class="ms-trigger" id="ms-trigger-source" onclick="toggleMs('source')" data-testid="filter-source">
+              <span id="ms-label-source" style="color:var(--text-muted); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">-- Tất cả nguồn --</span>
+              <span>▾</span>
+            </div>
+            <div class="ms-dropdown" id="ms-dropdown-source">
+              <div class="ms-option">
+                <input type="checkbox" value="Thủ công" id="ms-src-manual" onchange="onMsChange('source')">
+                <label for="ms-src-manual"><span style="width:8px;height:8px;border-radius:2px;background:#531dab;display:inline-block;flex-shrink:0;"></span> Thủ công</label>
+              </div>
+              <div class="ms-option">
+                <input type="checkbox" value="DVC" id="ms-src-dvc" onchange="onMsChange('source')">
+                <label for="ms-src-dvc"><span style="width:8px;height:8px;border-radius:2px;background:#006d75;display:inline-block;flex-shrink:0;"></span> DVC</label>
+              </div>
+              <div class="ms-actions" style="display:flex; gap:8px; border-top:1px solid var(--border,#eee); margin-top:4px;">
+                <div class="ms-clear" onclick="selectAllMs('source')" data-testid="ms-selectall-source">✓ Chọn tất cả</div>
+                <div class="ms-clear" onclick="clearMs('source')">✕ Bỏ chọn tất cả</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- F_STATUS — multi-select -->
+        <div class="form-group span2" data-field="F_STATUS" data-spec-ref="B2.row5">
+          <label>Trạng thái</label>
+          <div class="multi-select-wrap" id="ms-wrap-status">
+            <div class="ms-trigger" id="ms-trigger-status" onclick="toggleMs('status')" data-testid="filter-status">
+              <span id="ms-label-status" style="color:var(--text-muted);">-- Tất cả trạng thái --</span>
+              <span>▾</span>
+            </div>
+            <div class="ms-dropdown" id="ms-dropdown-status">
+              <div class="ms-option"><input type="checkbox" value="DRAFT" id="ms-DRAFT" onchange="onMsChange('status')"><label for="ms-DRAFT" style="cursor:pointer;font-size:13px;">⚪ Lưu nháp</label></div>
+              <div class="ms-option"><input type="checkbox" value="SAVED" id="ms-SAVED" onchange="onMsChange('status')"><label for="ms-SAVED" style="cursor:pointer;font-size:13px;">💾 Đã lưu</label></div>
+              <div class="ms-option"><input type="checkbox" value="VALIDATED" id="ms-VALIDATED" onchange="onMsChange('status')"><label for="ms-VALIDATED" style="cursor:pointer;font-size:13px;">🔎 Đã kiểm tra</label></div>
+              <div class="ms-option"><input type="checkbox" value="SUBMITTED" id="ms-SUBMITTED" onchange="onMsChange('status')"><label for="ms-SUBMITTED" style="cursor:pointer;font-size:13px;">🔵 Đã gửi kiểm soát</label></div>
+              <div class="ms-option"><input type="checkbox" value="APPROVED" id="ms-APPROVED" onchange="onMsChange('status')"><label for="ms-APPROVED" style="cursor:pointer;font-size:13px;">🟢 Đã phê duyệt / Đã kiểm soát</label></div>
+              <div class="ms-option"><input type="checkbox" value="REJECTED" id="ms-REJECTED" onchange="onMsChange('status')"><label for="ms-REJECTED" style="cursor:pointer;font-size:13px;">🔴 Đã từ chối</label></div>
+              <div class="ms-option"><input type="checkbox" value="COMPLETED" id="ms-COMPLETED" onchange="onMsChange('status')"><label for="ms-COMPLETED" style="cursor:pointer;font-size:13px;">✅ Hoàn thành</label></div>
+              <div class="ms-option"><input type="checkbox" value="CANCELLED" id="ms-CANCELLED" onchange="onMsChange('status')"><label for="ms-CANCELLED" style="cursor:pointer;font-size:13px;">🚫 Đã huỷ</label></div>
+              <div class="ms-actions" style="display:flex; gap:8px; border-top:1px solid var(--border,#eee); margin-top:4px;">
+                <div class="ms-clear" onclick="selectAllMs('status')" data-testid="ms-selectall-status">✓ Chọn tất cả</div>
+                <div class="ms-clear" onclick="clearMs('status')">✕ Bỏ chọn tất cả</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- DOC ID -->
+        <div class="form-group" data-field="DOSSIER_CODE" data-spec-ref="B2.row2">
+          <label>Mã hồ sơ</label>
+          <input type="text" id="filter-doc-id" placeholder="Nhập mã hồ sơ..." data-testid="filter-doc-id" />
+        </div>
+
+        <!-- PROJECT ID -->
+        <div class="form-group" data-field="PROJECT_CODE" data-spec-ref="B2.row3">
+          <label>Mã dự án/CT</label>
+          <input type="text" id="filter-project-id" placeholder="Nhập mã dự án..." data-testid="filter-project-id" />
+        </div>
+
+        <!-- SEARCH -->
+        <div class="form-group span2" data-field="SEARCH">
+          <label>Tìm nhanh (Người lập / Tên dự án)</label>
+          <div class="input-lookup-wrap">
+            <input type="text" id="filter-search" placeholder="Nhập để tìm kiếm..." autocomplete="off" data-testid="search-input" />
+            <span class="lookup-icon" title="Tìm theo Người lập / Tên dự án">🔍</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── NHÓM 2: Điều kiện nâng cao ── -->
+      <div style="margin-top: 14px;">
+        <div class="collapse-toggle" id="adv-toggle" onclick="toggleAdvanced()">
+          <span>▶ Điều kiện nâng cao</span>
+          <span class="collapse-icon" id="adv-icon" style="transform:rotate(-90deg);">▼</span>
+        </div>
+        <div class="collapsible-section" id="adv-section" style="max-height: 0; overflow: hidden; margin-top: 10px;">
+          <div class="filter-grid">
+
+            <!-- DATE_FIELD -->
+            <div class="form-group" data-field="DATE_FIELD" data-spec-ref="B2.row10">
+              <label>Loại ngày lọc</label>
+              <select id="filter-date-field" data-testid="filter-date-field">
+                <option value="SEND_DATE">Ngày gửi</option>
+                <option value="CREATED_DATE">Ngày lập</option>
+                <option value="CHECKED_DATE">Ngày kiểm soát</option>
+                <option value="APPROVED_DATE">Ngày phê duyệt</option>
+              </select>
+            </div>
+
+            <!-- FROM_DATE -->
+            <div class="form-group" id="grp-from-date" data-field="FROM_DATE" data-spec-ref="B2.row11">
+              <label>Từ ngày</label>
+              <input type="date" id="filter-from-date" data-testid="filter-from-date" />
+            </div>
+
+            <!-- TO_DATE -->
+            <div class="form-group" id="grp-to-date" data-field="TO_DATE" data-spec-ref="B2.row12">
+              <label>Đến ngày</label>
+              <input type="date" id="filter-to-date" data-testid="filter-to-date" />
+              <span class="error-msg" id="err-date-range">Đến ngày phải ≥ Từ ngày</span>
+            </div>
+
+            <!-- CREATED_BY -->
+            <div class="form-group" data-field="CREATED_BY" data-spec-ref="B2.row13">
+              <label>Người lập</label>
+              <div class="input-lookup-wrap">
+                <input type="text" id="filter-created-by" placeholder="Username người lập..." data-testid="filter-created-by" />
+                <span class="lookup-icon" title="Tra cứu NSD">🔍</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter actions -->
+      <div class="filter-actions">
+        <button class="btn btn-default" onclick="resetFilter()" data-testid="btn-reset" data-event-id="EXP.CAPEX_DOSSIER.LIST.RESET">↺ Đặt lại</button>
+        <button class="btn btn-primary" onclick="doSearch()" data-testid="btn-search" data-event-id="EXP.CAPEX_DOSSIER.LIST.SEARCH">🔍 Tìm kiếm</button>
+      </div>
+
+    </div><!-- /card-body -->
+  </div><!-- /filter card -->
+
+  <!-- ═══ RESULT CARD ═══ -->
+  <div class="card">
+    <div class="card-body">
+
+      <div class="stats-bar" id="stats-bar" style="display:none;"></div>
+
+      <div class="table-toolbar" id="table-toolbar" style="display:none;">
+        <span class="text-muted" id="result-count"></span>
+        <div style="display:flex; gap:6px; align-items:center;">
+          <div class="col-config-wrap">
+            <button class="btn btn-default" style="padding:5px 12px; font-size:12px;" onclick="toggleColConfig()" data-testid="btn-col-config">⚙ Tùy chỉnh cột</button>
+            <div class="col-config-dropdown" id="col-config-dropdown"></div>
+          </div>
+          <button class="btn btn-default" style="padding:5px 12px; font-size:12px;" onclick="saveColConfig()" data-testid="btn-save-col-config">💾 Lưu cấu hình</button>
+          <button class="btn btn-default" style="padding:5px 12px; font-size:12px;" onclick="resetColConfig()" data-testid="btn-reset-col-config">↺ Mặc định</button>
+        </div>
+      </div>
+
+      <div class="empty-state" id="state-initial">
+        <div class="icon">🔍</div>
+        <p>Nhập điều kiện và ấn <strong>Tìm kiếm</strong> để xem danh sách</p>
+        <small>Bộ lọc đều không bắt buộc — có thể tìm kiếm với toàn bộ hồ sơ</small>
+      </div>
+
+      <div class="empty-state" id="state-no-result" style="display:none;">
+        <div class="icon">📭</div>
+        <p>Không tìm thấy bản ghi phù hợp</p>
+        <small>Thử thay đổi điều kiện tìm kiếm</small>
+      </div>
+
+      <div style="overflow-x:auto;" id="table-wrap">
+        <table id="data-table">
+          <thead id="data-thead"><tr id="col-header-row"></tr></thead>
+          <tbody id="table-body"></tbody>
+        </table>
+      </div>
+
+      <div class="pagination" id="pagination" style="display:none;">
+        <div class="pg-info" id="pg-info"></div>
+        <div class="pg-btns" id="pg-btns"></div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<script type="application/json" id="sample-data">
+{
+  "records": [
+    {"id":"REC-001","DOSSIER_CODE":"HS-CHI-2026-0001","SEND_DATE":"15/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","PROJECT_ITEM_CODE":"HM_7122155_003","PROJECT_ITEM_NAME":"Hạng mục xây lắp","CONTRACT_CODE":"Cont_7122155_004","CONTRACT_NAME":"Hợp đồng thi công xây lắp","F_STATUS":"DRAFT","ASSIGN_USER":"Maker","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"nguyen.van.a","CREATED_DATE":"15/05/2026 09:12:00","UPDATED_BY":"nguyen.van.a","UPDATED_DATE":"15/05/2026 09:12:00","TOTAL_LOCAL_AMOUNT":1500000000,"DOCUMENT_COUNT":2,"documents":[{"DOC_ID":"CT-2026-001","DOC_DATE":"10/05/2026","POSTING_DATE":"15/05/2026","DOC_NAME":"Giấy rút vốn dự án hạng mục A","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":800000000},{"DOC_ID":"CT-2026-002","DOC_DATE":"12/05/2026","POSTING_DATE":"15/05/2026","DOC_NAME":"Giấy đề nghị thanh toán thiết bị y tế","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":700000000}]},
+    {"id":"REC-002","DOSSIER_CODE":"HS-CHI-2026-0002","SEND_DATE":"10/05/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_SPECIFIC_CODE":"001200037","PROJECT_SPECIFIC_NAME":"Dự án TM02","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","PROJECT_ITEM_CODE":"HM_7004686_001","PROJECT_ITEM_NAME":"Hạng mục mua sắm thiết bị","CONTRACT_CODE":"Cont_7004686_002","CONTRACT_NAME":"Hợp đồng cung cấp thiết bị","F_STATUS":"SUBMITTED","ASSIGN_USER":"Checker","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"tran.thi.b","CREATED_DATE":"08/05/2026 14:30:00","UPDATED_BY":"tran.thi.b","UPDATED_DATE":"10/05/2026 11:00:00","TOTAL_LOCAL_AMOUNT":3200000000,"DOCUMENT_COUNT":2,"documents":[{"DOC_ID":"CT-2026-003","DOC_DATE":"08/05/2026","POSTING_DATE":"10/05/2026","DOC_NAME":"Giấy rút vốn dự án TM02","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":1500000000},{"DOC_ID":"CT-2026-004","DOC_DATE":"09/05/2026","POSTING_DATE":"10/05/2026","DOC_NAME":"Giấy đề nghị thanh toán đợt 1","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":1700000000}]},
+    {"id":"REC-003","DOSSIER_CODE":"HS-CHI-2026-0003","SEND_DATE":"05/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","PROJECT_ITEM_CODE":"HM_7122155_003","PROJECT_ITEM_NAME":"Hạng mục xây lắp","CONTRACT_CODE":"Cont_7122155_004","CONTRACT_NAME":"Hợp đồng thi công xây lắp","F_STATUS":"APPROVED","ASSIGN_USER":"Approver","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"le.van.c","CREATED_DATE":"03/05/2026 10:00:00","UPDATED_BY":"nguyen.checker","UPDATED_DATE":"05/05/2026 16:00:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"05/05/2026 16:00:00","TOTAL_LOCAL_AMOUNT":950000000,"DOCUMENT_COUNT":2,"documents":[{"DOC_ID":"CT-2026-005","DOC_DATE":"01/05/2026","POSTING_DATE":"05/05/2026","DOC_NAME":"Giấy rút vốn xây dựng phòng mổ","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":500000000},{"DOC_ID":"CT-2026-006","DOC_DATE":"03/05/2026","POSTING_DATE":"05/05/2026","DOC_NAME":"Giấy đề nghị thanh toán vật tư","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":450000000}]},
+    {"id":"REC-004","DOSSIER_CODE":"HS-CHI-2026-0004","SEND_DATE":"28/04/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_SPECIFIC_CODE":"001200038","PROJECT_SPECIFIC_NAME":"Dự án TM03","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","PROJECT_ITEM_CODE":"HM_7004686_001","PROJECT_ITEM_NAME":"Hạng mục mua sắm thiết bị","CONTRACT_CODE":"Cont_7004686_002","CONTRACT_NAME":"Hợp đồng cung cấp thiết bị","F_STATUS":"APPROVED","ASSIGN_USER":"Done","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"pham.thi.d","CREATED_DATE":"25/04/2026 08:00:00","UPDATED_BY":"tran.approver","UPDATED_DATE":"28/04/2026 14:30:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"27/04/2026 09:00:00","APPROVED_BY":"tran.approver","APPROVED_DATE":"28/04/2026 14:30:00","TOTAL_LOCAL_AMOUNT":5600000000,"DOCUMENT_COUNT":2,"documents":[{"DOC_ID":"CT-2026-007","DOC_DATE":"20/04/2026","POSTING_DATE":"25/04/2026","DOC_NAME":"Giấy rút vốn TM03","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":2600000000},{"DOC_ID":"CT-2026-008","DOC_DATE":"22/04/2026","POSTING_DATE":"25/04/2026","DOC_NAME":"Giấy đề nghị thanh toán TM03","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":3000000000}]},
+    {"id":"REC-005","DOSSIER_CODE":"HS-CHI-2026-0005","SEND_DATE":"20/04/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","PROJECT_ITEM_CODE":"HM_7122155_003","PROJECT_ITEM_NAME":"Hạng mục xây lắp","CONTRACT_CODE":"Cont_7122155_004","CONTRACT_NAME":"Hợp đồng thi công xây lắp","F_STATUS":"REJECTED","ASSIGN_USER":"Maker","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"hoang.van.e","CREATED_DATE":"18/04/2026 11:00:00","UPDATED_BY":"nguyen.checker","UPDATED_DATE":"20/04/2026 15:30:00","CHECKED_BY":"nguyen.checker","CHECK_REJECTION_REASON":"Chứng từ chưa đủ hạng mục theo hợp đồng","TOTAL_LOCAL_AMOUNT":420000000,"DOCUMENT_COUNT":2,"documents":[{"DOC_ID":"CT-2026-009","DOC_DATE":"15/04/2026","POSTING_DATE":"18/04/2026","DOC_NAME":"Giấy rút vốn thiết kế","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":200000000},{"DOC_ID":"CT-2026-010","DOC_DATE":"16/04/2026","POSTING_DATE":"18/04/2026","DOC_NAME":"Giấy đề nghị thanh toán đợt 1","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":220000000}]},
+    {"id":"REC-006","DOSSIER_CODE":"HS-CHI-2026-0006","SEND_DATE":"15/04/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_SPECIFIC_CODE":"001200037","PROJECT_SPECIFIC_NAME":"Dự án TM02","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","PROJECT_ITEM_CODE":"HM_7004686_001","PROJECT_ITEM_NAME":"Hạng mục mua sắm thiết bị","CONTRACT_CODE":"Cont_7004686_002","CONTRACT_NAME":"Hợp đồng cung cấp thiết bị","F_STATUS":"REJECTED","ASSIGN_USER":"Checker","DATA_SOURCE_CODE":"DVC","CREATED_BY":"vu.thi.f","CREATED_DATE":"10/04/2026 09:30:00","UPDATED_BY":"tran.approver","UPDATED_DATE":"15/04/2026 16:00:00","CHECKED_BY":"nguyen.checker","APPROVED_BY":"tran.approver","APPROVAL_REJECTION_REASON":"Vượt hạn mức phân bổ ngân sách quý 2/2026","TOTAL_LOCAL_AMOUNT":8900000000,"DOCUMENT_COUNT":2,"documents":[{"DOC_ID":"CT-2026-011","DOC_DATE":"05/04/2026","POSTING_DATE":"10/04/2026","DOC_NAME":"Giấy rút vốn DVC","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":4000000000},{"DOC_ID":"CT-2026-012","DOC_DATE":"06/04/2026","POSTING_DATE":"10/04/2026","DOC_NAME":"Giấy đề nghị thanh toán DVC","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":4900000000}]},
+    {"id":"REC-007","DOSSIER_CODE":"HS-CHI-2026-0007","SEND_DATE":"28/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","PROJECT_ITEM_CODE":"HM_7122155_003","PROJECT_ITEM_NAME":"Hạng mục xây lắp","CONTRACT_CODE":"Cont_7122155_004","CONTRACT_NAME":"Hợp đồng thi công xây lắp","F_STATUS":"SAVED","ASSIGN_USER":"Maker","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"nguyen.van.a","CREATED_DATE":"28/05/2026 08:00:00","UPDATED_BY":"nguyen.van.a","UPDATED_DATE":"28/05/2026 08:00:00","TOTAL_LOCAL_AMOUNT":0,"DOCUMENT_COUNT":0,"documents":[]},
+    {"id":"REC-008","DOSSIER_CODE":"HS-CHI-2026-0008","SEND_DATE":"12/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","PROJECT_ITEM_CODE":"HM_7122155_003","PROJECT_ITEM_NAME":"Hạng mục xây lắp","CONTRACT_CODE":"Cont_7122155_004","CONTRACT_NAME":"Hợp đồng thi công xây lắp","F_STATUS":"CANCELLED","ASSIGN_USER":"Done","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"le.van.c","CREATED_DATE":"11/05/2026 09:00:00","UPDATED_BY":"le.van.c","UPDATED_DATE":"12/05/2026 10:15:00","TOTAL_LOCAL_AMOUNT":680000000,"DOCUMENT_COUNT":1,"documents":[{"DOC_ID":"CT-2026-013","DOC_DATE":"10/05/2026","POSTING_DATE":"11/05/2026","DOC_NAME":"Giấy rút vốn hạng mục B","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":680000000}],"DELETE_REASON":"Lập trùng hồ sơ, hủy bỏ theo yêu cầu"},
+    {"id":"REC-009","DOSSIER_CODE":"HS-CHI-2026-0009","SEND_DATE":"08/05/2026","PROJECT_CODE":"7004686","PROJECT_NAME":"Các dự án thuộc dự án bộ quốc phòng","PROJECT_TYPE":"Military","PROJECT_SPECIFIC_CODE":"001200037","PROJECT_SPECIFIC_NAME":"Dự án TM02","PROJECT_MANAGEMENT_CODE":"1059227","PROJECT_MANAGEMENT_NAME":"BQL Cục thông tin BQP","PROJECT_ITEM_CODE":"HM_7004686_001","PROJECT_ITEM_NAME":"Hạng mục mua sắm thiết bị","CONTRACT_CODE":"Cont_7004686_002","CONTRACT_NAME":"Hợp đồng cung cấp thiết bị","F_STATUS":"COMPLETED","ASSIGN_USER":"Done","DATA_SOURCE_CODE":"Thủ công","CREATED_BY":"tran.thi.b","CREATED_DATE":"06/05/2026 08:30:00","UPDATED_BY":"tran.approver","UPDATED_DATE":"08/05/2026 14:00:00","CHECKED_BY":"nguyen.checker","CHECKED_DATE":"07/05/2026 09:00:00","APPROVED_BY":"tran.approver","TOTAL_LOCAL_AMOUNT":2100000000,"DOCUMENT_COUNT":1,"documents":[{"DOC_ID":"CT-2026-014","DOC_DATE":"05/05/2026","POSTING_DATE":"06/05/2026","DOC_NAME":"Giấy đề nghị thanh toán TM02 đợt 2","PAYMENT_AMOUNT":null,"VND_PAYMENT_AMOUNT":2100000000}],"APPROVED_DATE":"08/05/2026 15:00:00","ACCOUNTING_STATUS":"GL_POSTED"},
+    {"id":"REC-010","DOSSIER_CODE":"HS-CHI-2026-0010","SEND_DATE":"02/05/2026","PROJECT_CODE":"7122155","PROJECT_NAME":"Dự án nâng cấp bệnh viện Bạch Mai","PROJECT_TYPE":"Citizen","PROJECT_SPECIFIC_CODE":null,"PROJECT_SPECIFIC_NAME":null,"PROJECT_MANAGEMENT_CODE":"3029123","PROJECT_MANAGEMENT_NAME":"BQLDA bệnh viện Bạch Mai","PROJECT_ITEM_CODE":"HM_7122155_003","PROJECT_ITEM_NAME":"Hạng mục xây lắp","CONTRACT_CODE":"Cont_7122155_004","CONTRACT_NAME":"Hợp đồng thi công xây lắp","F_STATUS":"VALIDATED","ASSIGN_USER":"Maker","DATA_SOURCE_CODE":"DVC","CREATED_BY":"hoang.van.e","CREATED_DATE":"01/05/2026 10:00:00","UPDATED_BY":"hoang.van.e","UPDATED_DATE":"02/05/2026 11:00:00","TOTAL_LOCAL_AMOUNT":0,"DOCUMENT_COUNT":0,"documents":[]}
+  ]
+}
+</script>
+
+<script>
+// ─── Data & State ─────────────────────────────────────────────────────────────
+const SAMPLE        = JSON.parse(document.getElementById('sample-data').textContent);
+let allRecords      = [...SAMPLE.records];
+let filteredRecords = [];
+let hasSearched     = false;
+let currentPage     = 1;
+const PAGE_SIZE     = 10;
+let sortField       = 'CREATED_DATE';
+let sortDir         = 'desc';
+
+// ─── Column Management ────────────────────────────────────────────────────────
+const DEFAULT_COLUMNS = [
+  { key:'STT',                        label:'STT',              width:48,  sortable:false, hideable:false },
+  { key:'DOSSIER_CODE',     label:'Mã hồ sơ',         width:150, sortable:true,  hideable:false },
+  { key:'PROJECT_CODE',                 label:'Mã dự án',         width:110, sortable:true,  hideable:true  },
+  { key:'DATA_SOURCE_CODE',                     label:'Nguồn gốc',        width:100, sortable:true,  hideable:true  },
+  { key:'SEND_DATE',                  label:'Ngày gửi',         width:100, sortable:true,  hideable:true  },
+  { key:'F_STATUS', label:'Trạng thái',       width:140, sortable:true,  hideable:true  },
+  { key:'CREATED_BY',                 label:'Người lập',        width:120, sortable:true,  hideable:true  },
+  { key:'CREATED_DATE',               label:'Ngày lập',         width:150, sortable:true,  hideable:true  },
+  { key:'PROJECT_NAME',               label:'Dự án/Công trình', width:220, sortable:true,  hideable:true  },
+  { key:'DOCUMENT_COUNT',             label:'Số CT',            width:70,  sortable:true,  hideable:true  },
+  { key:'TOTAL_LOCAL_AMOUNT',                  label:'Tổng tiền VND',    width:150, sortable:true,  hideable:true  },
+  { key:'ACTIONS',                    label:'Thao tác',         width:200, sortable:false, hideable:false, frozen:true }
+];
+
+const COL_STORAGE_KEY = 'CHI_CAPEX_DOSSIER_COL_CONFIG';
+const COL_VERSION     = 'v1';
+
+function loadColConfig() {
+  try {
+    const saved = localStorage.getItem(COL_STORAGE_KEY);
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (parsed[0] && parsed[0]._version !== COL_VERSION) {
+        localStorage.removeItem(COL_STORAGE_KEY);
+        return DEFAULT_COLUMNS.map(c => ({ ...c, visible: true }));
+      }
+      const realCols = parsed.filter(c => c.key);
+      const keys = realCols.map(c => c.key);
+      const merged = realCols.filter(c => DEFAULT_COLUMNS.find(d => d.key === c.key))
+        .map(c => ({ ...DEFAULT_COLUMNS.find(d => d.key === c.key), ...c }));
+      DEFAULT_COLUMNS.forEach(d => { if (!keys.includes(d.key)) merged.push({ ...d }); });
+      return merged;
+    }
+  } catch(e) {}
+  return DEFAULT_COLUMNS.map(c => ({ ...c, visible: true }));
+}
+let colConfig = loadColConfig().map(c => ({ ...c, visible: c.visible !== false }));
+
+// ─── Status config: 9 trạng thái CHI → 5 lớp badge chuẩn (bd/bs/bg/br/bo) ──────
+// Danh mục trạng thái CHUẨN theo VDBAS_Event_Button_Status_Rule.md mục D.1.1 (CÓ PHÊ DUYỆT)
+const STATUS_DEF = {
+  DRAFT:     { label:'Lưu nháp',         cls:'bd' },
+  SAVED:     { label:'Đã lưu',           cls:'bd' },
+  VALIDATED: { label:'Đã kiểm tra',      cls:'bs' },
+  SUBMITTED: { label:'Đã gửi kiểm soát', cls:'bs' },
+  APPROVED:  { label:'Đã phê duyệt',     cls:'bg' },
+  REJECTED:  { label:'Đã từ chối',       cls:'br' },
+  COMPLETED: { label:'Hoàn thành',       cls:'bg' },
+  CANCELLED: { label:'Đã huỷ',           cls:'bo' }
+};
+// Phân biệt giai đoạn theo ASSIGN_USER: APPROVED+Approver = "Đã kiểm soát" (chờ phê duyệt)
+function uiStatus(r){
+  if (r.F_STATUS==='APPROVED' && r.ASSIGN_USER==='Approver') return { label:'Đã kiểm soát', cls:'bo' };
+  return STATUS_DEF[r.F_STATUS] || { label:r.F_STATUS, cls:'bd' };
+}
+
+// ─── Helpers ──────────────────────────────────────────────────────────────────
+const fmtAmt   = n  => n != null ? n.toLocaleString('vi-VN') : '—';
+const badge    = r => { const s = uiStatus(r); return `<span class="badge ${s.cls}">${s.label}</span>`; };
+const srcTag   = s  => s==='Thủ công'
+  ? `<span class="src-chip src-m">Thủ công</span>`
+  : `<span class="src-chip src-a">${s||'—'}</span>`;
+
+// Ma trận nút theo trạng thái — VDBAS_Event_Button_Status_Rule.md mục C
+const BTN_MATRIX = {
+  DRAFT:     { EDIT:'show', DELETE:'show',    SUBMIT:'show', APPROVE:'hide', REJECT:'hide', COPY:'show' },
+  SAVED:     { EDIT:'show', DELETE:'show',    SUBMIT:'show', APPROVE:'hide', REJECT:'hide', COPY:'show' },
+  VALIDATED: { EDIT:'show', DELETE:'show',    SUBMIT:'show', APPROVE:'hide', REJECT:'hide', COPY:'show' },
+  SUBMITTED: { EDIT:'hide', DELETE:'hide',    SUBMIT:'hide', APPROVE:'show', REJECT:'show', COPY:'hide' },
+  APPROVED:  { EDIT:'hide', DELETE:'hide',    SUBMIT:'hide', APPROVE:'hide', REJECT:'hide', COPY:'show' },
+  REJECTED:  { EDIT:'show', DELETE:'show',    SUBMIT:'show', APPROVE:'hide', REJECT:'hide', COPY:'show' },
+  COMPLETED: { EDIT:'hide', DELETE:'hide',    SUBMIT:'hide', APPROVE:'hide', REJECT:'hide', COPY:'show' },
+  CANCELLED: { EDIT:'hide', DELETE:'disable', SUBMIT:'hide', APPROVE:'hide', REJECT:'hide', COPY:'show' }
+};
+function btnRule(r){
+  if(!r) return BTN_MATRIX.DRAFT;
+  // APPROVED + ASSIGN_USER=Approver = chờ phê duyệt (Approver duyệt/từ chối) → giống SUBMITTED
+  if(r.F_STATUS==='APPROVED' && r.ASSIGN_USER==='Approver') return BTN_MATRIX.SUBMITTED;
+  return BTN_MATRIX[r.F_STATUS] || BTN_MATRIX.DRAFT;
+}
+const canEdit   = r => btnRule(r).EDIT === 'show';
+const canSubmit = r => btnRule(r).SUBMIT === 'show';
+const canDelete = r => btnRule(r).DELETE === 'show';
+
+// ─── Multi-select helpers ─────────────────────────────────────────────────────
+function toggleMs(name) {
+  const dd = document.getElementById(`ms-dropdown-${name}`);
+  const tr = document.getElementById(`ms-trigger-${name}`);
+  dd.classList.toggle('open'); tr.classList.toggle('open');
+}
+const MS_LABELS = {
+  status: { empty: '-- Tất cả trạng thái --', mapFn: v => STATUS_DEF[v]?.label || v },
+  source: { empty: '-- Tất cả nguồn --',       mapFn: v => v }
+};
+function onMsChange(name) {
+  const boxes    = document.querySelectorAll(`#ms-dropdown-${name} input[type="checkbox"]`);
+  const selected = [...boxes].filter(b => b.checked).map(b => b.value);
+  const lbl      = document.getElementById(`ms-label-${name}`);
+  const cfg      = MS_LABELS[name] || { empty: '-- Tất cả --', mapFn: v => v };
+  if (selected.length === 0) { lbl.textContent = cfg.empty; lbl.style.color = 'var(--text-muted)'; }
+  else { lbl.textContent = selected.map(cfg.mapFn).join(', '); lbl.style.color = 'var(--text-dark)'; }
+}
+function clearMs(name) {
+  document.querySelectorAll(`#ms-dropdown-${name} input[type="checkbox"]`).forEach(b => b.checked = false);
+  onMsChange(name);
+}
+function selectAllMs(name) {
+  document.querySelectorAll(`#ms-dropdown-${name} input[type="checkbox"]`).forEach(b => b.checked = true);
+  onMsChange(name);
+}
+function getSelectedStatuses() {
+  return [...document.querySelectorAll('#ms-dropdown-status input[type="checkbox"]:checked')].map(b => b.value);
+}
+function getSelectedSources() {
+  return [...document.querySelectorAll('#ms-dropdown-source input[type="checkbox"]:checked')].map(b => b.value);
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.multi-select-wrap')) {
+    document.querySelectorAll('.ms-dropdown.open').forEach(d => d.classList.remove('open'));
+    document.querySelectorAll('.ms-trigger.open').forEach(t => t.classList.remove('open'));
+  }
+});
+
+// ─── Advanced section toggle ──────────────────────────────────────────────────
+let advOpen = false;
+function toggleAdvanced() {
+  const sec = document.getElementById('adv-section');
+  const icon = document.getElementById('adv-icon');
+  const label = document.querySelector('#adv-toggle span');
+  advOpen = !advOpen;
+  sec.style.maxHeight = advOpen ? '600px' : '0';
+  sec.style.overflow = 'hidden';
+  icon.style.transform = advOpen ? '' : 'rotate(-90deg)';
+  label.textContent = (advOpen ? '🔽' : '▶') + ' Điều kiện nâng cao';
+}
+
+// ─── Date parsing ─────────────────────────────────────────────────────────────
+function parseDisplayDate(s) {
+  if (!s) return null;
+  const parts = String(s).split(' ')[0].split('/');
+  if (parts.length < 3) return null;
+  const d = new Date(+parts[2], +parts[1]-1, +parts[0]);
+  return isNaN(d) ? null : d;
+}
+function parseISO(s) {
+  if (!s) return null;
+  const parts = String(s).split('-');
+  if (parts.length < 3) return null;
+  const d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+  return isNaN(d) ? null : d;
+}
+
+// ─── Validate (chỉ kiểm tra khoảng ngày — không trường nào bắt buộc) ───────────
+function validate() {
+  const fd = document.getElementById('filter-from-date').value;
+  const td = document.getElementById('filter-to-date').value;
+  const grpTd = document.getElementById('grp-to-date');
+  const errTd = document.getElementById('err-date-range');
+  if (fd && td && td < fd) { grpTd.classList.add('has-error'); errTd.style.display='block'; return false; }
+  grpTd.classList.remove('has-error'); errTd.style.display='none'; return true;
+}
+
+// ─── SEARCH ───────────────────────────────────────────────────────────────────
+function doSearch() {
+  if (!validate()) return;
+  const src       = getSelectedSources();
+  const statuses  = getSelectedStatuses();
+  const docId     = document.getElementById('filter-doc-id').value.trim().toLowerCase();
+  const projectId = document.getElementById('filter-project-id').value.trim().toLowerCase();
+  const search    = document.getElementById('filter-search').value.trim().toLowerCase();
+  const df        = document.getElementById('filter-date-field').value || 'CREATED_DATE';
+  const fd        = document.getElementById('filter-from-date').value;
+  const td        = document.getElementById('filter-to-date').value;
+  const createdBy = document.getElementById('filter-created-by').value.trim().toLowerCase();
+
+  const from = parseISO(fd);
+  const to   = parseISO(td);
+  if (to) to.setHours(23,59,59,999);
+
+  filteredRecords = allRecords.filter(r => {
+    if (src.length > 0 && !src.includes(r.DATA_SOURCE_CODE)) return false;
+    if (statuses.length && !statuses.includes(r.F_STATUS)) return false;
+    if (docId && !(r.DOSSIER_CODE||'').toLowerCase().includes(docId)) return false;
+    if (projectId && !(r.PROJECT_CODE||'').toLowerCase().includes(projectId)) return false;
+    if (from || to) {
+      const rd = parseDisplayDate(r[df]);
+      if (rd) { if (from && rd < from) return false; if (to && rd > to) return false; }
+    }
+    if (createdBy && !(r.CREATED_BY||'').toLowerCase().includes(createdBy)) return false;
+    if (search) {
+      const hay = [r.CREATED_BY, r.PROJECT_NAME, r.DOSSIER_CODE, r.PROJECT_CODE]
+                  .filter(Boolean).join(' ').toLowerCase();
+      if (!hay.includes(search)) return false;
+    }
+    return true;
+  });
+  hasSearched = true;
+  currentPage = 1;
+  render();
+}
+
+// ─── RESET ────────────────────────────────────────────────────────────────────
+function resetFilter() {
+  clearMs('source'); clearMs('status');
+  ['filter-doc-id','filter-project-id','filter-search','filter-from-date','filter-to-date','filter-created-by']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value=''; });
+  document.getElementById('filter-date-field').value = 'SEND_DATE';
+  document.querySelectorAll('.form-group.has-error').forEach(g => g.classList.remove('has-error'));
+  document.getElementById('err-date-range').style.display='none';
+  hasSearched = false; filteredRecords = [];
+  showState('initial');
+}
+
+// ─── Render Header (Dynamic) ──────────────────────────────────────────────────
+function renderHeader() {
+  const row = document.getElementById('col-header-row');
+  row.innerHTML = colConfig.filter(c => c.visible).map((col, visIdx) => {
+    const frozenCls = col.frozen ? 'col-actions' : '';
+    const sortCls = col.key === sortField ? sortDir : '';
+    const sortClick = col.sortable ? `onclick="sortTable('${col.key}')"` : '';
+    const sortIcon = col.sortable ? `<span class="si">⇅</span>` : '';
+    return `
+      <th data-col-key="${col.key}" data-vis-idx="${visIdx}"
+          class="${col.sortable?'sortable':''} ${frozenCls} ${sortCls}"
+          style="width:${col.width}px; min-width:${col.width}px; max-width:${col.width}px;"
+          ${col.frozen?'':'draggable="true"'} ${sortClick}>
+        ${col.label}${sortIcon}
+        ${col.frozen?'':'<div class="col-resize-handle" data-col-key="'+col.key+'"></div>'}
+      </th>`;
+  }).join('');
+  attachResizeHandlers();
+  attachDnDHandlers();
+}
+
+// ─── Render Cell (Dynamic) ────────────────────────────────────────────────────
+function renderCell(col, r, stt) {
+  switch(col.key) {
+    case 'STT': return `<td class="text-center" style="color:var(--text-muted)">${stt}</td>`;
+    case 'DOSSIER_CODE':
+      return `<td><a class="btn-link" href="form_detail_tao moi ho so_Formatted.html?id=${r.id}&mode=view" onclick="event.stopPropagation()" data-testid="link-${r.id}">${r.DOSSIER_CODE||'—'}</a></td>`;
+    case 'PROJECT_CODE': return `<td>${r.PROJECT_CODE||'—'}</td>`;
+    case 'DATA_SOURCE_CODE': return `<td>${srcTag(r.DATA_SOURCE_CODE)}</td>`;
+    case 'SEND_DATE': return `<td>${r.SEND_DATE||'—'}</td>`;
+    case 'F_STATUS': return `<td>${badge(r)}</td>`;
+    case 'CREATED_BY': return `<td>${r.CREATED_BY||'—'}</td>`;
+    case 'CREATED_DATE': return `<td>${r.CREATED_DATE||'—'}</td>`;
+    case 'PROJECT_NAME': return `<td class="cell-overflow" title="${r.PROJECT_NAME||''}">${r.PROJECT_NAME||'—'}</td>`;
+    case 'DOCUMENT_COUNT': return `<td style="text-align:center">${r.DOCUMENT_COUNT!=null?r.DOCUMENT_COUNT:'—'}</td>`;
+    case 'TOTAL_LOCAL_AMOUNT': return `<td class="amount"><strong>${fmtAmt(r.TOTAL_LOCAL_AMOUNT)}</strong></td>`;
+    case 'ACTIONS': {
+      const rule = btnRule(r);
+      const base = `form_detail_tao moi ho so_Formatted.html?id=${r.id}`;
+      const lnk = (state, href, label, ev, danger) => {
+        if (state === 'hide') return '';
+        const cls = 'btn btn-ghost' + (danger ? ' danger' : '');
+        return state === 'disable'
+          ? `<button class="${cls}" disabled data-event-id="${ev}">${label}</button>`
+          : `<a href="${href}" class="${cls}" data-event-id="${ev}">${label}</a>`;
+      };
+      const btn = (state, onclick, label, ev) => {
+        if (state === 'hide') return '';
+        return `<button class="btn btn-ghost" ${state === 'disable' ? 'disabled' : ''} onclick="${onclick}" data-event-id="${ev}">${label}</button>`;
+      };
+      return `<td class="col-actions" onclick="event.stopPropagation()"><div class="action-group">
+        <a href="${base}&mode=view" class="btn btn-ghost" data-event-id="EXP.CAPEX_DOSSIER.VIEW.OPEN">👁 Xem</a>
+        ${lnk(rule.EDIT, base + '&mode=edit', '✏️ Sửa', 'EXP.CAPEX_DOSSIER.EDIT.OPEN')}
+        ${btn(rule.SUBMIT, `confirmSubmit('${r.id}')`, '📤 Gửi PD', 'EXP.CAPEX_DOSSIER.NEW.SUBMIT')}
+        ${lnk(rule.APPROVE, base + '&mode=view', '✅ Duyệt', 'EXP.CAPEX_DOSSIER.APPROVE')}
+        ${lnk(rule.REJECT, base + '&mode=view', '✖ Từ chối', 'EXP.CAPEX_DOSSIER.REJECT')}
+        ${btn(rule.COPY, `copyRecord('${r.id}')`, '📋 Copy', 'EXP.CAPEX_DOSSIER.NEW.COPY')}
+        ${lnk(rule.DELETE, base + '&mode=view#delete', '🗑 Xoá', 'EXP.CAPEX_DOSSIER.DELETE.OPEN', true)}
+      </div></td>`;
+    }
+    default: return `<td>—</td>`;
+  }
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function render() {
+  if (!hasSearched) { showState('initial'); return; }
+  if (filteredRecords.length === 0) { showState('no-result'); return; }
+  showState('table');
+  const sorted = [...filteredRecords].sort((a, b) => {
+    const va = a[sortField] ?? ''; const vb = b[sortField] ?? '';
+    return sortDir === 'asc' ? (va < vb ? -1 : va > vb ? 1 : 0) : (va > vb ? -1 : va < vb ? 1 : 0);
+  });
+  const start = (currentPage - 1) * PAGE_SIZE;
+  const pageData = sorted.slice(start, start + PAGE_SIZE);
+  document.getElementById('table-body').innerHTML = pageData.map((r, idx) => `
+    <tr onclick="openRecord('${r.id}')" data-id="${r.id}">
+      ${colConfig.filter(c => c.visible).map(col => renderCell(col, r, start + idx + 1)).join('')}
+    </tr>`).join('');
+  document.getElementById('result-count').textContent = `Tổng kết quả: ${filteredRecords.length} bản ghi`;
+  renderStats();
+  renderPagination(filteredRecords.length);
+  renderHeader();
+}
+
+function showState(state) {
+  document.getElementById('state-initial').style.display   = state === 'initial'   ? '' : 'none';
+  document.getElementById('state-no-result').style.display = state === 'no-result' ? '' : 'none';
+  document.getElementById('table-wrap').style.display      = state === 'table'     ? '' : 'none';
+  document.getElementById('stats-bar').style.display       = state === 'table'     ? '' : 'none';
+  document.getElementById('table-toolbar').style.display   = state === 'table' ? 'flex' : 'none';
+  document.getElementById('pagination').style.display      = state === 'table'     ? '' : 'none';
+}
+
+// ─── Stats ─────────────────────────────────────────────────────────────────────
+function renderStats() {
+  const groups = {};
+  filteredRecords.forEach(r => { const u = uiStatus(r); (groups[u.label] = groups[u.label] || {c:0, cls:u.cls}).c++; });
+  const totalVnd = filteredRecords.reduce((s, r) => s + (r.TOTAL_LOCAL_AMOUNT||0), 0);
+  let html = `<div class="stat-item"><span>Tổng hồ sơ:</span><span class="stat-count">${filteredRecords.length}</span></div>`;
+  Object.entries(groups).forEach(([label, g]) => {
+    html += `<div class="stat-item"><span class="badge ${g.cls}">${label}</span><span class="stat-count">${g.c}</span></div>`;
+  });
+  html += `<div class="stat-item" style="margin-left:auto;"><span>Tổng tiền VND:</span><span class="stat-count" style="color:var(--primary)">${fmtAmt(totalVnd)}</span></div>`;
+  document.getElementById('stats-bar').innerHTML = html;
+}
+
+// ─── Pagination ───────────────────────────────────────────────────────────────
+function renderPagination(total) {
+  const totalPages = Math.max(1, Math.ceil(total / PAGE_SIZE));
+  const s = (currentPage - 1) * PAGE_SIZE + 1;
+  const e = Math.min(currentPage * PAGE_SIZE, total);
+  document.getElementById('pg-info').textContent = `Hiển thị ${s}–${e} / ${total} bản ghi`;
+  let html = `<button class="pg-btn" onclick="goPage(${currentPage-1})" ${currentPage===1?'disabled':''}>‹</button>`;
+  for (let i=1; i<=totalPages; i++) {
+    if (i===1||i===totalPages||Math.abs(i-currentPage)<=2) {
+      html += `<button class="pg-btn ${i===currentPage?'active':''}" onclick="goPage(${i})">${i}</button>`;
+    } else if (Math.abs(i-currentPage)===3) {
+      html += `<span style="padding:0 4px;color:var(--text-muted)">…</span>`;
+    }
+  }
+  html += `<button class="pg-btn" onclick="goPage(${currentPage+1})" ${currentPage===totalPages?'disabled':''}>›</button>`;
+  document.getElementById('pg-btns').innerHTML = html;
+}
+function goPage(p) {
+  const total = Math.ceil(filteredRecords.length / PAGE_SIZE);
+  if (p<1||p>total) return;
+  currentPage = p; render();
+}
+
+// ─── Sort ─────────────────────────────────────────────────────────────────────
+function sortTable(field) {
+  if (sortField===field) sortDir = sortDir==='asc'?'desc':'asc';
+  else { sortField=field; sortDir='asc'; }
+  render();
+}
+
+// ─── Column Resize ─────────────────────────────────────────────────────────────
+let resizingCol = null, resizeStartX = 0, resizeStartW = 0;
+function attachResizeHandlers() {
+  document.querySelectorAll('.col-resize-handle').forEach(handle => {
+    handle.addEventListener('mousedown', e => {
+      e.preventDefault(); e.stopPropagation();
+      const key = handle.dataset.colKey;
+      resizingCol = colConfig.find(c => c.key === key);
+      const th = handle.closest('th');
+      resizeStartX = e.clientX; resizeStartW = th.offsetWidth;
+      handle.classList.add('resizing');
+      document.body.style.cursor = 'col-resize'; document.body.style.userSelect = 'none';
+    });
+  });
+}
+document.addEventListener('mousemove', e => {
+  if (!resizingCol) return;
+  const delta = e.clientX - resizeStartX;
+  resizingCol.width = Math.max(60, resizeStartW + delta);
+  const th = document.querySelector(`th[data-col-key="${resizingCol.key}"]`);
+  if (th) { th.style.width = resizingCol.width + 'px'; th.style.minWidth = resizingCol.width + 'px'; }
+});
+document.addEventListener('mouseup', () => {
+  if (!resizingCol) return;
+  document.querySelectorAll('.col-resize-handle.resizing').forEach(h => h.classList.remove('resizing'));
+  document.body.style.cursor = ''; document.body.style.userSelect = ''; resizingCol = null;
+});
+
+// ─── Drag & Drop column reorder ───────────────────────────────────────────────
+let draggedColKey = null;
+function attachDnDHandlers() {
+  document.querySelectorAll('th[draggable="true"]').forEach(th => {
+    th.addEventListener('dragstart', e => {
+      draggedColKey = th.dataset.colKey; th.classList.add('dragging');
+      e.dataTransfer.effectAllowed = 'move'; e.dataTransfer.setData('text/plain', draggedColKey);
+    });
+    th.addEventListener('dragend', () => {
+      th.classList.remove('dragging');
+      document.querySelectorAll('th.drag-over-left, th.drag-over-right').forEach(h => h.classList.remove('drag-over-left','drag-over-right'));
+      draggedColKey = null;
+    });
+    th.addEventListener('dragover', e => {
+      e.preventDefault(); e.stopPropagation();
+      if (!draggedColKey || th.dataset.colKey === draggedColKey) return;
+      document.querySelectorAll('th.drag-over-left, th.drag-over-right').forEach(h => h.classList.remove('drag-over-left','drag-over-right'));
+      const rect = th.getBoundingClientRect(); const mid = rect.left + rect.width / 2;
+      th.classList.add(e.clientX < mid ? 'drag-over-left' : 'drag-over-right');
+    });
+    th.addEventListener('dragleave', () => th.classList.remove('drag-over-left','drag-over-right'));
+    th.addEventListener('drop', e => {
+      e.preventDefault();
+      const fromKey = e.dataTransfer.getData('text/plain'); const toKey = th.dataset.colKey;
+      if (fromKey === toKey) return;
+      const rect = th.getBoundingClientRect(); const mid = rect.left + rect.width / 2;
+      const insertBefore = e.clientX < mid;
+      const fromIdx = colConfig.findIndex(c => c.key === fromKey);
+      const [moved] = colConfig.splice(fromIdx, 1);
+      const newToIdx = colConfig.findIndex(c => c.key === toKey);
+      colConfig.splice(insertBefore ? newToIdx : newToIdx + 1, 0, moved);
+      render();
+    });
+  });
+}
+
+// ─── Save / Reset / Column config panel ───────────────────────────────────────
+function saveColConfig() {
+  const payload = [{ _version: COL_VERSION }, ...colConfig];
+  localStorage.setItem(COL_STORAGE_KEY, JSON.stringify(payload));
+  showToast('✅ Đã lưu cấu hình cột');
+}
+function resetColConfig() {
+  colConfig = DEFAULT_COLUMNS.map(c => ({ ...c, visible: true }));
+  localStorage.removeItem(COL_STORAGE_KEY);
+  render(); showToast('↺ Đã đặt lại về mặc định');
+}
+function showToast(msg) {
+  const t = document.getElementById('col-toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+function toggleColConfig() {
+  const dd = document.getElementById('col-config-dropdown');
+  dd.classList.toggle('open');
+  if (dd.classList.contains('open')) renderColConfigDropdown();
+}
+function renderColConfigDropdown() {
+  const dd = document.getElementById('col-config-dropdown');
+  dd.innerHTML = `
+    <div style="padding:6px 14px 4px; font-size:11px; color:var(--text-muted); font-weight:600; text-transform:uppercase; letter-spacing:0.5px;">Hiện/ẩn cột</div>
+    ${colConfig.map(col => `
+      <div class="col-config-item ${!col.hideable?'disabled':''}"
+           ${col.hideable?`onclick="toggleColVisible('${col.key}')"`:''}
+           title="${!col.hideable?'Cột bắt buộc hiển thị':''}">
+        <input type="checkbox" ${col.visible?'checked':''} ${!col.hideable?'disabled':''}
+               id="chk-col-${col.key}" ${col.hideable?`onchange="toggleColVisible('${col.key}')"`:''}/>
+        <label for="chk-col-${col.key}" style="cursor:${col.hideable?'pointer':'default'}">${col.label}</label>
+      </div>`).join('')}`;
+}
+function toggleColVisible(key) {
+  const col = colConfig.find(c => c.key === key);
+  if (col && col.hideable) { col.visible = !col.visible; renderColConfigDropdown(); render(); }
+}
+document.addEventListener('click', e => {
+  if (!e.target.closest('.col-config-wrap')) {
+    document.getElementById('col-config-dropdown')?.classList.remove('open');
+  }
+});
+
+// ─── Row actions ──────────────────────────────────────────────────────────────
+function openRecord(id) { window.location.href = `form_detail_tao moi ho so_Formatted.html?id=${id}&mode=view`; }
+function confirmSubmit(id) {
+  if (confirm('Xác nhận gửi kiểm soát hồ sơ này?')) {
+    const rec = allRecords.find(r => r.id === id);
+    if (rec) { rec.F_STATUS = 'SUBMITTED'; rec.ASSIGN_USER = 'Checker'; render(); }
+    alert('[VDBAS-CHI-0001] Hồ sơ đã được gửi kiểm soát thành công');
+  }
+}
+function copyRecord(id){ window.location.href = `form_detail_tao moi ho so_Formatted.html?copy=${id}&mode=new`; }
+function exportData() {
+  alert('⚠️ [Prototype] Chức năng Xuất (Excel/PDF/CSV) sẽ được kết nối API backend.\nEvent ID: EXP.CAPEX_DOSSIER.LIST.EXPORT');
+}
+
+// ─── Filter State Persistence (sessionStorage) ────────────────────────────────
+const FILTER_STATE_KEY = 'CHI_CAPEX_DOSSIER_FILTER_STATE';
+function saveFilterState() {
+  if (!hasSearched) return;
+  const state = {
+    source: getSelectedSources(), statuses: getSelectedStatuses(),
+    docId: document.getElementById('filter-doc-id').value,
+    projectId: document.getElementById('filter-project-id').value,
+    search: document.getElementById('filter-search').value,
+    dateField: document.getElementById('filter-date-field').value,
+    fromDate: document.getElementById('filter-from-date').value,
+    toDate: document.getElementById('filter-to-date').value,
+    createdBy: document.getElementById('filter-created-by').value,
+    advOpen, currentPage
+  };
+  sessionStorage.setItem(FILTER_STATE_KEY, JSON.stringify(state));
+}
+function restoreFilterState() {
+  try {
+    const saved = sessionStorage.getItem(FILTER_STATE_KEY);
+    if (!saved) return false;
+    sessionStorage.removeItem(FILTER_STATE_KEY);
+    const s = JSON.parse(saved);
+    if (s.docId) document.getElementById('filter-doc-id').value = s.docId;
+    if (s.projectId) document.getElementById('filter-project-id').value = s.projectId;
+    if (s.search) document.getElementById('filter-search').value = s.search;
+    if (s.dateField) document.getElementById('filter-date-field').value = s.dateField;
+    if (s.fromDate) document.getElementById('filter-from-date').value = s.fromDate;
+    if (s.toDate) document.getElementById('filter-to-date').value = s.toDate;
+    if (s.createdBy) document.getElementById('filter-created-by').value = s.createdBy;
+    if (s.source && s.source.length) { s.source.forEach(v => { const cb = document.querySelector(`#ms-dropdown-source input[value="${v}"]`); if (cb) cb.checked = true; }); onMsChange('source'); }
+    if (s.statuses && s.statuses.length) { s.statuses.forEach(v => { const cb = document.getElementById(`ms-${v}`); if (cb) cb.checked = true; }); onMsChange('status'); }
+    if (s.advOpen && !advOpen) toggleAdvanced();
+    if (s.currentPage && s.currentPage > 1) window._restorePage = s.currentPage;
+    return true;
+  } catch(e) { return false; }
+}
+window.addEventListener('beforeunload', saveFilterState);
+
+// ─── Keyboard ─────────────────────────────────────────────────────────────────
+document.addEventListener('keydown', e => {
+  if (e.ctrlKey && (e.key === 'n' || e.key === 'N')) { e.preventDefault(); window.location.href = 'form_detail_tao moi ho so_Formatted.html?mode=new'; }
+  if (e.key === 'F5') { e.preventDefault(); resetFilter(); }
+});
+
+// ─── Init ─────────────────────────────────────────────────────────────────────
+const _wasRestored = restoreFilterState();
+if (_wasRestored) {
+  doSearch();
+  if (window._restorePage && window._restorePage > 1) {
+    const maxPage = Math.ceil(filteredRecords.length / PAGE_SIZE);
+    currentPage = Math.min(window._restorePage, Math.max(1, maxPage));
+    render(); delete window._restorePage;
+  }
+} else { showState('initial'); }
+</script>
+
+<!-- Toast notification for column config -->
+<div class="col-toast" id="col-toast"></div>
+
+</body>
+</html>

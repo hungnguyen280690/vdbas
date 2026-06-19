@@ -212,6 +212,9 @@ html, body { height: 100%; width: 100%; overflow-x: hidden; }
 
 /* Table */
 table { width: 100%; border-collapse: collapse; font-size: 12px; }
+#data-table { table-layout: fixed; }
+#data-table th { overflow: hidden; text-overflow: ellipsis; }
+#data-table td { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 th {
   background: #f0f4f8; padding: 9px 10px; text-align: left;
   font-weight: 600; border-bottom: 2px solid var(--border);
@@ -271,7 +274,32 @@ tr:hover td { background: #fafcff; cursor: pointer; }
 .empty-state small { font-size: 12px; }
 
 /* Action group */
-.action-group { display: flex; gap: 3px; }
+.action-group { display: flex; gap: 3px; white-space: nowrap; flex-wrap: nowrap; }
+
+/* Không clip cột Thao tác — override #data-table td */
+#data-table td.col-actions { overflow: visible; }
+
+/* Override Ant Design button reset — dùng specificity cao hơn để giữ border */
+.action-group .btn-ghost {
+  background: transparent !important;
+  color: var(--primary) !important;
+  border: 1px solid var(--primary) !important;
+  padding: 4px 10px;
+  font-size: 12px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  white-space: nowrap;
+  text-decoration: none;
+  font-family: var(--font);
+  line-height: 1.4;
+}
+.action-group .btn-ghost:hover { background: rgba(25,82,149,0.08) !important; }
+.action-group .btn-ghost.danger { color: var(--danger) !important; border-color: var(--danger) !important; }
+.action-group .btn-ghost.danger:hover { background: rgba(255,77,79,0.08) !important; }
+.action-group .btn-ghost:disabled { opacity: 0.45; cursor: not-allowed; }
 
 /* ── Freeze cột Thao tác (sticky right) ── */
 th.col-actions {

@@ -82,7 +82,7 @@ ins("COMMON_STATUS", [dict(STATUS_CODE=c, STATUS_NAME=n, SUB_SYSTEM="EXP",
     DESCRIPTION="Trạng thái xử lý hồ sơ Chi đầu tư", STATUS=1, **audit()) for c, n in statuses])
 
 # ───────────────────────── 3. EXP_DATA_SOURCE (LOV.03) ─────────────────────────
-data_sources = [("MANUAL", "Thủ công"), ("DVKB", "DVC"), ("AUTO", "Tự động/Chuyển đổi")]
+data_sources = [("THU_CONG", "Thủ công"), ("DVC", "DVC"), ("AUTO", "Tự động/Chuyển đổi")]
 ins("EXP_DATA_SOURCE", [dict(DATA_SOURCE_CODE=c, DATA_SOURCE_NAME=n,
     DESCRIPTION="Nguồn gốc hồ sơ", STATUS=1, **audit()) for c, n in data_sources])
 
@@ -174,24 +174,24 @@ ins("EXP_PROJECT_SPECIFIC", [dict(PROJECT_SPECIFIC_CODE=c, PROJECT_CODE=p,
 
 # ───────────────────────── 12. EXP_DOSSIER ─────────────────────────
 dossiers_src = [
-    ("T.MX1X2.001.01-260601-0001", "1171277", "01/06/2026", "nguyen.van.an", "0001", "DRAFT",     "7004686", "MANUAL"),
-    ("T.MX2X3.002.01-260530-0002", "1170918", "30/05/2026", "tran.thi.bich", "0003", "DRAFT",     "7122155", "MANUAL"),
-    ("T.MX3X4.003.01-260520-0003", "1059441", "20/05/2026", "le.hong.phuc",  "0011", "SAVED",     "7415099", "MANUAL"),
-    ("T.MX4X5.004.01-260515-0004", "1058252", "15/05/2026", "pham.quoc.hung","0015", "VALIDATED", "7004686", "MANUAL"),
-    ("T.MX1X2.001.01-260510-0005", "1056333", "10/05/2026", "vu.thi.lan",    "0001", "SUBMITTED", "7004686", "MANUAL"),
-    ("T.MX2X3.002.01-260505-0006", "1122826", "05/05/2026", "hoang.minh.duc","0003", "SUBMITTED", "7301045", "MANUAL"),
-    ("T.MX3X4.003.01-260428-0007", "1122899", "28/04/2026", "nguyen.van.an", "0011", "APPROVED",  "7305120", "MANUAL"),
-    ("T.MX4X5.004.01-260425-0008", "1122910", "25/04/2026", "tran.thi.bich", "0015", "APPROVED",  "7506106", "DVKB"),
-    ("T.MX1X2.001.01-260420-0009", "1121333", "20/04/2026", "le.hong.phuc",  "0001", "APPROVED",  "7410088", "MANUAL"),
-    ("T.MX2X3.002.01-260415-0010", "7499089", "15/04/2026", "pham.quoc.hung","0003", "APPROVED",  "7499089", "MANUAL"),
-    ("T.MX3X4.003.01-260410-0011", "1121624", "10/04/2026", "vu.thi.lan",    "0011", "REJECTED",  "7410088", "MANUAL"),
-    ("T.MX4X5.004.01-260405-0012", "1122831", "05/04/2026", "hoang.minh.duc","0015", "REJECTED",  "7415099", "MANUAL"),
-    ("T.MX1X2.001.01-260401-0013", "1121625", "01/04/2026", "nguyen.van.an", "0001", "REJECTED",  "7004686", "MANUAL"),
-    ("T.MX2X3.002.01-260328-0014", "1122834", "28/03/2026", "tran.thi.bich", "0003", "REJECTED",  "7301045", "MANUAL"),
-    ("T.MX3X4.003.01-260325-0015", "1122896", "25/03/2026", "le.hong.phuc",  "0011", "COMPLETED", "7506106", "MANUAL"),
-    ("T.MX4X5.004.01-260320-0016", "7506106", "20/03/2026", "pham.quoc.hung","0015", "COMPLETED", "7506106", "MANUAL"),
-    ("T.MX2X3.002.01-260601-T001", "01701001","01/06/2026", "he.thong.kbnn", "0011", "DRAFT",     "7004686", "DVKB"),
-    ("T.MX3X4.003.01-260528-T002", "1056333", "28/05/2026", "he.thong.kbnn", "0011", "VALIDATED", "7122155", "DVKB"),
+    ("T.MX1X2.001.01-260601-0001", "1171277", "01/06/2026", "nguyen.van.an", "0001", "DRAFT",     "7004686", "THU_CONG"),
+    ("T.MX2X3.002.01-260530-0002", "1170918", "30/05/2026", "tran.thi.bich", "0003", "DRAFT",     "7122155", "THU_CONG"),
+    ("T.MX3X4.003.01-260520-0003", "1059441", "20/05/2026", "le.hong.phuc",  "0011", "SAVED",     "7415099", "THU_CONG"),
+    ("T.MX4X5.004.01-260515-0004", "1058252", "15/05/2026", "pham.quoc.hung","0015", "VALIDATED", "7004686", "THU_CONG"),
+    ("T.MX1X2.001.01-260510-0005", "1056333", "10/05/2026", "vu.thi.lan",    "0001", "SUBMITTED", "7004686", "THU_CONG"),
+    ("T.MX2X3.002.01-260505-0006", "1122826", "05/05/2026", "hoang.minh.duc","0003", "SUBMITTED", "7301045", "THU_CONG"),
+    ("T.MX3X4.003.01-260428-0007", "1122899", "28/04/2026", "nguyen.van.an", "0011", "APPROVED",  "7305120", "THU_CONG"),
+    ("T.MX4X5.004.01-260425-0008", "1122910", "25/04/2026", "tran.thi.bich", "0015", "APPROVED",  "7506106", "DVC"),
+    ("T.MX1X2.001.01-260420-0009", "1121333", "20/04/2026", "le.hong.phuc",  "0001", "APPROVED",  "7410088", "THU_CONG"),
+    ("T.MX2X3.002.01-260415-0010", "7499089", "15/04/2026", "pham.quoc.hung","0003", "APPROVED",  "7499089", "THU_CONG"),
+    ("T.MX3X4.003.01-260410-0011", "1121624", "10/04/2026", "vu.thi.lan",    "0011", "REJECTED",  "7410088", "THU_CONG"),
+    ("T.MX4X5.004.01-260405-0012", "1122831", "05/04/2026", "hoang.minh.duc","0015", "REJECTED",  "7415099", "THU_CONG"),
+    ("T.MX1X2.001.01-260401-0013", "1121625", "01/04/2026", "nguyen.van.an", "0001", "REJECTED",  "7004686", "THU_CONG"),
+    ("T.MX2X3.002.01-260328-0014", "1122834", "28/03/2026", "tran.thi.bich", "0003", "REJECTED",  "7301045", "THU_CONG"),
+    ("T.MX3X4.003.01-260325-0015", "1122896", "25/03/2026", "le.hong.phuc",  "0011", "COMPLETED", "7506106", "THU_CONG"),
+    ("T.MX4X5.004.01-260320-0016", "7506106", "20/03/2026", "pham.quoc.hung","0015", "COMPLETED", "7506106", "THU_CONG"),
+    ("T.MX2X3.002.01-260601-T001", "01701001","01/06/2026", "he.thong.kbnn", "0011", "DRAFT",     "7004686", "DVC"),
+    ("T.MX3X4.003.01-260528-T002", "1056333", "28/05/2026", "he.thong.kbnn", "0011", "VALIDATED", "7122155", "DVC"),
 ]
 CHECKER, APPROVER = "kiemsoat.vien01", "phe.duyet01"
 
