@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
-import i18n from '../i18n'
+import i18n from '@/i18n'
 import {
   listDossiers, getDossier, createDossier, saveDossierDraft, updateDossier, deleteDossier,
   submitDossier, approveDossier, rejectDossier, copyDossier,

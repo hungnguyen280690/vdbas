@@ -1,4 +1,4 @@
-import { get, post, put, del } from './api'
+import { get, post, put, del } from '@/services/api'
 import type {
   OpexDossierListParams,
   OpexDossierListResult,

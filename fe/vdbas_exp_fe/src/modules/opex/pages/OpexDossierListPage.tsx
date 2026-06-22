@@ -2,8 +2,9 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import './OpexDossierListPage.css'
 import { type OpexDossierRecord } from './OpexDossierListPage.mock'
 import { useNavigation } from '@/contexts/NavigationContext'
-import { OpexDossierHooks } from '@/hooks/useOpexDossier'
-import { exportOpexDossiers } from '@/services/opexDossierService'
+import { OpexDossierHooks } from '@/modules/opex/hooks/useOpexDossier'
+import { LovHooks } from '@/hooks/useLov'
+import { exportOpexDossiers } from '@/modules/opex/services/opexDossierService'
 import type { OpexDossierListParams, OpexDossierStatus, OpexDossierSummary, ExportOpexParams } from '@/types/index'
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -71,18 +72,10 @@ const SORT_FIELD_MAP: Record<string, string> = {
   F_STATUS: 'fStatus', CREATED_DATE: 'createdDate', CREATED_BY: 'createdBy',
 }
 
-const SOURCE_LABEL: Record<string, string> = {
-  MANUAL: 'Thủ công', DVKB: 'Dịch vụ kho bạc', AUTO: 'Tự động', TREASURY_SERVICE: 'Dịch vụ KBNN',
-}
-const SOURCE_COLOR: Record<string, string> = {
-  MANUAL: '#722ed1', DVKB: '#13c2c2', AUTO: '#1677ff', TREASURY_SERVICE: '#fa8c16',
-}
+// Màu chấm (cosmetic) theo mã nguồn contract — LOV không trả màu. Fallback #8c8c8c.
+const SOURCE_DOT: Record<string, string> = { THU_CONG: '#722ed1', DVC: '#13c2c2' }
 
-const SOURCE_OPTIONS: MsOption[] = [
-  { value: 'MANUAL', label: 'Thủ công',  dot: '#722ed1' },
-  { value: 'DVKB',   label: 'DVC',       dot: '#13c2c2' },
-  { value: 'AUTO',   label: 'Tự động',   dot: '#1677ff' },
-]
+// Nhãn/option "Nguồn" lấy động từ LOV (/lov/data-sources) — xem sourceOptions trong component.
 
 // Trạng thái 11-state OPEX (A11) — thay enum 8-state cũ của mock.
 const STATUS_OPTIONS: MsOption[] = [
@@ -242,6 +235,17 @@ function MultiSelectDropdown({
 
 const OpexDossierListPage: React.FC = () => {
   const { navigate } = useNavigation()
+
+  // Danh mục Nguồn (dùng chung LOV với CAPEX) — thay hardcode cũ MANUAL/DVKB/AUTO.
+  const dataSourcesQ = LovHooks.useDataSources()
+  const sourceOptions = useMemo<MsOption[]>(
+    () => (dataSourcesQ.data ?? []).map(ds => ({
+      value: ds.code,
+      label: ds.name,
+      dot: SOURCE_DOT[ds.code] ?? '#8c8c8c',
+    })),
+    [dataSourcesQ.data],
+  )
 
   // Filter input state (UI layer — changes on every keystroke)
   const [inputDossierCode, setInputDossierCode] = useState('')
@@ -506,8 +510,9 @@ const OpexDossierListPage: React.FC = () => {
       }
 
       case 'DATA_SOURCE_CODE': {
-        const color = SOURCE_COLOR[r.DATA_SOURCE_CODE] || '#8c8c8c'
-        const label = SOURCE_LABEL[r.DATA_SOURCE_CODE] || r.DATA_SOURCE_CODE || '—'
+        const color = SOURCE_DOT[r.DATA_SOURCE_CODE] || '#8c8c8c'
+        const label = (dataSourcesQ.data ?? []).find(ds => ds.code === r.DATA_SOURCE_CODE)?.name
+          || r.DATA_SOURCE_CODE || '—'
         return (
           <span className="badge" style={{ background: `${color}1a`, color, border: `1px solid ${color}66` }}>
             {label}
@@ -638,7 +643,7 @@ const OpexDossierListPage: React.FC = () => {
             <div className="filter-group">
               <label>Nguồn</label>
               <MultiSelectDropdown
-                options={SOURCE_OPTIONS}
+                options={sourceOptions}
                 selected={selectedSources}
                 onChange={setSelectedSources}
                 placeholder="-- Tất cả nguồn --"

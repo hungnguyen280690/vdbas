@@ -2,8 +2,9 @@ import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react'
 import './OpexDossierDetailPage.css'
 import { type DossierRecord, type DocumentRecord } from './OpexDossierDetailPage.mock'
 import { useNavigation } from '@/contexts/NavigationContext'
-import { OpexDossierHooks } from '@/hooks/useOpexDossier'
-import { newIdempotencyKey } from '@/services/opexDossierService'
+import { OpexDossierHooks } from '@/modules/opex/hooks/useOpexDossier'
+import { LovHooks } from '@/hooks/useLov'
+import { newIdempotencyKey } from '@/modules/opex/services/opexDossierService'
 import type { OpexDossierDetail } from '@/types/index'
 
 // ── Types ──────────────────────────────────────────────────────────────────────
@@ -29,14 +30,7 @@ interface DocEntryErrors {
 interface DocTypeItem { code: string; name: string; mod: string }
 
 // ── Constants ──────────────────────────────────────────────────────────────────
-const SEGMENT_MAP: Record<string, string> = {
-  '0000001': 'DVQHNS 0000001',
-  '1056333': 'Công ty TNHH MTV bất động sản Á Châu',
-  '1170918': 'Văn phòng Sở du lịch thành phố Hà Nội',
-  '1171277': 'Cơ quan Báo và phát thanh, truyền hình Hà Nội',
-  '1059441': 'Trường trung học Công nghiệp Hà Nội',
-  '1058252': 'Sở Du lịch Hà Nội',
-}
+// Danh mục ĐVSDNS/Kho bạc/Nguồn lấy động từ LOV dùng chung (xem LovHooks trong component).
 
 const DOC_FORM_FILE: Record<string, string> = {
   'C202a': 'form_detail_c202a.html',
@@ -195,6 +189,11 @@ const OpexDossierDetailPage: React.FC = () => {
   const deleteMut         = OpexDossierHooks.useDelete()
   const copyMut           = OpexDossierHooks.useCopy()
 
+  // Danh mục LOV dùng chung với CAPEX — thay hardcode SEGMENT_MAP/Nguồn + bổ sung Kho bạc.
+  const orgQ          = LovHooks.useOrganizations()
+  const treasuryQ     = LovHooks.useTreasuries()
+  const dataSourcesQ  = LovHooks.useDataSources()
+
   // ── Mode ──────────────────────────────────────────────────────────────────
   const [currentMode, setCurrentMode] = useState<PageMode>(paramMode)
   const isViewMode   = currentMode === 'view'
@@ -209,12 +208,14 @@ const OpexDossierDetailPage: React.FC = () => {
   // ── Form fields ───────────────────────────────────────────────────────────
   const [form, setForm] = useState(() => {
     if (currentMode === 'new') {
-      return { BUDGET_UNIT_CODE: '', BUDGET_UNIT_NAME: '', DOSSIER_CODE: '', DOSSIER_DATE: todayISO(), CREATED_BY: 'nguyen.van.an', STATE_CODE: 'DRAFT', DATA_SOURCE_CODE: 'MANUAL' }
+      return { BUDGET_UNIT_CODE: '', BUDGET_UNIT_NAME: '', TREASURY_CODE: '', TREASURY_NAME: '', DOSSIER_CODE: '', DOSSIER_DATE: todayISO(), CREATED_BY: 'nguyen.van.an', STATE_CODE: 'DRAFT', DATA_SOURCE_CODE: '' }
     }
     const r = initialRecord
     return {
       BUDGET_UNIT_CODE: r?.BUDGET_UNIT_CODE ?? '',
       BUDGET_UNIT_NAME: r?.BUDGET_UNIT_NAME ?? '',
+      TREASURY_CODE:    r?.TREASURY_CODE ?? '',
+      TREASURY_NAME:    r?.TREASURY_NAME ?? '',
       DOSSIER_CODE:     r?.DOSSIER_CODE ?? '',
       DOSSIER_DATE:     vdbasToISO(r?.DOSSIER_DATE ?? ''),
       CREATED_BY:       r?.CREATED_BY ?? '',
@@ -232,6 +233,8 @@ const OpexDossierDetailPage: React.FC = () => {
     setForm({
       BUDGET_UNIT_CODE: initialRecord.BUDGET_UNIT_CODE,
       BUDGET_UNIT_NAME: initialRecord.BUDGET_UNIT_NAME,
+      TREASURY_CODE:    initialRecord.TREASURY_CODE,
+      TREASURY_NAME:    initialRecord.TREASURY_NAME,
       DOSSIER_CODE:     initialRecord.DOSSIER_CODE,
       DOSSIER_DATE:     vdbasToISO(initialRecord.DOSSIER_DATE),
       CREATED_BY:       initialRecord.CREATED_BY,
@@ -243,7 +246,7 @@ const OpexDossierDetailPage: React.FC = () => {
   }, [initialRecord])
 
   // ── Validation errors ─────────────────────────────────────────────────────
-  const [errors, setErrors] = useState({ BUDGET_UNIT_CODE: false, DOSSIER_DATE: false, DATA_SOURCE_CODE: false })
+  const [errors, setErrors] = useState({ BUDGET_UNIT_CODE: false, TREASURY_CODE: false, DOSSIER_DATE: false, DATA_SOURCE_CODE: false })
 
   // ── Delete dialog ─────────────────────────────────────────────────────────
   const [isDeleteOpen, setIsDeleteOpen]         = useState(false)
@@ -290,11 +293,12 @@ const OpexDossierDetailPage: React.FC = () => {
   const segSearchRef = useRef<HTMLInputElement>(null)
 
   const segVisible = useMemo(() => {
+    const list = orgQ.data ?? []
     const kw = segSearch.trim().toLowerCase()
     return kw
-      ? Object.entries(SEGMENT_MAP).filter(([k, v]) => k.includes(kw) || v.toLowerCase().includes(kw))
-      : Object.entries(SEGMENT_MAP)
-  }, [segSearch])
+      ? list.filter(o => o.organizationCode.toLowerCase().includes(kw) || o.organizationName.toLowerCase().includes(kw))
+      : list
+  }, [segSearch, orgQ.data])
 
   // ── Iframe modal ──────────────────────────────────────────────────────────
   const [isIframeOpen, setIsIframeOpen]   = useState(false)
@@ -464,7 +468,7 @@ const OpexDossierDetailPage: React.FC = () => {
   }
 
   const handleBudgetUnitCodeChange = (val: string) => {
-    const des = SEGMENT_MAP[val.trim()] ?? ''
+    const des = orgQ.data?.find(o => o.organizationCode === val.trim())?.organizationName ?? ''
     setForm(f => ({ ...f, BUDGET_UNIT_CODE: val, BUDGET_UNIT_NAME: des }))
     setIsDirty(true)
     setErrors(e => ({ ...e, BUDGET_UNIT_CODE: false }))
@@ -474,6 +478,7 @@ const OpexDossierDetailPage: React.FC = () => {
   const handleSave = () => {
     const errs = {
       BUDGET_UNIT_CODE: !form.BUDGET_UNIT_CODE,
+      TREASURY_CODE:    !form.TREASURY_CODE,
       DOSSIER_DATE:     !form.DOSSIER_DATE,
       DATA_SOURCE_CODE: !form.DATA_SOURCE_CODE,
     }
@@ -485,12 +490,11 @@ const OpexDossierDetailPage: React.FC = () => {
     setIsDirty(false)
 
     if (currentMode === 'new') {
-      // GAP: form chưa có ô nhập treasuryCode (BE create yêu cầu). Lấy từ record nếu có, else rỗng (BE 400).
       createMut.mutate(
         {
           data: {
             organizationCode: form.BUDGET_UNIT_CODE,
-            treasuryCode: record?.TREASURY_CODE ?? '', // TODO: bổ sung field Kho bạc trên form
+            treasuryCode: form.TREASURY_CODE, // chọn từ LOV Kho bạc
             sendDate: form.DOSSIER_DATE,
             dataSourceCode: form.DATA_SOURCE_CODE,
             dossierTypeCode: 'OPEX',
@@ -506,7 +510,7 @@ const OpexDossierDetailPage: React.FC = () => {
           data: {
             version: record?.F_VER ?? 1, // optimistic lock (VAL-15)
             organizationCode: form.BUDGET_UNIT_CODE,
-            treasuryCode: record?.TREASURY_CODE ?? '',
+            treasuryCode: form.TREASURY_CODE,
             sendDate: form.DOSSIER_DATE,
           },
           idemKey: newIdempotencyKey(),
@@ -522,7 +526,7 @@ const OpexDossierDetailPage: React.FC = () => {
       {
         data: {
           organizationCode: form.BUDGET_UNIT_CODE || undefined,
-          treasuryCode: record?.TREASURY_CODE || undefined,
+          treasuryCode: form.TREASURY_CODE || undefined,
           sendDate: form.DOSSIER_DATE || undefined,
           dataSourceCode: form.DATA_SOURCE_CODE || undefined,
           dossierTypeCode: 'OPEX',
@@ -607,8 +611,10 @@ const OpexDossierDetailPage: React.FC = () => {
 
   // ── Segment LOV ───────────────────────────────────────────────────────────
   const selectSegment = (code: string) => {
-    setForm(f => ({ ...f, BUDGET_UNIT_CODE: code, BUDGET_UNIT_NAME: SEGMENT_MAP[code] ?? '' }))
+    const name = orgQ.data?.find(o => o.organizationCode === code)?.organizationName ?? ''
+    setForm(f => ({ ...f, BUDGET_UNIT_CODE: code, BUDGET_UNIT_NAME: name }))
     setIsDirty(true)
+    setErrors(e => ({ ...e, BUDGET_UNIT_CODE: false }))
     setIsSegmentLovOpen(false)
   }
 
@@ -979,11 +985,38 @@ const OpexDossierDetailPage: React.FC = () => {
                     onChange={e => { setFormField('DATA_SOURCE_CODE', e.target.value); setErrors(err => ({ ...err, DATA_SOURCE_CODE: false })) }}
                   >
                     <option value="">— Chọn nguồn —</option>
-                    <option value="MANUAL">Thủ công</option>
-                    <option value="DVKB">Dịch vụ kho bạc</option>
-                    <option value="AUTO">Tự động</option>
+                    {(dataSourcesQ.data ?? []).map(ds => (
+                      <option key={ds.code} value={ds.code}>{ds.name}</option>
+                    ))}
                   </select>
                   {errors.DATA_SOURCE_CODE && <span className="error-hint show" id="err-DATA_SOURCE_CODE">Vui lòng chọn Nguồn</span>}
+                </div>
+
+                {/* TREASURY_CODE */}
+                <div className="form-group"
+                     data-field-code="TREASURY_CODE" data-field-type="String" data-component="Dropdown"
+                     data-required="Y" data-api-field="header.treasuryCode" data-lov="LOV.04">
+                  <label>Kho bạc <span className="req">*</span></label>
+                  <select
+                    name="TREASURY_CODE"
+                    data-testid="select-treasury"
+                    data-api-field="header.treasuryCode"
+                    value={form.TREASURY_CODE}
+                    disabled={isViewMode || (currentMode === 'edit')}
+                    onChange={e => {
+                      const code = e.target.value
+                      const name = treasuryQ.data?.find(t => t.treasuryCode === code)?.treasuryName ?? ''
+                      setForm(f => ({ ...f, TREASURY_CODE: code, TREASURY_NAME: name }))
+                      setIsDirty(true)
+                      setErrors(err => ({ ...err, TREASURY_CODE: false }))
+                    }}
+                  >
+                    <option value="">— Chọn kho bạc —</option>
+                    {(treasuryQ.data ?? []).map(t => (
+                      <option key={t.treasuryCode} value={t.treasuryCode}>{t.treasuryName}</option>
+                    ))}
+                  </select>
+                  {errors.TREASURY_CODE && <span className="error-hint show" id="err-TREASURY_CODE">Vui lòng chọn Kho bạc</span>}
                 </div>
 
               </div>{/* /form-grid */}
@@ -1471,7 +1504,7 @@ const OpexDossierDetailPage: React.FC = () => {
                 onChange={e => setSegSearch(e.target.value)}
               />
               <span id="seg-lov-count" style={{ fontSize: 11, color: 'var(--muted)', whiteSpace: 'nowrap' }}>
-                {segVisible.length} / {Object.keys(SEGMENT_MAP).length} đơn vị
+                {segVisible.length} / {orgQ.data?.length ?? 0} đơn vị
               </span>
             </div>
             <div className="seg-lov-table-wrap">
@@ -1485,13 +1518,13 @@ const OpexDossierDetailPage: React.FC = () => {
                 <tbody id="seg-lov-tbody">
                   {segVisible.length === 0
                     ? <tr><td colSpan={2} style={{ textAlign: 'center', padding: 16, color: 'var(--muted)' }}>Không tìm thấy đơn vị phù hợp</td></tr>
-                    : segVisible.map(([code, name]) => (
-                      <tr key={code}
-                        className={form.BUDGET_UNIT_CODE === code ? 'seg-selected' : ''}
-                        onClick={() => selectSegment(code)}
+                    : segVisible.map(o => (
+                      <tr key={o.organizationCode}
+                        className={form.BUDGET_UNIT_CODE === o.organizationCode ? 'seg-selected' : ''}
+                        onClick={() => selectSegment(o.organizationCode)}
                       >
-                        <td className="seg-code-cell">{code}</td>
-                        <td>{name}</td>
+                        <td className="seg-code-cell">{o.organizationCode}</td>
+                        <td>{o.organizationName}</td>
                       </tr>
                     ))}
                 </tbody>

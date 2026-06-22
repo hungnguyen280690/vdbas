@@ -2,8 +2,8 @@ import React, { useState, useEffect, useRef, useMemo, useCallback } from 'react'
 import { message } from 'antd'
 import './CapexDossierListPage.css'
 import { useNavigation } from '@/contexts/NavigationContext'
-import { DossierHooks } from '@/hooks/useDossier'
-import { getDossier, exportDossiers, newIdempotencyKey } from '@/services/dossierService'
+import { DossierHooks } from '@/modules/capex/hooks/useDossier'
+import { getDossier, exportDossiers, newIdempotencyKey } from '@/modules/capex/services/dossierService'
 import type {
   DossierSummary, DossierListParams, DossierStatus, DataSourceCode,
   DossierSortBy, SortDir, DossierDateField, ExportDossiersParams,

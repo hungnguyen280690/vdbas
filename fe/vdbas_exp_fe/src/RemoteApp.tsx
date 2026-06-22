@@ -19,10 +19,10 @@ import '@/i18n'
 
 import HomePage from '@/pages/HomePage'
 import CategoryGroupsPage from '@/pages/CategoryGroupsPage'
-import CapexDossierListPage from '@/pages/CapexDossierListPage'
-import CapexDossierDetailPage from '@/pages/CapexDossierDetailPage'
-import OpexDossierListPage from '@/pages/OpexDossierListPage'
-import OpexDossierDetailPage from '@/pages/OpexDossierDetailPage'
+import CapexDossierListPage from '@/modules/capex/pages/CapexDossierListPage'
+import CapexDossierDetailPage from '@/modules/capex/pages/CapexDossierDetailPage'
+import OpexDossierListPage from '@/modules/opex/pages/OpexDossierListPage'
+import OpexDossierDetailPage from '@/modules/opex/pages/OpexDossierDetailPage'
 import type { ReactElement } from 'react'
 
 // ── Route registry — add new pages here ───────────────────────────────────────

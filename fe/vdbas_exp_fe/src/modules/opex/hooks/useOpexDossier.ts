@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { message } from 'antd'
-import i18n from '../i18n'
+import i18n from '@/i18n'
 import {
   listOpexDossiers, getOpexDossier, createOpexDossier, saveOpexDraft, updateOpexDossier, deleteOpexDossier,
   copyOpexDossier, submitOpexDossier, checkOpexDossier, rejectByChecker, returnByChecker,
