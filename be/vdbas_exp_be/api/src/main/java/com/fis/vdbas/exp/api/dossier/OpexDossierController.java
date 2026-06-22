@@ -1,13 +1,12 @@
 package com.fis.vdbas.exp.api.dossier;
 
-import com.fis.vdbas.common.dto.PageResponseDto;
 import com.fis.vdbas.exp.application.dossier.dto.DeleteDossierRequest;
 import com.fis.vdbas.exp.application.dossier.dto.DossierDetailDto;
 import com.fis.vdbas.exp.application.dossier.dto.DossierMutationResult;
 import com.fis.vdbas.exp.application.dossier.dto.DossierSearchDto;
-import com.fis.vdbas.exp.application.dossier.dto.DossierSummaryDto;
 import com.fis.vdbas.exp.application.dossier.dto.OpexDossierCreateRequest;
 import com.fis.vdbas.exp.application.dossier.dto.OpexDossierDraftRequest;
+import com.fis.vdbas.exp.application.dossier.dto.OpexDossierListResponse;
 import com.fis.vdbas.exp.application.dossier.dto.OpexDossierUpdateRequest;
 import com.fis.vdbas.exp.application.dossier.dto.WorkflowActionResult;
 import com.fis.vdbas.exp.application.dossier.service.OpexDossierService;
@@ -41,7 +40,7 @@ public class OpexDossierController {
 
     /** GET danh sách hồ sơ OPEX (filter + phân trang). */
     @GetMapping
-    public PageResponseDto<DossierSummaryDto> list(@ModelAttribute DossierSearchDto criteria) {
+    public OpexDossierListResponse list(@ModelAttribute DossierSearchDto criteria) {
         return service.search(criteria);
     }
 

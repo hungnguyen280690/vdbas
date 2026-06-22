@@ -9,6 +9,7 @@ import com.fis.vdbas.exp.application.dossier.dto.DossierSearchDto;
 import com.fis.vdbas.exp.application.dossier.dto.DossierSummaryDto;
 import com.fis.vdbas.exp.application.dossier.dto.OpexDossierCreateRequest;
 import com.fis.vdbas.exp.application.dossier.dto.OpexDossierUpdateRequest;
+import com.fis.vdbas.exp.application.dossier.dto.OpexDossierListResponse;
 import com.fis.vdbas.exp.application.dossier.dto.WorkflowActionResult;
 import com.fis.vdbas.exp.application.dossier.mapper.DocumentMapper;
 import com.fis.vdbas.exp.application.dossier.mapper.DossierMapper;
@@ -200,10 +201,10 @@ class OpexDossierServiceTest {
         Page<ExpDossier> page = new PageImpl<>(Collections.emptyList());
         when(repository.findAll(any(Specification.class), any(Pageable.class))).thenReturn(page);
 
-        PageResponseDto<DossierSummaryDto> result = service.search(criteria);
+        OpexDossierListResponse result = service.search(criteria);
 
         assertThat(result).isNotNull();
-        assertThat(result.getContent()).isEmpty();
-        assertThat(result.getTotalElements()).isZero();
+        assertThat(result.getItems()).isEmpty();
+        assertThat(result.getPagination().getTotalElements()).isZero();
     }
 }

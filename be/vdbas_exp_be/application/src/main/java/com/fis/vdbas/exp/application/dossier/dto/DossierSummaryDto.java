@@ -13,6 +13,8 @@ public class DossierSummaryDto {
 
     private UUID id;
     private String dossierCode;
+    private String treasuryCode;
+    private String treasuryName;
     private String projectCode;
     private String projectName;
     private String dataSourceCode;

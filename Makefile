@@ -10,7 +10,7 @@ YELLOW := \033[0;33m
 RED := \033[0;31m
 NC := \033[0m
 
-.PHONY: help all build-common start stop restart status logs clean keycloak-start keycloak-stop start-mock stop-mock start-fe-dev stop-fe-dev
+.PHONY: help all build-common start stop restart status logs clean keycloak-start keycloak-stop start-mock stop-mock start-fe-dev stop-fe-dev build-be build-fe
 
 help:
 	@echo -e "$(BLUE)VDBAS Management Commands:$(NC)"
@@ -47,7 +47,7 @@ build-common:
 	@if [ ! -f $(COMMON_JAR) ]; then \
 		echo -e "$(BLUE)Compiling vdbas-common...$(NC)"; \
 		cd be/vdbas_common && mvn clean install -DskipTests; \
-	else \
+		else \
 		echo -e "$(GREEN)vdbas-common already exists.$(NC)"; \
 	fi
 
@@ -64,15 +64,39 @@ start-db:
 	@echo -e "$(YELLOW)Starting Infrastructure (Oracle)...$(NC)"
 	@cd be/oracle-db && docker compose up -d
 
-start-be:
-	@echo -e "$(YELLOW)Starting Backend Services...$(NC)"
-	@cd be/vdbas_quantri_be && docker compose up -d --build
-	@cd be/vdbas_exp_be && docker compose up -d --build
+build-be:
+	@echo -e "$(YELLOW)Building Backend Docker images...$(NC)"
+	docker build --network=host -t vdbas-quantri-be-api:latest -f be/vdbas_quantri_be/Dockerfile be
+	docker build --network=host -t vdbas-exp-be-api:latest -f be/vdbas_exp_be/Dockerfile be
 
-start-fe:
+build-fe:
+	@echo -e "$(YELLOW)Building Frontend Docker images...$(NC)"
+	docker build --network=host -t vdbas-host:latest \
+		--build-arg VITE_KEYCLOAK_URL=https://vst-sso.apps.ocp.vst.gov.vn \
+		--build-arg VITE_KEYCLOAK_REALM=vdbas_dev \
+		--build-arg VITE_KEYCLOAK_CLIENT_ID=vdbas_fe \
+		--build-arg VITE_QTDC_REMOTE_URL=http://localhost:3002 \
+		--build-arg VITE_EXP_REMOTE_URL=http://localhost:3003 \
+		--build-arg VITE_TEMPLATE_REMOTE_URL=http://localhost:3001 \
+		--build-arg VITE_API_BASE_URL=http://localhost:8082/api \
+		-f fe/vdbas_host/Dockerfile fe/vdbas_host
+	docker build --network=host -t vdbas-exp-fe:latest \
+		--build-arg VITE_API_BASE_URL=http://localhost:8085/api/v1 \
+		--build-arg VITE_ACL_API_BASE_URL=http://localhost:8082/api \
+		--build-arg "VITE_APP_NAME=VDBAS exp (Dev)" \
+		--build-arg VITE_APP_VERSION=1.0.0 \
+		--build-arg VITE_APP_CODE=EXP \
+		-f fe/vdbas_exp_fe/Dockerfile fe/vdbas_exp_fe
+
+start-be: build-be
+	@echo -e "$(YELLOW)Starting Backend Services...$(NC)"
+	@cd be/vdbas_quantri_be && docker compose up -d
+	@cd be/vdbas_exp_be && docker compose up -d
+
+start-fe: build-fe
 	@echo -e "$(YELLOW)Starting Frontend Services...$(NC)"
-	@cd fe/vdbas_host && docker compose up -d --build
-	@cd fe/vdbas_exp_fe && docker compose up -d --build
+	@cd fe/vdbas_host && docker compose up -d
+	@cd fe/vdbas_exp_fe && docker compose up -d
 
 stop-fe:
 	@echo -e "$(RED)Stopping Frontend Services...$(NC)"

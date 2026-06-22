@@ -347,11 +347,11 @@ const OpexDossierListPage: React.FC = () => {
     setSearched(true)
     setCurrentPage(1)
     setCommittedFilters({
-      dossierCode: inputDossierCode.trim().toLowerCase(),
-      quick:       inputQuick.trim().toLowerCase(),
+      dossierCode: inputDossierCode.trim(),
+      quick:       inputQuick.trim(),
       sources:     selectedSources,
       statuses:    selectedStatuses,
-      createdBy:   inputCreatedBy.trim().toLowerCase(),
+      createdBy:   inputCreatedBy.trim(),
       fromDate:    inputFromDate,
       toDate:      inputToDate,
     })

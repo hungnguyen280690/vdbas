@@ -1,6 +1,5 @@
 package com.fis.vdbas.exp.application.dossier.service;
 
-import com.fis.vdbas.common.dto.PageResponseDto;
 import com.fis.vdbas.common.exception.InvalidOperationException;
 import com.fis.vdbas.common.exception.ResourceNotFoundException;
 import com.fis.vdbas.exp.application.dossier.dto.DeleteDossierRequest;
@@ -11,7 +10,9 @@ import com.fis.vdbas.exp.application.dossier.dto.DossierSearchDto;
 import com.fis.vdbas.exp.application.dossier.dto.DossierSummaryDto;
 import com.fis.vdbas.exp.application.dossier.dto.OpexDossierCreateRequest;
 import com.fis.vdbas.exp.application.dossier.dto.OpexDossierDraftRequest;
+import com.fis.vdbas.exp.application.dossier.dto.OpexDossierListResponse;
 import com.fis.vdbas.exp.application.dossier.dto.OpexDossierUpdateRequest;
+import com.fis.vdbas.exp.application.dossier.dto.OpexPaginationDto;
 import com.fis.vdbas.exp.application.dossier.dto.WorkflowActionResult;
 import com.fis.vdbas.exp.application.dossier.mapper.DocumentMapper;
 import com.fis.vdbas.exp.application.dossier.mapper.DossierMapper;
@@ -71,6 +72,10 @@ public class OpexDossierService {
             "CREATED_DATE", "createdDate",
             "F_STATUS", "fStatus");
 
+    /** Whitelist camelCase field hợp lệ — FE gửi sort='field,dir' dạng camelCase. */
+    private static final Set<String> VALID_SORT_FIELDS = Set.of(
+            "dossierCode", "sendDate", "dataSourceCode", "fStatus", "createdDate", "createdBy");
+
     private static final String DEFAULT_SORT_PROPERTY = "createdDate";
 
     private final ExpDossierRepository repository;
@@ -83,33 +88,56 @@ public class OpexDossierService {
 
     // ─── Queries ─────────────────────────────────────────────────────────────
 
-    public PageResponseDto<DossierSummaryDto> search(DossierSearchDto criteria) {
-        Sort.Direction direction = "desc".equalsIgnoreCase(criteria.getSortDirection())
-                ? Sort.Direction.DESC
-                : Sort.Direction.ASC;
-        String sortKey = (criteria.getSortBy() != null && !criteria.getSortBy().isBlank())
-                ? criteria.getSortBy()
-                : "CREATED_DATE";
-        String sortBy = SORT_PROPERTY.getOrDefault(sortKey, DEFAULT_SORT_PROPERTY);
+    public OpexDossierListResponse search(DossierSearchDto criteria) {
+        // Parse sort: FE gửi combined 'field,dir' (camelCase) vào param `sort`.
+        // Fallback: legacy sortBy (UPPER_SNAKE) + sortDirection nếu `sort` vắng mặt.
+        Sort.Direction direction;
+        String sortBy;
+        if (criteria.getSort() != null && !criteria.getSort().isBlank()) {
+            String[] parts = criteria.getSort().split(",", 2);
+            String field = parts[0].trim();
+            String dir = parts.length > 1 ? parts[1].trim() : "asc";
+            sortBy = VALID_SORT_FIELDS.contains(field) ? field : DEFAULT_SORT_PROPERTY;
+            direction = "desc".equalsIgnoreCase(dir) ? Sort.Direction.DESC : Sort.Direction.ASC;
+        } else {
+            direction = "desc".equalsIgnoreCase(criteria.getSortDirection())
+                    ? Sort.Direction.DESC : Sort.Direction.ASC;
+            String sortKey = (criteria.getSortBy() != null && !criteria.getSortBy().isBlank())
+                    ? criteria.getSortBy() : "CREATED_DATE";
+            sortBy = SORT_PROPERTY.getOrDefault(sortKey, DEFAULT_SORT_PROPERTY);
+        }
         Pageable pageable = PageRequest.of(criteria.getPage(), criteria.getSize(), Sort.by(direction, sortBy));
 
         Page<ExpDossier> page = repository.findAll(filter(criteria), pageable);
 
-        List<DossierSummaryDto> content = new ArrayList<>();
+        List<DossierSummaryDto> items = new ArrayList<>();
         for (ExpDossier entity : page.getContent()) {
             DossierSummaryDto dto = dossierMapper.toSummaryDto(entity);
             dto.setFStatusName(DossierService.labelOf(entity.getFStatus()));
             dto.setDocumentCount((int) documentRepository.countByDossierIdAndStatus(entity.getId(), 1));
             dto.setTotalBaseAmount(documentRepository.sumBaseAmountByDossierId(entity.getId()));
-            content.add(dto);
+            items.add(dto);
         }
 
-        return PageResponseDto.<DossierSummaryDto>builder()
-                .content(content)
+        // statusCounts: đếm toàn bộ OPEX active theo trạng thái.
+        Map<String, Long> statusCounts = new java.util.HashMap<>();
+        for (Object[] row : repository.countByStatusForOpex()) {
+            DossierStatus status = (DossierStatus) row[0];
+            Long count = (Long) row[1];
+            statusCounts.put(status.name(), count);
+        }
+
+        OpexPaginationDto pagination = OpexPaginationDto.builder()
                 .page(page.getNumber())
                 .size(page.getSize())
                 .totalElements(page.getTotalElements())
                 .totalPages(page.getTotalPages())
+                .build();
+
+        return OpexDossierListResponse.builder()
+                .items(items)
+                .pagination(pagination)
+                .statusCounts(statusCounts)
                 .build();
     }
 

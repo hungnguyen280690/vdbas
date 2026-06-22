@@ -1,0 +1,275 @@
+{
+  "summary": {
+    "PASS": 28,
+    "FAIL": 0,
+    "SKIP": 0,
+    "WARN": 0
+  },
+  "hasFailures": false,
+  "results": [
+    {
+      "name": "BE health /actuator/health",
+      "phase": "health",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": "UP"
+    },
+    {
+      "name": "OPEX list 200",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "OPEX list envelope {items,pagination,statusCounts}",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "LOV tổ chức",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "LOV kho bạc",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "LOV nguồn gốc",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "LOV loại CT",
+      "phase": "smoke",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "1. Tạo hồ sơ (DRAFT)",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        201
+      ],
+      "actual": 201,
+      "detail": ""
+    },
+    {
+      "name": "1. Response có id/dossierCode/version",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "1b. Lưu nháp (/drafts)",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        201
+      ],
+      "actual": 201,
+      "detail": ""
+    },
+    {
+      "name": "2. Xem chi tiết",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "2. Detail có id/fStatus/version",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "3. Cập nhật",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "3b. Version tăng sau update",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": ">0",
+      "actual": 1,
+      "detail": ""
+    },
+    {
+      "name": "4. Thêm chứng từ (201)",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        201
+      ],
+      "actual": 201,
+      "detail": ""
+    },
+    {
+      "name": "4. Document response có id",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "5. Submit → PENDING_CHECKER",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "5b. fStatus = PENDING_CHECKER",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "6. Checker check → CHECKED",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "6b. fStatus = CHECKED",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "7. Approver approve → APPROVED",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "7b. fStatus = APPROVED",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "8. Hồ sơ xuất hiện trong list",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": [
+        200
+      ],
+      "actual": 200,
+      "detail": ""
+    },
+    {
+      "name": "8b. id tìm thấy trong items",
+      "phase": "lifecycle",
+      "status": "PASS",
+      "expected": null,
+      "actual": null,
+      "detail": ""
+    },
+    {
+      "name": "404 id không tồn tại",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        404
+      ],
+      "actual": 404,
+      "detail": ""
+    },
+    {
+      "name": "400/422 create thiếu field required",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        400,
+        422
+      ],
+      "actual": 400,
+      "detail": ""
+    },
+    {
+      "name": "409 optimistic lock (version cũ)",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        409
+      ],
+      "actual": 409,
+      "detail": ""
+    },
+    {
+      "name": "400/422 submit không có chứng từ",
+      "phase": "negative",
+      "status": "PASS",
+      "expected": [
+        400,
+        422
+      ],
+      "actual": 400,
+      "detail": ""
+    }
+  ]
+}

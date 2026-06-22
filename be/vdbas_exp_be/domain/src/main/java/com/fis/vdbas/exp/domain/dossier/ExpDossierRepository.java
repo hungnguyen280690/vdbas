@@ -30,4 +30,9 @@ public interface ExpDossierRepository
     @Query("UPDATE ExpDossier d SET d.status = 0, d.fStatus = com.fis.vdbas.exp.common.enums.DossierStatus.DELETED "
             + "WHERE d.id = :id")
     void softDeleteOpex(@Param("id") UUID id);
+
+    /** Đếm hồ sơ OPEX active theo từng trạng thái — dùng cho statusCounts trong list response. */
+    @Query("SELECT d.fStatus, COUNT(d) FROM ExpDossier d "
+            + "WHERE d.dossierTypeCode = 'OPEX' AND d.status = 1 GROUP BY d.fStatus")
+    java.util.List<Object[]> countByStatusForOpex();
 }

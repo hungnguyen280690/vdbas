@@ -31,4 +31,7 @@ public class DossierSearchDto extends BaseSearchDto {
     /** Multi-select nguồn gốc (P1-13). */
     private List<String> dataSourceCode;
     private String createdBy;
+
+    /** Combined sort param từ FE: 'field,dir' (vd. 'createdDate,desc'). Ưu tiên hơn sortBy+sortDirection. */
+    private String sort;
 }
